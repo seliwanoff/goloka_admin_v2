@@ -5,18 +5,18 @@ import {
   Sheet,
   SheetContent,
   SheetHeader,
-  SheetTitle,
+  // SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import Goloka from "@/public/assets/images/goloka-full-logo.svg";
 
 // ~ ======= Icon imports  -->//
 import {
-  LucideIcon,
-  FolderClosed,
+  // LucideIcon,
+  // FolderClosed,
   LayoutGrid,
-  Files,
-  WandSparkles,
+  // Files,
+  // WandSparkles,
   Settings,
   LogOut,
   OctagonAlert,
@@ -28,11 +28,11 @@ import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { usePathname, useRouter } from "next/navigation";
-import { VscListSelection } from "react-icons/vsc";
+// import { VscListSelection } from "react-icons/vsc";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import Image from "next/image";
 import { ArchiveMinus, DocumentCopy, MessageQuestion, Note, Wallet3 } from "iconsax-react";
-import { userLogout } from "@/services/auth";
+// import { userLogout } from "@/services/auth";
 
 type ComponentProps = {};
 
@@ -42,19 +42,19 @@ const DashSideBarMobile: FC<ComponentProps> = ({}) => {
   const pathname = usePathname();
 
    const initiateLogout = () => {
-     try {
-       const res = userLogout();
-       console.log(res, "res");
-       localStorage.removeItem("whoami");
-       router.replace("/signin");
-     } catch (error) {
-       console.log(error, "error");
-     }
+    //  try {
+    //    const res = userLogout();
+    //    console.log(res, "res");
+    //    localStorage.removeItem("whoami");
+    //    router.replace("/signin");
+    //  } catch (error) {
+    //    console.log(error, "error");
+    //  }
    };
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger className="block cursor-pointer xl:hidden">
-        <VscListSelection size={24} />
+        {/* <VscListSelection size={24} /> */}
       </SheetTrigger>
       <SheetContent side="left" className="w-[95%] px-4">
         <SheetHeader>

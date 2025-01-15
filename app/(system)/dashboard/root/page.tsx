@@ -41,7 +41,7 @@ import { Label } from "@/components/ui/label";
 import { chunkArray, cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar as CalenderDate } from "@/components/ui/calendar";
-import { responsesTableData } from "@/utils";
+// import { responsesTableData } from "@/utils";
 import { useRouter } from "next/navigation";
 import {
   formatResponseDate,
@@ -60,8 +60,8 @@ const Dashboard = () => {
   //   ),
   // );
 
-  const [filteredData, setFilteredData] = useState<any[]>(responsesTableData);
-  const [openFilter, setOpenFilter] = useState<boolean>(false);
+  const [filteredData] = useState<unknown[]>(responsesTableData);
+  const [ setOpenFilter] = useState<boolean>(false);
   const [date, setDate] = useState<Date>();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(10);
@@ -394,7 +394,7 @@ const Dashboard = () => {
 
           <div className="mt-6">
             <Pagination
-              //@ts-ignore
+              //@ts-expect-error
               totalPages={pages?.length}
               currentPage={currentPage}
               onPageChange={setCurrentPage}
@@ -445,3 +445,356 @@ const getStatusColor = (status: Status) => {
       return "bg-gray-500/5 border-gray-500 text-gray-500";
   }
 };
+
+
+export const responsesTableData = [
+  // On Review (with unread)
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Pending",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 3,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Pending",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 3,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Reviewed",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 3,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Pending",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 2,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Pending",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 2,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Reviewed",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 2,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Pending",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Pending",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Pending",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Pending",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+
+  // Accepted
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Accepted",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Reviewed",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Accepted",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Reviewed",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Pending",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Accepted",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Accepted",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Accepted",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Accepted",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Accepted",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+
+  // Rejected
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Rejected",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Rejected",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Rejected",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Rejected",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Rejected",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Rejected",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Rejected",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Rejected",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Rejected",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Rejected",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+
+  // Pending
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Pending",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Pending",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Pending",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Pending",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Pending",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Pending",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Pending",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+  {
+    category: "Agriculture & Food Security",
+    company: "Dataphyte",
+    status: "Pending",
+    price: "$12",
+    date: "15/5/2024",
+    time: "9:30AM",
+    unread: 0,
+  },
+];

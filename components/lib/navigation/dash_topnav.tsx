@@ -5,9 +5,9 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { classMerge } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import Image, { StaticImageData } from "next/image";
-import UserProfileImg from "@/public/assets/images/user-pforile-img.jpg";
+// import { AspectRatio } from "@/components/ui/aspect-ratio";
+// import Image, { StaticImageData } from "next/image";
+// import UserProfileImg from "@/public/assets/images/user-pforile-img.jpg";
 // import DashNotificationPopOver from "../popovers/dash_notification";
 import {
   Popover,
@@ -17,7 +17,7 @@ import {
 
 // ~ ======= icon imports -->
 import {
-  Mail,
+  // Mail,
   Bell,
   ChevronDown,
   Search,
@@ -34,24 +34,24 @@ import DashNotificationPopOver from "../popover/dash_notification";
 import DashSideBarMobile from "./dash_sidebar_mobile";
 
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+// import { Label } from "@/components/ui/label";
 import {
   Sheet,
-  SheetClose,
+  // SheetClose,
   SheetContent,
   SheetDescription,
-  SheetFooter,
+  // SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { ArrowLeft } from "iconsax-react";
-import { useMediaQuery } from "@react-hook/media-query";
-import { Close } from "@radix-ui/react-dialog";
+// import { useMediaQuery } from "@react-hook/media-query";
+// import { Close } from "@radix-ui/react-dialog";
 import { Toaster } from "sonner";
-import { userLogout } from "@/services/auth";
+// import { userLogout } from "@/services/auth";
 import { useRouter } from "next/navigation";
-import { useUserStore } from "@/stores/currentUserStore";
+// import { useUserStore } from "@/stores/currentUserStore";
 import { formatNotifications, generateColor, getInitials } from "@/helper";
 import {
   Dialog,
@@ -59,7 +59,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { getNotifications } from "@/services/response";
+// import { getNotifications } from "@/services/response";
 
 type ComponentProps = {};
 
@@ -73,47 +73,45 @@ const data = {
 const DashTopNav: React.FC<ComponentProps> = ({}) => {
   const [open, setOpen] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const router = useRouter();
-  const params = { per_page: 10, page: 1 };
+  // const router = useRouter();
+  // const params = { per_page: 10, page: 1 };
 
-  const {
-    data: notification,
-    isLoading,
-    isFetching,
-    refetch,
-    isError,
-  } = useQuery({
-    queryKey: ["Get notification list"],
-    queryFn: () => getNotifications(params),
-  });
+  // const {
+  //   data: notification,
+  //   isLoading,
+  //   isFetching,
+  //   refetch,
+  //   isError,
+  // } = useQuery({
+  //   queryKey: ["Get notification list"],
+  //   queryFn: () => getNotifications(params),
+  // });
   const user = { data };
-  const currentUser = useUserStore((state) => state.user);
-  const logoutUser = useUserStore((state) => state.logoutUser);
-  const Name = currentUser?.name;
-  const FirstName = Name
-    ? Name.charAt(0).toUpperCase() + Name.slice(1).toLowerCase()
-    : "";
-  const isMobile = useMediaQuery("(max-width: 640px)");
-  // const backgroundColor = useMemo(() => generateColor(FirstName), [FirstName]);
-  const backgroundColor = useMemo(
-    () => generateColor(FirstName.trim().toLowerCase()),
-    [FirstName],
-  );
+  // const currentUser = useUserStore((state) => state.user);
+  // const logoutUser = useUserStore((state) => state.logoutUser);
+  // const Name = currentUser?.name;
+  const FirstName =  "";
+  // const isMobile = useMediaQuery("(max-width: 640px)");
+  // // const backgroundColor = useMemo(() => generateColor(FirstName), [FirstName]);
+  // const backgroundColor = useMemo(
+  //   () => generateColor(FirstName.trim().toLowerCase()),
+  //   [FirstName],
+  // );
   const initials = useMemo(() => getInitials(FirstName), [FirstName]);
   const initiateLogout = () => {
-    try {
-      const res = userLogout();
-      console.log(res, "res");
-      localStorage.removeItem("whoami");
-      router.replace("/signin");
-      logoutUser();
-    } catch (error) {
-      console.log(error, "error");
-    }
+    // try {
+    //   const res = userLogout();
+    //   console.log(res, "res");
+    //   localStorage.removeItem("whoami");
+    //   router.replace("/signin");
+    //   logoutUser();
+    // } catch (error) {
+    //   console.log(error, "error");
+    // }
   };
 
 
-  const notificationData = formatNotifications(notification);
+  // const notificationData = formatNotifications(notification);
 
   return (
     <>

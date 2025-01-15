@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Thumb from "@/public/assets/images/thumb.svg";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -27,9 +28,9 @@ export default function Home() {
         </div>
 
         <div className="space-y-4">
-          <button className="w-full flex items-center justify-center py-3 px-4 rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-colors font-medium">
+          <Link href="/dashboard/root" className="w-full flex items-center justify-center py-3 px-4 rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-colors font-medium">
             Sign in to Dashboard
-          </button>
+          </Link>
 
           <div className="text-sm text-center space-y-2">
             <a

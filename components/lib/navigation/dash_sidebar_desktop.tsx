@@ -4,28 +4,28 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { classMerge, cn } from "@/lib/utils";
-import Logo from "@/public/assets/images/thumb.svg";
+// import Logo from "@/public/assets/images/thumb.svg";
 import Goloka from "@/public/assets/images/goloka-full-logo.svg";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import {
-  DocumentCopy,
-  MessageQuestion,
-  Note,
+  // DocumentCopy,
+  // MessageQuestion,
+  // Note,
   People,
-  Wallet3,
-  Import,
-  ArchiveMinus,
+  // Wallet3,
+  // Import,
+  // ArchiveMinus,
 } from "iconsax-react";
 
 // ~ ======= icon imports  -->
 import {
-  LucideIcon,
-  FolderClosed,
-  LayoutGrid,
-  Files,
-  WandSparkles,
-  Settings,
+  // LucideIcon,
+  // FolderClosed,
+  // LayoutGrid,
+  // Files,
+  // WandSparkles,
+  // Settings,
   LogOut,
   OctagonAlert,
 } from "lucide-react";
@@ -33,13 +33,13 @@ import { Separator } from "@/components/ui/separator";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
+  // DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { userLogout } from "@/services/auth";
+// import { SheetHeader, SheetTitle } from "@/components/ui/sheet";
+// import { userLogout } from "@/services/auth";
 
 type ComponentProps = {
   navMenuList: { icon: any; title: string; link: string }[];
@@ -47,20 +47,20 @@ type ComponentProps = {
 
 const DashSideBarDesktop: React.FC<ComponentProps> = ({ navMenuList }) => {
   const pathname = usePathname();
-  const router = useRouter();
+  // const router = useRouter();
 
-  
+
   // userLogout;
 
   const initiateLogout = () => {
-    try {
-      const res = userLogout();
-      console.log(res, "res");
-      localStorage.removeItem("whoami");
-      router.replace("/signin");
-    } catch (error) {
-      console.log(error, "error");
-    }
+    // try {
+    //   const res = userLogout();
+    //   console.log(res, "res");
+    //   localStorage.removeItem("whoami");
+    //   router.replace("/signin");
+    // } catch (error) {
+    //   console.log(error, "error");
+    // }
   };
 
   return (

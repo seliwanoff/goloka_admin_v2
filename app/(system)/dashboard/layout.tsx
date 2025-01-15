@@ -1,24 +1,24 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import React from "react";
+// import { useRouter } from "next/navigation";
 // ~ ======= icon imports  -->
 import {
-  LucideIcon,
-  FolderClosed,
+  // LucideIcon,
+  // FolderClosed,
   LayoutGrid,
-  Files,
-  WandSparkles,
+  // Files,
+  // WandSparkles,
   Settings,
-  LogOut,
-  OctagonAlert,
+  // LogOut,
+  // OctagonAlert,
 } from "lucide-react";
 import {
   DocumentCopy,
   MessageQuestion,
   Note,
-  Note1,
-  People,
+  // Note1,
+  // People,
   Wallet3,
 } from "iconsax-react";
 
@@ -26,8 +26,8 @@ import {
 import DashSideBarDesktop from "@/components/lib/navigation/dash_sidebar_desktop";
 import DashTopNav from "@/components/lib/navigation/dash_topnav";
 // import { useUserStore } from "@/stores/use-user-store";
-import { StepperProvider } from "@/context/TaskStepperContext.tsx";
-import { useUserStore } from "@/stores/currentUserStore";
+// import { StepperProvider } from "@/context/TaskStepperContext.tsx";
+// import { useUserStore } from "@/stores/currentUserStore";
 // import DashSideBarDesktop from "@/components/lib/navigation/dash_sidebar_desktop";
 // import { getCurrentUser } from "@/services/user_service";
 // import { User, userStore } from "@/stores/user-store";
@@ -39,14 +39,14 @@ type LayoutProps = {
 };
 
 const SystemLayout: React.FC<LayoutProps> = ({ children }) => {
-  const router = useRouter();
+  // const router = useRouter();
 
-  const [showModal, setShowModal] = React.useState(false);
-  const setUser = useUserStore((state) => state.setUser);
+  // const [showModal, setShowModal] = React.useState(false);
+  // const setUser = useUserStore((state) => state.setUser);
 
   return (
     <div>
-      <StepperProvider totalSteps={5}>
+      {/* <StepperProvider totalSteps={5}> */}
         {/* <NotificationLayout> */}
         <div className="grid h-screen min-h-[200px] w-full grid-cols-6 overflow-hidden bg-[#F8F8F8]">
           {
@@ -75,7 +75,7 @@ const SystemLayout: React.FC<LayoutProps> = ({ children }) => {
           }
         </div>
         {/* </NotificationLayout> */}
-      </StepperProvider>
+      {/* </StepperProvider> */}
     </div>
   );
 };
