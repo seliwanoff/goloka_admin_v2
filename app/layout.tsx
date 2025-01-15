@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import TanstackProvider from "@/components/layout/tanstackProvider";
 import LandingNavbar from "@/components/lib/navigation/landing_navbar";
+
 // import Footer from "@/components/landing-comps/footer";
 
 export const metadata: Metadata = {

@@ -28,7 +28,7 @@ const LandingNavbar: React.FC<ComponentProps> = ({}) => {
     setScrollValue(() => window.scrollY);
   };
   useEffect(() => {
-    window && handleScroll();
+    // window && handleScroll();
     window.addEventListener("load", handleScroll);
     window.addEventListener("focus", handleScroll);
     window.addEventListener("scroll", handleScroll);
@@ -51,7 +51,7 @@ const LandingNavbar: React.FC<ComponentProps> = ({}) => {
         "flex w-full items-center justify-between px-3 py-2 " +
           "transit fixed top-0 bg-white md:px-8 lg:px-20",
         scrollValue > 0 ? "shadow-md" : "shadow-none",
-        pathname.includes("/dashboard") && "hidden",
+        pathname.includes("/dashboard") && "hidden"
       )}
     >
       {/* -- logo */}
@@ -80,7 +80,7 @@ const LandingNavbar: React.FC<ComponentProps> = ({}) => {
               "transit text-base font-medium text-[#4F4F4F] hover:text-main-100",
               pathname.includes(link.href)
                 ? "hover:text-primary-400 text-primary"
-                : "",
+                : ""
             )}
           >
             {link.text}
@@ -110,7 +110,7 @@ const LandingNavbar: React.FC<ComponentProps> = ({}) => {
                 "transit text-sm font-normal",
                 pathname.includes(link.href)
                   ? "hover:text-primary-400 text-primary"
-                  : "text-gray-600 hover:text-black",
+                  : "text-gray-600 hover:text-black"
               )}
             >
               {link.text}
