@@ -1,6 +1,6 @@
 "use client";
-import Logo from "@/public/assets/images/thumb.svg";
-import React, { useEffect } from "react";
+
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 // ~ ======= icon imports  -->
 import {
@@ -14,11 +14,10 @@ import {
   OctagonAlert,
 } from "lucide-react";
 import {
-  ArchiveMinus,
   DocumentCopy,
-  Import,
   MessageQuestion,
   Note,
+  Note1,
   People,
   Wallet3,
 } from "iconsax-react";
@@ -26,13 +25,14 @@ import {
 // import NotificationLayout from "@/components/layouts/notification-layout";
 import DashSideBarDesktop from "@/components/lib/navigation/dash_sidebar_desktop";
 import DashTopNav from "@/components/lib/navigation/dash_topnav";
+// import { useUserStore } from "@/stores/use-user-store";
 import { StepperProvider } from "@/context/TaskStepperContext.tsx";
-import { useQuery } from "@tanstack/react-query";
-import { getCurrentUser } from "@/services/user";
 import { useUserStore } from "@/stores/currentUserStore";
-import { getContributorsProfile } from "@/services/contributor";
-import { useRemoteUserStore } from "@/stores/remoteUser";
-import Image from "next/image";
+// import DashSideBarDesktop from "@/components/lib/navigation/dash_sidebar_desktop";
+// import { getCurrentUser } from "@/services/user_service";
+// import { User, userStore } from "@/stores/user-store";
+// import InfoDialog from "@/components/lib/modals/info_modal";
+// import { useQuery } from "@tanstack/react-query";
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -40,100 +40,9 @@ type LayoutProps = {
 
 const SystemLayout: React.FC<LayoutProps> = ({ children }) => {
   const router = useRouter();
-  const { setUser } = useRemoteUserStore();
-  const loginUser = useUserStore((state) => state.loginUser);
-  const logoutUser = useUserStore((state) => state.logoutUser);
-  const setRefetchUser = useUserStore((state) => state.setRefetchUser);
 
-  // Query for remote user data
-  const {
-    data: currentUser,
-    isLoading,
-    error,
-    refetch,
-  } = useQuery({
-    queryKey: ["Get current remote user"],
-    queryFn: getCurrentUser,
-    retry: 1, // Only retry once before considering it a failure
-  });
-
-  const {
-    data: remoteContributor,
-    isLoading: isContributorLoading,
-    refetch: isRefetch,
-  } = useQuery({
-    queryKey: ["Get remote contributor profile"],
-    queryFn: getContributorsProfile,
-  });
-
-  console.log(remoteContributor, "fbfbbf");
-
-  // Handle error and authentication
-  useEffect(() => {
-    if (error) {
-      console.log("An error occurred:", error);
-      // Check for 401 Unauthorized or "Unauthenticated" message in response
-      if (
-        //@ts-ignore
-        error.response?.status === 401 &&
-        //@ts-ignore
-        error.response?.data?.message === "Unauthenticated."
-      ) {
-        logoutUser(); // Log out user if token is expired
-        router.push("/signin"); // Redirect to login page
-        return;
-      }
-
-      // Handle other errors (e.g., network errors, etc.)
-      console.error("An error occurred:", error);
-    }
-
-    // Ensure both currentUser and remoteContributor are processed
-    if (
-      currentUser &&
-      "data" in currentUser &&
-      currentUser.data &&
-      remoteContributor &&
-      "data" in remoteContributor &&
-      remoteContributor.data
-    ) {
-      // Store current user in user store
-      loginUser(currentUser.data);
-
-      //@ts-ignore
-      setUser(remoteContributor.data);
-    }
-
-    // Set up refetch function
-    setRefetchUser(isRefetch);
-  }, [
-    currentUser,
-    error,
-    loginUser,
-    logoutUser,
-    refetch,
-    remoteContributor,
-    router,
-    setRefetchUser,
-    setUser,
-    isRefetch,
-  ]);
-
-  // Show loading state while fetching user data
-  if (isLoading || isContributorLoading) {
-    return (
-      <div className=" flex flex-col h-screen w-full items-center justify-center">
-        <Image
-          src={Logo}
-          alt="goloka logo"
-          width={100}
-          height={160}
-          className="animate-pulse"
-        />
-        <p className="text-main-100 font-bold text-lg animate-pulse font-serif">Loading...</p>
-      </div>
-    );
-  }
+  const [showModal, setShowModal] = React.useState(false);
+  const setUser = useUserStore((state) => state.setUser);
 
   return (
     <div>
@@ -165,6 +74,7 @@ const SystemLayout: React.FC<LayoutProps> = ({ children }) => {
             )
           }
         </div>
+        {/* </NotificationLayout> */}
       </StepperProvider>
     </div>
   );
@@ -175,34 +85,37 @@ export default SystemLayout;
 // ~ =============================================>
 // ~ ======= Navigation data -->
 // ~ =============================================>
-// const NavData: { icon: any; title: string; link: string }[] = [
-//   { icon: LayoutGrid, title: "Dashboard", link: "/dashboard/root" },
-//   { icon: Note, title: "Tasks", link: "/dashboard/tasks" },
-//   { icon: DocumentCopy, title: "Responses", link: "/dashboard/responses" },
-//   { icon: Wallet3, title: "Wallet", link: "/dashboard/wallet" },
-//   { icon: MessageQuestion, title: "Support", link: "/dashboard/support" },
-//   { icon: Settings, title: "Settings", link: "/dashboard/settings" },
-// ];
-
-
-// ~ =============================================>
-// ~ ======= Navigation data -->
-// ~ =============================================>
 const NavData: { icon: any; title: string; link: string }[] = [
-  { icon: LayoutGrid, title: "Dashboard", link: "/dashboard/root" },
-  { icon: Note, title: "Marketplace", link: "/dashboard/marketplace" },
-  { icon: DocumentCopy, title: "Responses", link: "/dashboard/responses" },
   {
-    icon: Import,
-    title: "My contributions",
-    link: "/dashboard/my_contributions",
+    icon: LayoutGrid,
+    title: "Dashboard",
+    link: "/organization/dashboard/root",
   },
+  { icon: Note, title: "Campaigns", link: "/organization/dashboard/campaigns" },
   {
-    icon: ArchiveMinus,
-    title: "Bookmarks",
-    link: "/dashboard/bookmarks",
+    icon: DocumentCopy,
+    title: "Responses",
+    link: "/organization/dashboard/responses",
   },
-  { icon: Wallet3, title: "Wallet", link: "/dashboard/wallet" },
-  { icon: MessageQuestion, title: "Support", link: "/dashboard/support" },
-  { icon: Settings, title: "Settings", link: "/dashboard/settings" },
+  { icon: Wallet3, title: "Wallet", link: "/organization/dashboard/wallet" },
+  {
+    icon: MessageQuestion,
+    title: "Support",
+    link: "/organization/dashboard/support",
+  },
+  // {
+  //   icon: Settings,
+  //   title: "Finances",
+  //   link: "/organization/dashboard/finances",
+  // },
+  // {
+  //   icon: Note1,
+  //   title: "Reports",
+  //   link: "/organization/dashboard/reports",
+  // },
+  {
+    icon: Settings,
+    title: "Settings",
+    link: "/organization/dashboard/settings",
+  },
 ];

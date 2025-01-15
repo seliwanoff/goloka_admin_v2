@@ -1,7 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import TanstackProvider from "@/components/layout/tanstackProvider";
-import LandingNavbar from "@/components/lib/navigation/landing_navbar";
+// import LandingNavbar from "@/components/lib/navigation/landing_navbar";
 
 // import Footer from "@/components/landing-comps/footer";
 
@@ -20,7 +20,7 @@ export default function RootLayout({
       {/* className={poppins.className} */}
       <body>
         <TanstackProvider>
-          <LandingNavbar />
+          {/* <LandingNavbar /> */}
           <div className="-z-10">{children}</div>
         </TanstackProvider>
       </body>
