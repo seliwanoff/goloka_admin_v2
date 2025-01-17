@@ -29,7 +29,7 @@ import {
   OctagonAlert,
 } from "lucide-react";
 // import { getCurrentUser } from "@/services/user_service";
-import { useQuery } from "@tanstack/react-query";
+// import { useQuery } from "@tanstack/react-query";
 import DashNotificationPopOver from "../popover/dash_notification";
 import DashSideBarMobile from "./dash_sidebar_mobile";
 
@@ -46,11 +46,11 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { ArrowLeft } from "iconsax-react";
-// import { useMediaQuery } from "@react-hook/media-query";
+import { useMediaQuery } from "@react-hook/media-query";
 // import { Close } from "@radix-ui/react-dialog";
 import { Toaster } from "sonner";
 // import { userLogout } from "@/services/auth";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 // import { useUserStore } from "@/stores/currentUserStore";
 import { formatNotifications, generateColor, getInitials } from "@/helper";
 import {
@@ -91,12 +91,12 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
   // const logoutUser = useUserStore((state) => state.logoutUser);
   // const Name = currentUser?.name;
   const FirstName =  "";
-  // const isMobile = useMediaQuery("(max-width: 640px)");
-  // // const backgroundColor = useMemo(() => generateColor(FirstName), [FirstName]);
-  // const backgroundColor = useMemo(
-  //   () => generateColor(FirstName.trim().toLowerCase()),
-  //   [FirstName],
-  // );
+  const isMobile = useMediaQuery("(max-width: 640px)");
+  // const backgroundColor = useMemo(() => generateColor(FirstName), [FirstName]);
+  const backgroundColor = useMemo(
+    () => generateColor(FirstName.trim().toLowerCase()),
+    [FirstName],
+  );
   const initials = useMemo(() => getInitials(FirstName), [FirstName]);
   const initiateLogout = () => {
     // try {
@@ -111,7 +111,7 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
   };
 
 
-  // const notificationData = formatNotifications(notification);
+  const notificationData = formatNotifications(notification);
 
   return (
     <>
@@ -202,7 +202,7 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
                 <div className="hidden flex-col items-start justify-center lg:flex">
                   <p className="text-base font-semibold">{FirstName}</p>
                   {
-                    // @ts-ignore
+
                     {
                       INDIVIDUAL: (
                         <p className="-mt-1 text-sm font-light">
@@ -233,7 +233,7 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
                       <p className="text-base font-semibold">{FirstName}</p>
                     </p>
                     {
-                      // @ts-ignore
+
                       {
                         INDIVIDUAL: (
                           <p className="-mt-1 text-sm font-light">
@@ -319,7 +319,7 @@ export default DashTopNav;
 // ~ ======= Dummy Data -->
 // ~ =============================================>
 // toggle these to remove notification badges
-const messages: boolean = true;
+// const messages: boolean = true;
 
 const UserBubbleLinks: { icon: LucideIcon; title: string; href: string }[] = [
   {
