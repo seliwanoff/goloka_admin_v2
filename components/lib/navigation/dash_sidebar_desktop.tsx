@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React from "react";
@@ -12,7 +13,7 @@ import {
   // DocumentCopy,
   // MessageQuestion,
   // Note,
-  People,
+  // People,
   // Wallet3,
   // Import,
   // ArchiveMinus,
@@ -132,7 +133,7 @@ const DashSideBarDesktop: React.FC<ComponentProps> = ({ navMenuList }) => {
         </Dialog>
 
         {/* CTA */}
-        <div className="mt-6 rounded-lg bg-[#F8F8F8] p-4">
+        {/* <div className="mt-6 rounded-lg bg-[#F8F8F8] p-4">
           <div className="mx-auto -mt-9 mb-5 flex h-12 w-12 items-center justify-center rounded-full border-4 border-white bg-main-100">
             <People size="24" color="#FFF" />
           </div>
@@ -146,7 +147,7 @@ const DashSideBarDesktop: React.FC<ComponentProps> = ({ navMenuList }) => {
           <Button className="mt-8 w-full rounded-full bg-main-100 text-white hover:bg-blue-700">
             Create account
           </Button>
-        </div>
+        </div> */}
       </nav>
     </aside>
   );

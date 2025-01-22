@@ -1,8 +1,8 @@
 import {
   ChartConfig,
   ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
+  // ChartLegend,
+  // ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
@@ -10,9 +10,9 @@ import { cn } from "@/lib/utils";
 import { Pie, PieChart } from "recharts";
 
 const chartDataSummary = [
-  { type: "draft", summary: 275, fill: "var(--color-draft)" },
+  { type: "pending", summary: 275, fill: "var(--color-pending)" },
   { type: "ongoing", summary: 200, fill: "var(--color-ongoing)" },
-  { type: "rejected", summary: 187, fill: "var(--color-rejected)" },
+  { type: "completed", summary: 187, fill: "var(--color-completed)" },
 ];
 
 const chartConfigSummary = {
@@ -23,13 +23,13 @@ const chartConfigSummary = {
     label: "Ongoing",
     color: "#3365E3",
   },
-  draft: {
-    label: "Draft",
-    color: "#FFD66B",
+  pending: {
+    label: "Pending",
+    color: "#F2994A",
   },
-  rejected: {
-    label: "Rejected",
-    color: "#DA3F0E",
+  completed: {
+    label: "Completed",
+    color: "#079455",
   },
 } satisfies ChartConfig;
 
@@ -39,12 +39,12 @@ const labels = [
     color: "#3365E3",
   },
   {
-    label: "Draft",
-    color: "#FFD66B",
+    label: "Pending",
+    color: "#F2994A",
   },
   {
-    label: "Rejected",
-    color: "#DA3F0E",
+    label: "Completed",
+    color: "#079455",
   },
 ];
 
@@ -55,7 +55,7 @@ console.log(
 
 const CampaignSummary = () => {
   return (
-    <>
+    <div className="">
       <ChartContainer
         config={chartConfigSummary}
         className="mx-auto aspect-square max-h-[250px]"
@@ -85,7 +85,7 @@ const CampaignSummary = () => {
           );
         })}
       </div>
-    </>
+    </div>
   );
 };
 
