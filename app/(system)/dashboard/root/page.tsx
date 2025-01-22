@@ -17,6 +17,7 @@ import {
   // Wallet3,
 } from "iconsax-react";
 import { Button } from "@/components/ui/button";
+
 // import Pagination from "@/components/lib/navigation/Pagination";
 // import { Card, CardContent } from "@/components/ui/card";
 // import {
@@ -58,6 +59,7 @@ import {  UserSquare } from "lucide-react";
 // } from "@/helper";
 import CampaignChart from "@/components/organization-comps/campaign_chart";
 import CampaignSummary from "@/components/organization-comps/campaign_summary";
+import TabbedDataDisplay from "@/components/dashboard/tableData";
 // import TabbedDataDisplay from "@/components/dashboard/tableData";
 
 const Dashboard = () => {
@@ -77,6 +79,9 @@ const Dashboard = () => {
   // const router = useRouter();
 
   return (
+    <div>
+
+
     <div className="grid h-max grid-cols-5 gap-6 py-10">
       {/* Welcome section */}
       <div className="col-span-5 flex items-center justify-between">
@@ -206,7 +211,8 @@ const Dashboard = () => {
       {/* RECENT RESPONSES */}
 
       {/* TABLE */}
-      {/* <TabbedDataDisplay /> */}
+    </div>
+      <TabbedDataDisplay />
     </div>
   );
 };

@@ -21,10 +21,11 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
+  // SheetTrigger,
 } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { BsThreeDots } from "react-icons/bs";
+import ReportCardGrid from "@/components/report/reportCard";
 
 const Report = () => {
   const [date, setDate] = useState<Date>();
@@ -59,7 +60,7 @@ const Report = () => {
               <Button
                 variant={"outline"}
                 className={cn(
-                  "w-min justify-start gap-3 rounded-full px-3 pr-1 text-center text-sm font-normal",
+                  "w-min justify-start gap-3 rounded-full px-3 pr-1 text-center text-sm font-normal"
                 )}
               >
                 {date ? format(date, "PPP") : <span>Pick date</span>}
@@ -80,7 +81,7 @@ const Report = () => {
         </div>
 
         {/* REPORT LISTS */}
-        <div className="mt-8 grid grid-cols-3 gap-6">
+        {/* <div className="mt-8 grid grid-cols-3 gap-6">
           {currentPageData.map((report, index) => {
             return (
               <div
@@ -110,7 +111,14 @@ const Report = () => {
               </div>
             );
           })}
-        </div>
+        </div> */}
+
+        <ReportCardGrid
+          reports={currentPageData}
+          isLoading={false}
+          onReportClick={handleOpenReport}
+          columns={1}
+        />
 
         <div>
           {" "}
@@ -248,7 +256,7 @@ interface IReport {
   date: string;
 }
 
-const myReports = [
+export const myReports = [
   {
     title: "Report title goes here",
     description:

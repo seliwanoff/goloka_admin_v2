@@ -1,14 +1,13 @@
 "use client";
-import SettingsWeb from "@/components/settings-comp/tab-comps/desktop_settings";
-import MobileSettings from "@/components/settings-comp/tab-comps/mobile_settings";
 
 const SettingsPage = () => {
   return (
     <>
+      hello there
       {/* DESKTOP */}
-      <SettingsWeb />
+      {/* <SettingsWeb /> */}
       {/* MOBILE */}
-      <MobileSettings />
+      {/* <MobileSettings /> */}
     </>
   );
 };

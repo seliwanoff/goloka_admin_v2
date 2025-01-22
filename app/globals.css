@@ -37,7 +37,7 @@
 
   .dark {
     --background: 0 0% 3.9%;
-    --foreground: 0 0% 31% 1;
+    --foreground: 0 0% 98%;
     --card: 0 0% 3.9%;
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 3.9%;
@@ -110,5 +110,14 @@
 
   .wrapper {
     @apply w-full px-4 md:px-8 lg:px-20;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card } from "@/components/ui/card";
+// import { Card } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -8,48 +8,84 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+// import {  Search } from "lucide-react";
+import { Danger, More, Eye } from "iconsax-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import Pagination from "../lib/navigation/Pagination";
-import Image from "next/image";
+import ReportCardGrid from "../report/reportCard";
+import { myReports } from "@/app/(system)/dashboard/report/page";
 
-type Tab = {
-  id: string;
+interface Tab {
+  id: "campaigns" | "contributors" | "organizations" | "reports";
   label: string;
-};
+}
 
-type TableRowData = {
+interface TableData {
+  id: string;
   name: string;
   email: string;
   phone: string;
   date: string;
-  status: "Active" | "Deactivate" | "Pending";
-};
+  status: "Active" | "Deactivate" | "Deleted";
+}
 
-type ReportData = {
+interface Campaign {
   title: string;
-  description: string;
-  author: string;
-  authorImage: string;
+  organizer: string;
+  locations: string[];
   date: string;
+  status: "Pending" | "Accepted" | "Rejected" | "Reviewed";
+
+
+}
+
+const ActionPopover = ({ onView, onDeactivate }) => {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button className="focus:outline-none">
+          <More size="22" color="#000" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-40 p-0" sideOffset={5} align="end">
+        <div className="flex flex-col text-sm">
+          <button
+            onClick={onView}
+            className="flex items-center gap-2 w-full px-4 py-2.5 hover:bg-gray-50 transition-colors text-left"
+          >
+            <Eye size="20" color="#000" /> View Profile
+          </button>
+          <button
+            onClick={onDeactivate}
+            className="flex items-center gap-2 w-full px-4 py-2.5 hover:bg-gray-50 transition-colors text-left text-[#dc1e1e]"
+          >
+            <Danger size="20" color="#dc1e1e" /> Deactivate
+          </button>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
 };
 
 const TabNav: React.FC<{
   tabs: Tab[];
-  activeTab: string;
-  onTabChange: (id: string) => void;
+  activeTab: Tab["id"];
+  onTabChange: (id: Tab["id"]) => void;
 }> = ({ tabs, activeTab, onTabChange }) => (
-  <div className="mb-6 flex gap-4 bg-gray-100 p-4 rounded-lg">
+  <div className="flex gap-2 rounded-full bg-[#F1F1F1] p-3">
     {tabs.map((tab) => (
       <button
         key={tab.id}
         onClick={() => onTabChange(tab.id)}
         className={cn(
           "px-6 py-2 rounded-full",
-          activeTab === tab.id ? "bg-blue-600 text-white" : "text-gray-600"
+          activeTab === tab.id ? "bg-blue-600 text-white" : "text-[#828282]"
         )}
       >
         {tab.label}
@@ -58,7 +94,121 @@ const TabNav: React.FC<{
   </div>
 );
 
-const DataTable: React.FC<{ data: TableRowData[] }> = ({ data }) => (
+const campaigns: Campaign[] = [
+  {
+    title: "Agriculture & Food Security",
+    organizer: "Muhammad Jamiu",
+    locations: ["Lagos", "Kwara", "Abuja"],
+    date: "Tue 28th June - 9:30 AM",
+    status: "Pending",
+  },
+  {
+    title: "Agriculture & Food Security",
+    organizer: "Muhammad Jamiu",
+    locations: ["Lagos", "Kwara", "Abuja"],
+    date: "Tue 28th June - 9:30 AM",
+    status: "Accepted",
+  },
+  {
+    title: "Agriculture & Food Security",
+    organizer: "Muhammad Jamiu",
+    locations: ["Lagos", "Kwara", "Abuja"],
+    date: "Tue 28th June - 9:30 AM",
+    status: "Rejected",
+  },
+  {
+    title: "Agriculture & Food Security",
+    organizer: "Muhammad Jamiu",
+    locations: ["Lagos", "Kwara", "Abuja"],
+    date: "Tue 28th June - 9:30 AM",
+    status: "Reviewed",
+  },
+];
+
+const mockTableData: TableData[] = Array.from({ length: 5 }, (_, i) => ({
+  id: `${i + 1}`,
+  name: "Mohh_Jumah Lekan",
+  email: "jimohjamiu@gmail.com",
+  phone: "08082116547",
+  date: "Tue 28th June",
+  status: i % 3 === 0 ? "Active" : i % 3 === 1 ? "Deactivate" : "Deleted",
+}));
+
+const CampaignTable: React.FC = () => {
+  const getStatusStyle = (status: Campaign["status"]): string => {
+    const styles = {
+      Pending: "text-orange-500 bg-orange-50 border-orange-200",
+      Accepted: "text-green-500 bg-green-50 border-green-200",
+      Rejected: "text-red-500 bg-red-50 border-red-200",
+      Reviewed: "text-purple-500 bg-purple-50 border-purple-200",
+    };
+    return styles[status];
+  };
+
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Campaign title</TableHead>
+          <TableHead>Organisation</TableHead>
+          <TableHead>Locations</TableHead>
+          <TableHead>Date submitted</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead></TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {campaigns.map((campaign, index) => (
+          <TableRow key={index}>
+            <TableCell>{campaign.title}</TableCell>
+            <TableCell>
+              <div className="flex items-center gap-2">
+                <Avatar className="w-8 h-8">
+                  {/* <img src="/api/placeholder/32/32" alt={campaign.organizer} /> */}
+                  <AvatarImage
+                    src="https://github.com/shadcn.png"
+                    alt={campaign.organizer}
+                  />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <span>{campaign.organizer}</span>
+              </div>
+            </TableCell>
+            <TableCell>
+              <div className="flex gap-2">
+                {campaign.locations.map((location, idx) => (
+                  <span
+                    key={idx}
+                    className="px-2 py-1 bg-gray-100 rounded-lg text-sm"
+                  >
+                    {location}
+                  </span>
+                ))}
+              </div>
+            </TableCell>
+            <TableCell>{campaign.date}</TableCell>
+            <TableCell>
+              <span
+                className={`px-4 py-1 rounded-full text-sm border ${getStatusStyle(
+                  campaign.status
+                )}`}
+              >
+                {campaign.status}
+              </span>
+            </TableCell>
+            <TableCell>
+              <button className="p-2 hover:bg-gray-100 rounded-full">
+                <Eye size="20" color="#000" />
+              </button>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+};
+
+const DataTable: React.FC<{ data: TableData[] }> = ({ data }) => (
   <Table>
     <TableHeader>
       <TableRow>
@@ -71,8 +221,8 @@ const DataTable: React.FC<{ data: TableRowData[] }> = ({ data }) => (
       </TableRow>
     </TableHeader>
     <TableBody>
-      {data.map((item, index) => (
-        <TableRow key={index}>
+      {data.map((item) => (
+        <TableRow key={item.id}>
           <TableCell>{item.name}</TableCell>
           <TableCell>{item.email}</TableCell>
           <TableCell>{item.phone}</TableCell>
@@ -92,7 +242,23 @@ const DataTable: React.FC<{ data: TableRowData[] }> = ({ data }) => (
             </span>
           </TableCell>
           <TableCell>
-            <button className="p-2">⋮</button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="focus:outline-none">
+                  <More size="20" color="#000"/>
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-40 p-0">
+                <div className="flex flex-col text-sm">
+                  <button className="flex items-center gap-2 w-full px-4 py-2.5 hover:bg-gray-50 transition-colors text-left">
+                    <Eye size="20" color="#000" /> View Profile
+                  </button>
+                  <button className="flex items-center gap-2 w-full px-4 py-2.5 hover:bg-gray-50 transition-colors text-left text-[#f01313]">
+                    <Danger size="20" color="#f01313" /> Deactivate
+                  </button>
+                </div>
+              </PopoverContent>
+            </Popover>
           </TableCell>
         </TableRow>
       ))}
@@ -100,32 +266,8 @@ const DataTable: React.FC<{ data: TableRowData[] }> = ({ data }) => (
   </Table>
 );
 
-const ReportCards: React.FC<{ reports: ReportData[] }> = ({ reports }) => (
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-    {reports.map((report, index) => (
-      <Card key={index} className="p-4">
-        <h3 className="text-lg font-semibold mb-2">{report.title}</h3>
-        <p className="text-gray-600 mb-4">{report.description}</p>
-        <div className="flex items-center gap-3">
-          <Image
-            src={report.authorImage}
-            alt=""
-            className="w-8 h-8 rounded-full"
-          />
-          <div>
-            <p className="font-medium">{report.author}</p>
-            <p className="text-sm text-gray-500">{report.date}</p>
-          </div>
-        </div>
-      </Card>
-    ))}
-  </div>
-);
-
 const TabbedDataDisplay: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>("campaigns");
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
+  const [activeTab, setActiveTab] = useState<Tab["id"]>("campaigns");
 
   const tabs: Tab[] = [
     { id: "campaigns", label: "Recent Campaigns" },
@@ -134,58 +276,29 @@ const TabbedDataDisplay: React.FC = () => {
     { id: "reports", label: "Recent Reports" },
   ];
 
-  const tableData: TableRowData[] = Array.from({ length: 10 }, (_, i) => ({
-    name: `Name ${i + 1}`,
-    email: `email${i + 1}@example.com`,
-    phone: `+123456789${i + 1}`,
-    date: `2025-01-${i + 10}`,
-    status: i % 2 === 0 ? "Active" : "Deactivate",
-  }));
-
-  const reportData: ReportData[] = Array.from({ length: 6 }, (_, i) => ({
-    title: `Report Title ${i + 1}`,
-    description: `Description for report ${i + 1}`,
-    author: `Author ${i + 1}`,
-    authorImage: `https://via.placeholder.com/150`,
-    date: `2025-01-${i + 5}`,
-  }));
-
   return (
-    <div className="w-full p-6">
-      <div className="flex justify-between items-center mb-6">
+    <div className="w-full p-6 bg-white rounded-3xl">
+      <div className="mb-6 flex items-center justify-between">
         <TabNav tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
         <Button variant="link" className="text-blue-600">
           See all
         </Button>
       </div>
 
-      <div className="mb-6">
-        <div className="flex justify-between gap-4">
-          <div className="relative w-[300px]">
-            <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
-              size={18}
-            />
-            <Input placeholder="Search..." className="pl-10 rounded-full" />
-          </div>
-        </div>
-      </div>
-
       {activeTab === "reports" ? (
-        <ReportCards reports={reportData} />
+        <ReportCardGrid
+          reports={myReports}
+          isLoading={false}
+          onReportClick={() => {}}
+          columns={1}
+        />
+      ) : activeTab === "campaigns" ? (
+        <CampaignTable />
       ) : (
-        <DataTable data={tableData} />
+        <DataTable data={mockTableData} />
       )}
 
-      <div className="mt-6">
-        <Pagination
-          totalItems={320}
-          currentPage={currentPage}
-          pageSize={pageSize}
-          onPageChange={setCurrentPage}
-          onRowSizeChange={setPageSize}
-        />
-      </div>
+      <div className="mt-6">{/* Pagination component can be added here */}</div>
     </div>
   );
 };
