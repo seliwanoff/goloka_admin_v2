@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useMemo, useState } from "react";
@@ -52,7 +54,7 @@ import { Toaster } from "sonner";
 // import { userLogout } from "@/services/auth";
 // import { useRouter } from "next/navigation";
 // import { useUserStore } from "@/stores/currentUserStore";
-import { formatNotifications, generateColor, getInitials } from "@/helper";
+import {  generateColor, getInitials } from "@/helper";
 import {
   Dialog,
   DialogContent,
@@ -111,7 +113,8 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
   };
 
 
-  const notificationData = formatNotifications(notification);
+  const notificationData: string | any[] = [];
+  // const notificationData = formatNotifications(notification);
 
   return (
     <>

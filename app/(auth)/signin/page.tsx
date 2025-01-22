@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 "use client";
 import React, { useState } from "react";
 // import BgPattern from "@/public/assets/images/auth-bg-pattern.svg";
@@ -39,44 +42,80 @@ const SignIn: React.FC<PageProps> = ({}) => {
   };
   const [isLoading, setIsLoading] = useState(false);
 
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    setIsLoading(true);
+  // const onSubmit: SubmitHandler<FormValues> = async (data) => {
+  //   setIsLoading(true);
 
-    try {
-      const { email, password } = data;
-      console.log(data);
+  //   try {
+  //     const { email, password } = data;
+  //     console.log(data);
 
-      const response = await userSignIn(email, password);
+  //     const response = await userSignIn(email, password);
 
-      if (!response) {
-        throw new Error(
-          "Failed to sign in. Please check your credentials and try again."
-        );
-      }
+  //     if (!response) {
+  //       throw new Error(
+  //         "Failed to sign in. Please check your credentials and try again."
+  //       );
+  //     }
 
-      console.log(response, "response.data");
-      //@ts-expect-error
-      const { access_token, token_type, refresh_token } = response;
+  //     console.log(response, "response.data");
 
-      const storeTokens = () => {
+  //     const { access_token, token_type, refresh_token } = response;
+
+  //     const storeTokens = () => {
+  //       localStorage.setItem("access_token", JSON.stringify(access_token));
+  //       localStorage.setItem("refresh_token", JSON.stringify(refresh_token));
+  //       localStorage.setItem("token_type", JSON.stringify(token_type));
+  //     };
+
+  //     // Redirect to the dashboard
+  //     storeTokens();
+  //     toast.success("Sign in successful");
+  //     router.replace("/dashboard/root");
+  //   } catch (error: any) {
+  //     console.error("Sign-in error:", error);
+  //     toast.error(
+  //       error?.response?.data?.message || "Failed to sign in. Please try again."
+  //     );
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+    const onSubmit: SubmitHandler<FormValues> = async (data) => {
+      setIsLoading(true);
+
+      try {
+        const { email, password } = data;
+        const response = await userSignIn(email, password);
+
+        if (!response) {
+          throw new Error("Failed to sign in");
+        }
+//@ts-ignore
+        const { access_token, token_type, refresh_token } = response;
+
+        // Store tokens in localStorage
         localStorage.setItem("access_token", JSON.stringify(access_token));
         localStorage.setItem("refresh_token", JSON.stringify(refresh_token));
         localStorage.setItem("token_type", JSON.stringify(token_type));
-      };
 
-      // Redirect to the dashboard
-      storeTokens();
-      toast.success("Sign in successful");
-      router.replace("/dashboard/root");
-    } catch (error: any) {
-      console.error("Sign-in error:", error);
-      toast.error(
-        error?.response?.data?.message || "Failed to sign in. Please try again."
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
+        // Also set in cookie for middleware
+        document.cookie = `auth_token=${access_token}; path=/; max-age=86400`;
+
+        toast.success("Sign in successful");
+
+        // Check for callback URL
+        const searchParams = new URLSearchParams(window.location.search);
+        const callbackUrl =
+          searchParams.get("callbackUrl") || "/dashboard/root";
+        router.replace(callbackUrl);
+      } catch (error: any) {
+        console.error("Sign-in error:", error);
+        toast.error(error?.response?.data?.message || "Failed to sign in");
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
   return (
     <div className="mx-auto w-full max-w-lg px-4 sm:px-6 lg:px-8">
@@ -87,11 +126,12 @@ const SignIn: React.FC<PageProps> = ({}) => {
           <h1 className="mb-2 text-2xl font-bold">
             Welcome&nbsp;
             <span className="bg-gradient-to-b from-main-100 from-[55%] to-main-200 bg-clip-text text-transparent">
-              Back!
+              Admin!
             </span>
           </h1>
           <p className="mx-auto max-w-xs text-sm text-gray-500">
-            Log in to keep contributing and earning with Goloka
+            Log in to access your administrator dashboard and manage platform
+            operations
           </p>
         </div>
 

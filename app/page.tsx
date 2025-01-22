@@ -1,7 +1,7 @@
 // import Image from "next/image";
 // import Thumb from "@/public/assets/images/thumb.svg";
 // import Link from "next/link";
-import SignIn from "./(auth)/signin/page";
+// import SignIn from "./(auth)/signin/page";
 
 export default function Home() {
   return (
@@ -58,5 +58,8 @@ export default function Home() {
     //   </main>
     // </div>
     // <><SignIn/></>
+
+    <>
+    <span>hekko</span></>
   );
 }

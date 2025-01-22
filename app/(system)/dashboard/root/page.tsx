@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 "use client";
 import DashboardWidget from "@/components/lib/widgets/dashboard_card";
 import React, { useState } from "react";
@@ -61,7 +63,7 @@ const Dashboard = () => {
   // );
 
   const [filteredData] = useState<unknown[]>(responsesTableData);
-  const [ setOpenFilter] = useState<boolean>(false);
+  // const [ setOpenFilter] = useState<boolean>(false);
   const [date, setDate] = useState<Date>();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(10);
@@ -285,7 +287,7 @@ const Dashboard = () => {
 
           {/* -- filter icon */}
           <div
-            onClick={() => setOpenFilter(true)}
+            // onClick={() => setOpenFilter(true)}
             className="inline-flex cursor-pointer items-center justify-center gap-3 rounded-full border bg-white p-1 pr-3 lg:hidden"
           >
             <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F8F8]">

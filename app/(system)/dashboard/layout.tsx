@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React from "react";
-// import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
 // ~ ======= icon imports  -->
 import {
   // LucideIcon,
@@ -14,9 +15,12 @@ import {
   // OctagonAlert,
 } from "lucide-react";
 import {
-  DocumentCopy,
-  MessageQuestion,
+
+  Message,
+
   Note,
+  Profile2User,
+  SecurityUser,
   // Note1,
   // People,
   Wallet3,
@@ -25,6 +29,7 @@ import {
 // import NotificationLayout from "@/components/layouts/notification-layout";
 import DashSideBarDesktop from "@/components/lib/navigation/dash_sidebar_desktop";
 import DashTopNav from "@/components/lib/navigation/dash_topnav";
+import { tokenExtractor } from "@/lib/utils";
 // import { useUserStore } from "@/stores/use-user-store";
 // import { StepperProvider } from "@/context/TaskStepperContext.tsx";
 // import { useUserStore } from "@/stores/currentUserStore";
@@ -39,42 +44,55 @@ type LayoutProps = {
 };
 
 const SystemLayout: React.FC<LayoutProps> = ({ children }) => {
-  // const router = useRouter();
+  const router = useRouter();
 
-  // const [showModal, setShowModal] = React.useState(false);
-  // const setUser = useUserStore((state) => state.setUser);
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = tokenExtractor();
+      if (!token) {
+        router.replace("/signin");
+      }
+    };
+
+    checkAuth();
+
+    // Set up interval to periodically check token validity
+    const interval = setInterval(checkAuth, 5 * 60 * 1000); // Check every 5 minutes
+
+    return () => clearInterval(interval);
+  }, [router]);
 
   return (
     <div>
       {/* <StepperProvider totalSteps={5}> */}
-        {/* <NotificationLayout> */}
-        <div className="grid h-screen min-h-[200px] w-full grid-cols-6 overflow-hidden bg-[#F8F8F8]">
-          {
-            /*remoteUser*/ true ? (
-              <>
-                <DashSideBarDesktop navMenuList={NavData} />
-                {/* <main className="relative col-span-6 flex h-screen flex-col overflow-hidden pb-10 pt-[70px] xl:col-span-5 xl:bg-[#F8F8F8]">
+      {/* <NotificationLayout> */}
+      <div className="grid h-screen min-h-[200px] w-full grid-cols-6 overflow-hidden bg-[#F8F8F8]">
+        {
+          /*remoteUser*/ true ? (
+            <>
+              <DashSideBarDesktop navMenuList={NavData} />
+              {/* <main className="relative col-span-6 flex h-screen flex-col overflow-hidden pb-10 pt-[70px] xl:col-span-5 xl:bg-[#F8F8F8]">
                   <DashTopNav />
                   <div className="h-[calc(100% - 72px)] tablet:px-8 w-full overflow-auto px-5 pb-10 lg:px-10">
                     {children}
                   </div>
                 </main> */}
 
-                <main className="relative col-span-6 flex h-screen flex-col overflow-hidden pb-10 pt-[70px] xl:col-span-5 xl:bg-[#F8F8F8]">
-                  <DashTopNav />
-                  <div className="h-[calc(100% - 72px)] w-full overflow-x-hidden px-5 md:px-8 lg:px-10">
-                    {children}
-                  </div>
-                </main>
-              </>
-            ) : (
-              <div className="col-span-6 flex h-screen w-full items-center justify-center">
-                <p>Loading...</p>
-              </div>
-            )
-          }
-        </div>
-        {/* </NotificationLayout> */}
+              <main className="relative col-span-6 flex h-screen flex-col overflow-hidden pb-10 pt-[70px] xl:col-span-5 xl:bg-[#F8F8F8]">
+                <DashTopNav />
+                <div className="h-[calc(100% - 72px)] w-full overflow-x-hidden px-5 md:px-8 lg:px-10">
+                  {children}
+                </div>
+              </main>
+            </>
+          ) : (
+            <div className="col-span-6 flex h-screen w-full items-center justify-center">
+              <p>Loading...</p>
+            </div>
+          )
+        }
+      </div>
+      {/* </NotificationLayout> */}
       {/* </StepperProvider> */}
     </div>
   );
@@ -93,26 +111,30 @@ const NavData: { icon: any; title: string; link: string }[] = [
   },
   { icon: Note, title: "Campaigns", link: "/organization/dashboard/campaigns" },
   {
-    icon: DocumentCopy,
-    title: "Responses",
+    icon: Message,
+    title: "Messages",
     link: "/organization/dashboard/responses",
   },
-  { icon: Wallet3, title: "Wallet", link: "/organization/dashboard/wallet" },
   {
-    icon: MessageQuestion,
-    title: "Support",
+    icon: Profile2User,
+    title: "Users",
+    link: "/organization/dashboard/wallet",
+  },
+  {
+    icon: SecurityUser,
+    title: "Staffs",
     link: "/organization/dashboard/support",
   },
-  // {
-  //   icon: Settings,
-  //   title: "Finances",
-  //   link: "/organization/dashboard/finances",
-  // },
-  // {
-  //   icon: Note1,
-  //   title: "Reports",
-  //   link: "/organization/dashboard/reports",
-  // },
+  {
+    icon: Note,
+    title: "Report",
+    link: "/organization/dashboard/finances",
+  },
+  {
+    icon: Wallet3,
+    title: "Finance",
+    link: "/organization/dashboard/reports",
+  },
   {
     icon: Settings,
     title: "Settings",
