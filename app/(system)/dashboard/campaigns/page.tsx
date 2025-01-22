@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -16,7 +18,7 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
+  // SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -50,7 +52,7 @@ const renderTable = (tab: string, tdata: any[]) => {
 };
 
 const Page = () => {
-  const [openFilter, setOpenFilter] = useState<boolean>(false);
+  // const [ setOpenFilter] = useState<boolean>(false);
   const [filteredData, setFilteredData] = useState<any[]>(campaignList);
   const [activeTab, setActiveTab] = useState("campaigns");
   const [date, setDate] = useState<Date>();
@@ -211,7 +213,7 @@ const Page = () => {
 
               {/* -- filter icon */}
               <div
-                onClick={() => setOpenFilter(true)}
+                // onClick={() => setOpenFilter(true)}
                 className="inline-flex cursor-pointer items-center justify-center gap-3 rounded-full border bg-white p-1 pr-3 lg:hidden"
               >
                 <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F8F8]">

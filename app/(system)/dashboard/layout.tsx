@@ -15,9 +15,7 @@ import {
   // OctagonAlert,
 } from "lucide-react";
 import {
-
   Message,
-
   Note,
   Profile2User,
   SecurityUser,
@@ -107,37 +105,37 @@ const NavData: { icon: any; title: string; link: string }[] = [
   {
     icon: LayoutGrid,
     title: "Dashboard",
-    link: "/organization/dashboard/root",
+    link: "/dashboard/root",
   },
-  { icon: Note, title: "Campaigns", link: "/organization/dashboard/campaigns" },
+  { icon: Note, title: "Campaigns", link: "/dashboard/campaigns" },
   {
     icon: Message,
     title: "Messages",
-    link: "/organization/dashboard/responses",
+    link: "/dashboard/message",
   },
   {
     icon: Profile2User,
     title: "Users",
-    link: "/organization/dashboard/wallet",
+    link: "/dashboard/users",
   },
   {
     icon: SecurityUser,
     title: "Staffs",
-    link: "/organization/dashboard/support",
+    link: "/dashboard/staffs",
   },
   {
     icon: Note,
     title: "Report",
-    link: "/organization/dashboard/finances",
+    link: "/dashboard/report",
   },
   {
     icon: Wallet3,
     title: "Finance",
-    link: "/organization/dashboard/reports",
+    link: "/dashboard/finance",
   },
   {
     icon: Settings,
     title: "Settings",
-    link: "/organization/dashboard/settings",
+    link: "/dashboard/settings",
   },
 ];
