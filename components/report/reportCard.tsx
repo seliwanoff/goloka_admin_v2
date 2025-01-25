@@ -112,14 +112,10 @@ const ReportCardGrid: React.FC<ReportCardGridProps> = ({
               </p>
               <div className="flex items-center gap-2">
                 <div className="relative h-8 w-8 overflow-hidden rounded-full">
-
-
-                            <Image
-                                
+                  <Image
                     src={report.author?.photo}
                     alt={report.author?.name}
                     className="h-8 w-8 rounded-full"
-
                   />
                 </div>
                 <div>

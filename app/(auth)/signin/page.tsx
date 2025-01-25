@@ -94,6 +94,10 @@ const SignIn: React.FC<PageProps> = ({}) => {
 //@ts-ignore
         const { access_token, token_type, refresh_token } = response;
 
+        console.log(access_token, "access_token");
+        console.log(refresh_token, "refresh_token");
+        console.log(token_type, "token_type");
+
         // Store tokens in localStorage
         localStorage.setItem("access_token", JSON.stringify(access_token));
         localStorage.setItem("refresh_token", JSON.stringify(refresh_token));

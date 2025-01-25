@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { useState } from "react";
 // import { Card } from "@/components/ui/card";
 import {
@@ -41,37 +42,35 @@ interface Campaign {
   locations: string[];
   date: string;
   status: "Pending" | "Accepted" | "Rejected" | "Reviewed";
-
-
 }
 
-const ActionPopover = ({ onView, onDeactivate }) => {
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <button className="focus:outline-none">
-          <More size="22" color="#000" />
-        </button>
-      </PopoverTrigger>
-      <PopoverContent className="w-40 p-0" sideOffset={5} align="end">
-        <div className="flex flex-col text-sm">
-          <button
-            onClick={onView}
-            className="flex items-center gap-2 w-full px-4 py-2.5 hover:bg-gray-50 transition-colors text-left"
-          >
-            <Eye size="20" color="#000" /> View Profile
-          </button>
-          <button
-            onClick={onDeactivate}
-            className="flex items-center gap-2 w-full px-4 py-2.5 hover:bg-gray-50 transition-colors text-left text-[#dc1e1e]"
-          >
-            <Danger size="20" color="#dc1e1e" /> Deactivate
-          </button>
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
-};
+// const ActionPopover = ({ onView, onDeactivate }) => {
+//   return (
+//     <Popover>
+//       <PopoverTrigger asChild>
+//         <button className="focus:outline-none">
+//           <More size="22" color="#000" />
+//         </button>
+//       </PopoverTrigger>
+//       <PopoverContent className="w-40 p-0" sideOffset={5} align="end">
+//         <div className="flex flex-col text-sm">
+//           <button
+//             onClick={onView}
+//             className="flex items-center gap-2 w-full px-4 py-2.5 hover:bg-gray-50 transition-colors text-left"
+//           >
+//             <Eye size="20" color="#000" /> View Profile
+//           </button>
+//           <button
+//             onClick={onDeactivate}
+//             className="flex items-center gap-2 w-full px-4 py-2.5 hover:bg-gray-50 transition-colors text-left text-[#dc1e1e]"
+//           >
+//             <Danger size="20" color="#dc1e1e" /> Deactivate
+//           </button>
+//         </div>
+//       </PopoverContent>
+//     </Popover>
+//   );
+// };
 
 const TabNav: React.FC<{
   tabs: Tab[];
@@ -245,7 +244,7 @@ const DataTable: React.FC<{ data: TableData[] }> = ({ data }) => (
             <Popover>
               <PopoverTrigger asChild>
                 <button className="focus:outline-none">
-                  <More size="20" color="#000"/>
+                  <More size="20" color="#000" />
                 </button>
               </PopoverTrigger>
               <PopoverContent className="w-40 p-0">
@@ -287,6 +286,7 @@ const TabbedDataDisplay: React.FC = () => {
 
       {activeTab === "reports" ? (
         <ReportCardGrid
+          //@ts-ignore
           reports={myReports}
           isLoading={false}
           onReportClick={() => {}}
