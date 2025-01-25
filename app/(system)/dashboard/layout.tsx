@@ -44,6 +44,17 @@ type LayoutProps = {
 const SystemLayout: React.FC<LayoutProps> = ({ children }) => {
   const router = useRouter();
 
+  //  const {
+  //    data: currentUser,
+  //    isLoading,
+  //    error,
+  //    refetch,
+  //  } = useQuery({
+  //    queryKey: ["Get current remote user"],
+  //    queryFn: getCurrentUser,
+  //    retry: 1, // Only retry once before considering it a failure
+  //  });
+
   useEffect(() => {
     const checkAuth = () => {
       const token = tokenExtractor();

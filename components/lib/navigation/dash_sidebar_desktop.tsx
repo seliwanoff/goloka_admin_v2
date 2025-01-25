@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -9,15 +10,14 @@ import { classMerge, cn } from "@/lib/utils";
 import Goloka from "@/public/assets/images/goloka-full-logo.svg";
 import { usePathname } from "next/navigation";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import {
-  // DocumentCopy,
-  // MessageQuestion,
-  // Note,
-  // People,
-  // Wallet3,
-  // Import,
-  // ArchiveMinus,
-} from "iconsax-react";
+import // DocumentCopy,
+// MessageQuestion,
+// Note,
+// People,
+// Wallet3,
+// Import,
+// ArchiveMinus,
+"iconsax-react";
 
 // ~ ======= icon imports  -->
 import {
@@ -39,6 +39,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useRemoteUserStore } from "@/stores/remoteUser";
 // import { SheetHeader, SheetTitle } from "@/components/ui/sheet";
 // import { userLogout } from "@/services/auth";
 
@@ -47,9 +48,9 @@ type ComponentProps = {
 };
 
 const DashSideBarDesktop: React.FC<ComponentProps> = ({ navMenuList }) => {
+
   const pathname = usePathname();
   // const router = useRouter();
-
 
   // userLogout;
 
@@ -83,14 +84,14 @@ const DashSideBarDesktop: React.FC<ComponentProps> = ({ navMenuList }) => {
               "transit flex w-full flex-row items-center justify-start gap-3 rounded-full px-4 py-2",
               pathname.includes(nav_item.link)
                 ? "bg-main-100 text-white"
-                : "bg-white font-medium text-gray-500 ring-gray-100 hover:bg-gradient-to-br hover:from-gray-50/20 hover:via-gray-100/80 hover:to-gray-50/20 hover:text-gray-800 hover:ring-1",
+                : "bg-white font-medium text-gray-500 ring-gray-100 hover:bg-gradient-to-br hover:from-gray-50/20 hover:via-gray-100/80 hover:to-gray-50/20 hover:text-gray-800 hover:ring-1"
             )}
           >
             <nav_item.icon size={20} color="currentColor" strokeWidth={1.5} />
             <p
               className={cn(
                 "",
-                pathname.includes(nav_item.link) && "text-white",
+                pathname.includes(nav_item.link) && "text-white"
               )}
             >
               {nav_item.title}
@@ -101,7 +102,7 @@ const DashSideBarDesktop: React.FC<ComponentProps> = ({ navMenuList }) => {
         <Dialog>
           <DialogTrigger
             className={classMerge(
-              "transit text-alert-error flex w-full flex-row items-center justify-start gap-3 rounded-full px-4 py-2 font-bold text-[#D92D20] ring-rose-100 hover:bg-gradient-to-br hover:from-rose-50/20 hover:via-rose-50 hover:to-rose-50/20 hover:ring-1",
+              "transit text-alert-error flex w-full flex-row items-center justify-start gap-3 rounded-full px-4 py-2 font-bold text-[#D92D20] ring-rose-100 hover:bg-gradient-to-br hover:from-rose-50/20 hover:via-rose-50 hover:to-rose-50/20 hover:ring-1"
             )}
           >
             <LogOut size={20} strokeWidth={1.5} />
@@ -154,4 +155,3 @@ const DashSideBarDesktop: React.FC<ComponentProps> = ({ navMenuList }) => {
 };
 
 export default DashSideBarDesktop;
-

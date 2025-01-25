@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
@@ -61,20 +62,27 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useRemoteUserStore } from "@/stores/remoteUser";
+import { useUserStore } from "@/stores/currentUserStore";
 // import { getNotifications } from "@/services/response";
 
 type ComponentProps = {};
 
-const data = {
-  profile_img: "",
-  first_name: "",
-  last_name: "",
-  account_type: "",
-};
+// const data = {
+//   profile_img: "",
+//   first_name: "",
+//   last_name: "",
+//   account_type: "",
+// };
 
 const DashTopNav: React.FC<ComponentProps> = ({}) => {
   const [open, setOpen] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const { user } = useRemoteUserStore();
+   const currentUser = useUserStore((state) => state.user);
+
+  console.log(user, "user");
+  console.log(currentUser, "currentUser");
   // const router = useRouter();
   // const params = { per_page: 10, page: 1 };
 
@@ -88,7 +96,7 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
   //   queryKey: ["Get notification list"],
   //   queryFn: () => getNotifications(params),
   // });
-  const user = { data };
+  // const user = { data };
   // const currentUser = useUserStore((state) => state.user);
   // const logoutUser = useUserStore((state) => state.logoutUser);
   // const Name = currentUser?.name;
@@ -182,6 +190,7 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
           </Sheet>
 
           {/* user profile bubble */}
+          {/* @ts-ignore */}
           {user && user.data && (
             <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
               <PopoverTrigger className="transit shadow-1 cursor-pointer items-center justify-center gap-3 rounded-full hover:bg-gray-100 lg:flex lg:bg-[#F7F7F8] lg:px-5 lg:py-1.5">
@@ -204,7 +213,7 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
 
                 <div className="hidden flex-col items-start justify-center lg:flex">
                   <p className="text-base font-semibold">{FirstName}</p>
-                  {
+                  {/* {
 
                     {
                       INDIVIDUAL: (
@@ -217,8 +226,8 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
                           Organisation Account
                         </p>
                       ),
-                    }[user.data.account_type || "INDIVIDUAL"]
-                  }
+                    }[user.account_type || "INDIVIDUAL"]
+                  } */}
                 </div>
 
                 <ChevronDown strokeWidth={1.5} className="hidden lg:flex" />
@@ -235,7 +244,7 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
                     <p className="text-base font-semibold">
                       <p className="text-base font-semibold">{FirstName}</p>
                     </p>
-                    {
+                    {/* {
 
                       {
                         INDIVIDUAL: (
@@ -249,7 +258,7 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
                           </p>
                         ),
                       }[user.data.account_type || "INDIVIDUAL"]
-                    }
+                    } */}
                   </div>
                 </div>
                 <Separator className="my-4" />

@@ -81,45 +81,46 @@ const SignIn: React.FC<PageProps> = ({}) => {
   //   }
   // };
 
-    const onSubmit: SubmitHandler<FormValues> = async (data) => {
-      setIsLoading(true);
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    setIsLoading(true);
 
-      try {
-        const { email, password } = data;
-        const response = await userSignIn(email, password);
+    try {
+      const { email, password } = data;
+      const response = await userSignIn(email, password);
 
-        if (!response) {
-          throw new Error("Failed to sign in");
-        }
-//@ts-ignore
-        const { access_token, token_type, refresh_token } = response;
-
-        console.log(access_token, "access_token");
-        console.log(refresh_token, "refresh_token");
-        console.log(token_type, "token_type");
-
-        // Store tokens in localStorage
-        localStorage.setItem("access_token", JSON.stringify(access_token));
-        localStorage.setItem("refresh_token", JSON.stringify(refresh_token));
-        localStorage.setItem("token_type", JSON.stringify(token_type));
-
-        // Also set in cookie for middleware
-        document.cookie = `auth_token=${access_token}; path=/; max-age=86400`;
-
-        toast.success("Sign in successful");
-
-        // Check for callback URL
-        const searchParams = new URLSearchParams(window.location.search);
-        const callbackUrl =
-          searchParams.get("callbackUrl") || "/dashboard/root";
-        router.replace(callbackUrl);
-      } catch (error: any) {
-        console.error("Sign-in error:", error);
-        toast.error(error?.response?.data?.message || "Failed to sign in");
-      } finally {
-        setIsLoading(false);
+      if (!response) {
+        throw new Error("Failed to sign in");
       }
-    };
+
+      console.log(response, "jjju");
+      //@ts-ignore
+      const { access_token, token_type, refresh_token } = response;
+
+      console.log(access_token, "access_token");
+      console.log(refresh_token, "refresh_token");
+      console.log(token_type, "token_type");
+
+      // Store tokens in localStorage
+      localStorage.setItem("access_token", JSON.stringify(access_token));
+      localStorage.setItem("refresh_token", JSON.stringify(refresh_token));
+      localStorage.setItem("token_type", JSON.stringify(token_type));
+
+      // Also set in cookie for middleware
+      document.cookie = `auth_token=${access_token}; path=/; max-age=86400`;
+
+      toast.success("Sign in successful");
+
+      // Check for callback URL
+      const searchParams = new URLSearchParams(window.location.search);
+      const callbackUrl = searchParams.get("callbackUrl") || "/dashboard/root";
+      router.replace(callbackUrl);
+    } catch (error: any) {
+      console.error("Sign-in error:", error);
+      toast.error(error?.response?.data?.message || "Failed to sign in");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="mx-auto w-full max-w-lg px-4 sm:px-6 lg:px-8">
