@@ -28,7 +28,7 @@ import { Button } from "@/components/ui/button";
 //   TableHeader,
 //   TableRow,
 // } from "@/components/ui/table";
-import {  UserSquare } from "lucide-react";
+import { UserSquare } from "lucide-react";
 // import { Input } from "@/components/ui/input";
 // import {
 //   Popover,
@@ -61,11 +61,62 @@ import CampaignChart from "@/components/organization-comps/campaign_chart";
 import CampaignSummary from "@/components/organization-comps/campaign_summary";
 import TabbedDataDisplay from "@/components/dashboard/tableData";
 import { useUserStore } from "@/stores/currentUserStore";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import Calendar from "@/components/dashboard/calendar";
+import { useSearchParams } from "next/navigation";
 // import TabbedDataDisplay from "@/components/dashboard/tableData";
 
 const Dashboard = () => {
-   const currentUser = useUserStore((state) => state.user);
+  const searchParams = useSearchParams();
+  const currentUser = useUserStore((state) => state.user);
+
+  // Initialize with fiat as default currencyType
+   const [filters, setFilters] = useState<any>({
+     page: parseInt(searchParams?.get("page") || "1"),
+     pageSize: 15,
+     currencyType: searchParams?.get("currencyType") || "fiat",
+     search: searchParams?.get("search") || undefined,
+     date: searchParams?.get("date") || undefined,
+     time_filter: searchParams?.get("time_filter") || "7_days",
+     start_date: searchParams?.get("start_date") || undefined,
+     end_date: searchParams?.get("end_date") || undefined,
+     year: searchParams?.get("year") || undefined,
+   });
+
+  // Set initial URL params when component mounts
+  useEffect(() => {
+    const initialParams: Record<string, string> = {
+      page: filters.page.toString(),
+      pageSize: filters.pageSize.toString(),
+      currencyType: "fiat", // Always set initial currencyType to fiat
+    };
+
+    if (filters.search) initialParams.search = filters.search;
+    if (filters.date && filters.date !== "select")
+      initialParams.date = filters.date;
+
+    // setSearchParams(initialParams);
+  }, []); // Empty dependency array ensures this only runs once on mount
+
+  //  const updateSearchParams = useCallback(() => {
+  //    const updatedParams: Record<string, string> = {
+  //      page: filters.page.toString(),
+  //      pageSize: filters.pageSize.toString(),
+  //      currencyType: filters.currencyType,
+  //      time_filter: filters.time_filter,
+  //    };
+
+  //    // Add optional parameters
+  //    if (filters.search) updatedParams.search = filters.search;
+  //    if (filters.date && filters.date !== "select")
+  //      updatedParams.date = filters.date;
+  //    if (filters.start_date) updatedParams.start_date = filters.start_date;
+  //    if (filters.end_date) updatedParams.end_date = filters.end_date;
+  //    if (filters.year) updatedParams.year = filters.year;
+
+  //   //  setSearchParams(updatedParams);
+  //  }, [filters]);
+
   // const [filteredData, setFilteredData] = useState<Response[]>(
   //   responseData?.data?.filter(
   //     (item: { status: string }) => item?.status === activeTab,
@@ -114,7 +165,30 @@ const Dashboard = () => {
   //       return "Hello";
   //   }
   // };
+const handleDateChange = useCallback(
+    (filterType: string, from?: string, to?: string) => {
+      const params = new URLSearchParams(searchParams);
 
+      // Update parameters
+      params.set('time_filter', filterType);
+      if (from) params.set('start_date', from);
+      if (to) params.set('end_date', to);
+
+      // Use router to push new URL
+      window.history.pushState(null, '', `?${params.toString()}`);
+
+      // Update local state
+      setFilters((prev: any) => ({
+        ...prev,
+        date: filterType !== "select" ? filterType : undefined,
+        time_filter: filterType,
+        start_date: from,
+        end_date: to,
+        page: 1,
+      }));
+    },
+    [searchParams]
+  );
   return (
     <div>
       <div className="grid h-max grid-cols-5 gap-6 py-10">
@@ -122,7 +196,7 @@ const Dashboard = () => {
         <div className="col-span-5 flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-semibold">
-             Hi &nbsp;
+              Hi &nbsp;
               <span className="text-main-100">{currentUser?.name} 👋</span> How
               is your {timeOfDay} going
             </h1>
@@ -138,7 +212,12 @@ const Dashboard = () => {
             Invite staff
           </Button>
         </div>
-
+        <div className="col-span-5 flex justify-end">
+          <Calendar
+            onDateChange={handleDateChange}
+            initialFilter={filters.date || ""}
+          />
+        </div>
         {/* Stats section */}
         <div className="no-scrollbar col-span-5 mt-4 w-full overflow-x-auto">
           <div className="col-span-5 flex w-max gap-4 lg:grid lg:w-full lg:grid-cols-4 xl:w-full">

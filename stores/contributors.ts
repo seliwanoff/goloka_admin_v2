@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import dayjs from "dayjs"; // Using dayjs for date formatting
-import { createUser } from "@/services/user"; // Ensure this service is correctly imported
+// import { createUser } from "@/services/user"; // Ensure this service is correctly imported
 import { useLoadingStore } from "./misc";
-import { createContributor } from "@/services/contributor";
+// import { createContributor } from "@/services/contributor";
 import { toast } from "sonner";
-import { IRemoteUser } from "@/types";
+import { IRemoteUser } from "./remoteUser";
+// import { IRemoteUser } from "@/types";
 
 interface UserInfo {
   birth_date: string;
@@ -72,9 +74,9 @@ export const useContributorStore = create<UserState>()(
         const { setLoading } = useLoadingStore.getState();
         setLoading(true);
         try {
-          const response = await createContributor(userInfo);
-          //@ts-ignore
-          toast(response?.message);
+          // const response = await createContributor(userInfo);
+
+          // toast(response?.message);
         } catch (error) {
           alert("Failed to submit user info:");
         } finally {
