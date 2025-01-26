@@ -11,7 +11,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
 import { Dot, Eye } from "lucide-react";
-import {  ClipboardText, Message, Note } from "iconsax-react";
+import { ClipboardText, Message, Note } from "iconsax-react";
 
 import Link from "next/link";
 
@@ -25,6 +25,7 @@ import { useRemoteUserStore } from "@/stores/remoteUser";
 import { getCampaignById } from "@/services/analytics";
 import { getStatusColor } from "@/helper";
 import { cn } from "@/lib/utils";
+import QuestionTable from "@/components/dashboard/questionTable";
 
 const SkeletonBox = ({ className }: { className?: string }) => (
   <div className={`animate-pulse bg-gray-300 ${className}`}></div>
@@ -364,7 +365,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
           {/* -- Tasks section */}
           {/* ####################################### */}
           <div className="col-span-5 mt-8">
-            <div className="mb-6 flex justify-between">
+            {/* <div className="mb-6 flex justify-between">
               <h3 className="text-lg font-semibold text-[#333]">
                 Related Tasks
               </h3>
@@ -375,19 +376,18 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
               >
                 See all
               </Link>
-            </div>
+            </div> */}
 
             {/* Task list */}
-            {/* <div className="grid gap-5 md:grid-cols-2 1xl:grid-cols-3 xl:grid-cols-3">
-                {tasks.map((task: any, index: number) => (
-                  <TaskCardWidget {...task} key={index} />
-                ))}
-              </div> */}
+            <div >
+              {/* @ts-ignore */}
+              <QuestionTable questions={task?.data?.questions} />
+            </div>
           </div>
 
           {/* MOBILE CTA */}
-          <div className="fixed bottom-0 left-0 z-10 flex w-full items-center justify-start space-x-2 bg-white p-5 md:hidden">
-            {/* @ts-ignore */}
+          {/* <div className="fixed bottom-0 left-0 z-10 flex w-full items-center justify-start space-x-2 bg-white p-5 md:hidden">
+
             {task?.data?.responses && task.data.responses.length > 0 && (
               <Button
                 onClick={onViewResponse}
@@ -399,7 +399,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
                 View
               </Button>
             )}
-          </div>
+          </div> */}
         </>
       </section>
     </>
