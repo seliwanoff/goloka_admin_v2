@@ -141,3 +141,32 @@ export const getAdminReports = async (params?: {
     return null;
   }
 };
+
+export const getAllCampaigns = async (params?: {
+  per_page?: number;
+  page?: number;
+  status?: string;
+  search?: string;
+  submitted_at?: Date;
+}): Promise<ServerResponseOrNull<any>> => {
+  try {
+    const queryParams = new URLSearchParams();
+
+    if (params?.per_page)
+      queryParams.set("per_page", params.per_page.toString());
+    if (params?.page) queryParams.set("page", params.page.toString());
+    if (params?.status) queryParams.set("status", params.status);
+    if (params?.search) queryParams.set("search", params.search);
+    if (params?.submitted_at)
+      queryParams.set("submitted_at", params.submitted_at.toISOString());
+
+    const queryString = queryParams.toString()
+      ? `?${queryParams.toString()}`
+      : "";
+
+    return await fetchData<ServerResponse<any>>(`campaigns${queryString}`);
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};

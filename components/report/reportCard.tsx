@@ -38,7 +38,7 @@ const ReportCardGrid: React.FC<ReportCardGridProps> = ({
   onReportClick,
   columns = 3,
   className = "",
-  renderCustomCard,
+  // renderCustomCard,
   emptyStateMessage = "No reports available",
   loadingCardsCount = 6,
 }) => {

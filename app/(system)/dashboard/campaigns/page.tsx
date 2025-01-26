@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
@@ -6,7 +7,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { chunkArray, cn } from "@/lib/utils";
 import { Eye, Note } from "iconsax-react";
 import React, { useEffect, useState } from "react";
-import { ChevronDown, Edit, Search } from "lucide-react";
+import { ChevronDown, Edit, MoreHorizontal, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Popover,
@@ -37,24 +38,24 @@ import {
 import { BsThreeDots } from "react-icons/bs";
 import Pagination from "@/components/lib/navigation/Pagination";
 import { getStatusText } from "@/helper";
+import { useQuery } from "@tanstack/react-query";
+import { getAllCampaigns, getRecentCampaigns } from "@/services/analytics";
+import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-const renderTable = (tab: string, tdata: any[]) => {
-  switch (tab.toLowerCase()) {
-    case "campaigns":
-      return <CampaignTable tdata={tdata} />;
-
-    case "campaign-groups":
-      return <CampaignGroupTable tdata={tdata} />;
-
-    default:
-      break;
-  }
+const renderTable = (tdata: any[]) => {
+  return <CampaignTable tdata={tdata} />;
 };
 
 const Page = () => {
   // const [ setOpenFilter] = useState<boolean>(false);
   const [filteredData, setFilteredData] = useState<any[]>(campaignList);
-  const [activeTab, setActiveTab] = useState("campaigns");
+  const [activeTab, setActiveTab] = useState("all");
   const [date, setDate] = useState<Date>();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(10);
@@ -62,10 +63,20 @@ const Page = () => {
   const currentPageData = pages[currentPage - 1] || [];
   const [activeStatus, setActiveStatus] = useState<string>("all");
 
+  const {
+    data: Campaigns,
+    error: campaignsError,
+    isLoading: isCampaignsLoading,
+  } = useQuery({
+    queryKey: ["recent-campaigns"],
+    queryFn: () => getAllCampaigns({ per_page: 10 }),
+    retry: 2,
+  });
+
   useEffect(() => {
     function filter(status: string) {
       return campaignList?.filter(
-        (item) => item?.status.toLowerCase() === status,
+        (item) => item?.status.toLowerCase() === status
       );
     }
 
@@ -95,14 +106,14 @@ const Page = () => {
     }
   }, [activeTab]);
 
-  console.log(activeTab, "Tabs");
+  console.log(Campaigns, "Campaigns");
   return (
     <section className="mt-5">
       {/* HEADING */}
       <div className="mb-8 flex items-center justify-between">
         <h2 className="text-xl font-semibold text-main-100">Campaigns</h2>
 
-        <div className="inline-flex items-center gap-2">
+        {/* <div className="inline-flex items-center gap-2">
           <Button
             variant="outline"
             className="rounded-[50px] border-main-100 text-main-100"
@@ -118,7 +129,7 @@ const Page = () => {
             </span>
             Create new campaign
           </Button>
-        </div>
+        </div> */}
       </div>
 
       {/* TABLE OPTIONS */}
@@ -138,60 +149,13 @@ const Page = () => {
               </div>
 
               <div className="hidden lg:flex lg:gap-4">
-                {/* Status */}
-
-                {activeTab !== "campaign-groups" ? (
-                  <Select value={activeStatus} onValueChange={setActiveStatus}>
-                    <SelectTrigger
-                      className={cn(
-                        "w-[110px] rounded-full focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0",
-                      )}
-                    >
-                      <SelectValue placeholder="Status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem value="all">All</SelectItem>
-                        <SelectItem value="draft">Draft</SelectItem>
-                        <SelectItem value="running">Running</SelectItem>
-                        <SelectItem value="completed">Completed</SelectItem>
-                        <SelectItem value="archived">Archived</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                ) : (
-                  <></>
-                )}
-
-                {/* NUMBER */}
-                <Popover>
-                  <PopoverTrigger className="rounded-full border px-3">
-                    <div className="inline-flex items-center gap-2">
-                      <span className="text-sm">No of question</span>{" "}
-                      <ChevronDown className="h-4 w-4 opacity-50" />
-                    </div>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[200px]">
-                    <Label htmlFor="number" className="mb-3 inline-block">
-                      Input number
-                    </Label>
-                    <Input
-                      name="number"
-                      id="number"
-                      type="tel"
-                      className="form-input w-full appearance-none rounded-lg border border-[#d9dec0] px-4 py-6 placeholder:text-[#828282] focus:border-0 focus:outline-none focus-visible:ring-0"
-                      placeholder="0"
-                    />
-                  </PopoverContent>
-                </Popover>
-
                 {/* DATE */}
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant={"outline"}
                       className={cn(
-                        "w-min justify-start gap-3 rounded-full px-3 pr-1 text-center text-sm font-normal",
+                        "w-min justify-start gap-3 rounded-full px-3 pr-1 text-center text-sm font-normal"
                       )}
                     >
                       {date ? format(date, "PPP") : <span>Select date</span>}
@@ -232,7 +196,7 @@ const Page = () => {
               >
                 <TabsList
                   className={cn(
-                    "w-full justify-start rounded-full bg-[#F1F1F1] px-1 py-6 sm:w-auto md:justify-center",
+                    "w-full justify-start rounded-full bg-[#F1F1F1] px-1 py-6 sm:w-auto md:justify-center"
                   )}
                 >
                   {tabs.map((tab: any, index: number) => (
@@ -240,7 +204,7 @@ const Page = () => {
                       value={tab?.value}
                       key={index}
                       className={cn(
-                        "flex-grow rounded-full py-2.5 text-sm font-normal data-[state=active]:bg-blue-700 data-[state=active]:text-white sm:flex-grow-0",
+                        "flex-grow rounded-full py-2.5 text-sm font-normal data-[state=active]:bg-blue-700 data-[state=active]:text-white sm:flex-grow-0"
                       )}
                     >
                       {tab.label}
@@ -253,7 +217,7 @@ const Page = () => {
         </div>
 
         {/* TABLE DATA */}
-        <div className="">{renderTable(activeTab, currentPageData)}</div>
+        <div className="">{renderTable(Campaigns?.data)}</div>
 
         {/* Pagination */}
         <div className="mt-6">
@@ -285,38 +249,86 @@ const getStatusColor = (status: string) => {
       return "bg-gray-500/5 border-gray-500 text-gray-500";
   }
 };
+const getTypeColor = (type: string) => {
+  switch (type.toLowerCase()) {
+    case "survey":
+      return "bg-blue-100 text-blue-800";
+    case "pinpoint":
+      return "bg-green-100 text-green-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
+};
 
 const CampaignTable = ({ tdata }: { tdata: any[] }) => {
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Campaign Title</TableHead>
-          <TableHead className="">Campaign Group</TableHead>
-          <TableHead className="table-cell">Locations</TableHead>
-          <TableHead className="">Responses</TableHead>
-          <TableHead className=" ">Last updated </TableHead>
-          <TableHead className="">Status</TableHead>
-          <TableHead className=""></TableHead>
+          <TableHead>Campaign ID</TableHead>
+          <TableHead>Title</TableHead>
+          <TableHead>Type</TableHead>
+          <TableHead>Description</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead className="text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {tdata?.map((data, index) => (
-          <TableRow key={index}>
-            <TableCell>{data?.title}</TableCell>
-            <TableCell className="">{data?.group}</TableCell>
-            <TableCell className="table-cell">
-              {data?.locations?.join(", ")}
+        {tdata?.map((campaign, index) => (
+          // <TableRow key={index}>
+          //   <TableCell>{data?.title}</TableCell>
+          //   <TableCell className="">{data?.group}</TableCell>
+          //   <TableCell className="table-cell">
+          //     {data?.locations?.join(", ")}
+          //   </TableCell>
+          //   <TableCell className="">{data?.title}</TableCell>
+          //   <TableCell className=" ">{data?.lastUpdated}</TableCell>
+          //   <TableCell className="">
+          //     <StatusPill status={data?.status} />
+          //   </TableCell>
+          //   <TableCell className="">
+          //     <span className="cursor-pointer">
+          //       <BsThreeDots />
+          //     </span>
+          //   </TableCell>
+          // </TableRow>
+
+          <TableRow key={campaign.id}>
+            <TableCell className="font-medium">{campaign.unique_id}</TableCell>
+            <TableCell>{campaign.title}</TableCell>
+            <TableCell>
+              <Badge className={`${getTypeColor(campaign.type)} capitalize`}>
+                {campaign.type}
+              </Badge>
             </TableCell>
-            <TableCell className="">{data?.title}</TableCell>
-            <TableCell className=" ">{data?.lastUpdated}</TableCell>
-            <TableCell className="">
-              <StatusPill status={data?.status} />
+            <TableCell className="max-w-xs truncate">
+              {campaign.description}
             </TableCell>
-            <TableCell className="">
-              <span className="cursor-pointer">
-                <BsThreeDots />
-              </span>
+            <TableCell>
+              <Badge
+                variant="outline"
+                className={
+                  campaign.status === "active"
+                    ? "text-green-600 border-green-600"
+                    : "text-gray-600 border-gray-600"
+                }
+              >
+                {campaign.status || "Unknown"}
+              </Badge>
+            </TableCell>
+            <TableCell className="text-right">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="hover:bg-gray-100 p-2 rounded-full">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem className="cursor-pointer">
+                    <Eye className="mr-2 h-4 w-4" /> View Details
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </TableCell>
           </TableRow>
         ))}
@@ -325,42 +337,42 @@ const CampaignTable = ({ tdata }: { tdata: any[] }) => {
   );
 };
 
-const CampaignGroupTable = ({ tdata }: { tdata: any[] }) => {
-  return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Group Title</TableHead>
-          <TableHead className="">Description</TableHead>
-          <TableHead className="table-cell">Total Campaign</TableHead>
-          <TableHead className=" ">Last updated </TableHead>
-          <TableHead className="">Action</TableHead>
-          <TableHead className=""></TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {tdata?.map((data, index) => (
-          <TableRow key={index}>
-            <TableCell>{data?.title}</TableCell>
-            <TableCell className="">{data?.description}</TableCell>
-            <TableCell className="">{data?.totalCampaign}</TableCell>
-            <TableCell className=" ">{data?.lastUpdated}</TableCell>
-            <TableCell className="">
-              <span className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-main-100/5 p-2 px-2.5 text-sm text-main-100">
-                <Eye size={20} /> View
-              </span>
-            </TableCell>
-            <TableCell className="">
-              <span className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#F8F8F8] p-2 px-2.5 text-sm text-[#4F4F4F]">
-                <Edit size={20} /> Edit
-              </span>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  );
-};
+// const CampaignGroupTable = ({ tdata }: { tdata: any[] }) => {
+//   return (
+//     <Table>
+//       <TableHeader>
+//         <TableRow>
+//           <TableHead>Group Title</TableHead>
+//           <TableHead className="">Description</TableHead>
+//           <TableHead className="table-cell">Total Campaign</TableHead>
+//           <TableHead className=" ">Last updated </TableHead>
+//           <TableHead className="">Action</TableHead>
+//           <TableHead className=""></TableHead>
+//         </TableRow>
+//       </TableHeader>
+//       <TableBody>
+//         {tdata?.map((data, index) => (
+//           <TableRow key={index}>
+//             <TableCell>{data?.title}</TableCell>
+//             <TableCell className="">{data?.description}</TableCell>
+//             <TableCell className="">{data?.totalCampaign}</TableCell>
+//             <TableCell className=" ">{data?.lastUpdated}</TableCell>
+//             <TableCell className="">
+//               <span className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-main-100/5 p-2 px-2.5 text-sm text-main-100">
+//                 <Eye size={20} /> View
+//               </span>
+//             </TableCell>
+//             <TableCell className="">
+//               <span className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#F8F8F8] p-2 px-2.5 text-sm text-[#4F4F4F]">
+//                 <Edit size={20} /> Edit
+//               </span>
+//             </TableCell>
+//           </TableRow>
+//         ))}
+//       </TableBody>
+//     </Table>
+//   );
+// };
 
 export type Status = "draft" | "running" | "completed" | "archived";
 
@@ -374,7 +386,7 @@ const StatusPill: React.FC<StatusPillProps> = ({ status }) => {
     <span
       className={cn(
         "inline-flex w-20 items-center justify-center rounded-full border px-2 py-1 text-xs font-medium",
-        getStatusColor(status),
+        getStatusColor(status)
       )}
     >
       {getStatusText(status)}
@@ -384,12 +396,24 @@ const StatusPill: React.FC<StatusPillProps> = ({ status }) => {
 
 const tabs = [
   {
-    label: "Campaigns",
-    value: "campaigns",
+    label: "All",
+    value: "all",
   },
   {
-    label: "Campaign Groups",
-    value: "campaign-groups",
+    label: "Pending",
+    value: "pending",
+  },
+  {
+    label: "Review",
+    value: "review",
+  },
+  {
+    label: "Accepted",
+    value: "accepted",
+  },
+  {
+    label: "Rejected",
+    value: "rejected",
   },
 ];
 
