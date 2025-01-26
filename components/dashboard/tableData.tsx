@@ -29,14 +29,13 @@ interface Tab {
   label: string;
 }
 
-
-
 interface Campaign {
   title: string;
   organizer: string;
-  locations: string[];
+  imageUrl: string;
+  locations: any[];
   date: string;
-  status: "Pending" | "Accepted" | "Rejected" | "Reviewed";
+  status: "Pending" | "Accepted" | "Rejected" | "Reviewed" | "Running";
 }
 
 const TabNav: React.FC<{
@@ -60,121 +59,7 @@ const TabNav: React.FC<{
   </div>
 );
 
-// const campaigns: Campaign[] = [
-//   {
-//     title: "Agriculture & Food Security",
-//     organizer: "Muhammad Jamiu",
-//     locations: ["Lagos", "Kwara", "Abuja"],
-//     date: "Tue 28th June - 9:30 AM",
-//     status: "Pending",
-//   },
-//   {
-//     title: "Agriculture & Food Security",
-//     organizer: "Muhammad Jamiu",
-//     locations: ["Lagos", "Kwara", "Abuja"],
-//     date: "Tue 28th June - 9:30 AM",
-//     status: "Accepted",
-//   },
-//   {
-//     title: "Agriculture & Food Security",
-//     organizer: "Muhammad Jamiu",
-//     locations: ["Lagos", "Kwara", "Abuja"],
-//     date: "Tue 28th June - 9:30 AM",
-//     status: "Rejected",
-//   },
-//   {
-//     title: "Agriculture & Food Security",
-//     organizer: "Muhammad Jamiu",
-//     locations: ["Lagos", "Kwara", "Abuja"],
-//     date: "Tue 28th June - 9:30 AM",
-//     status: "Reviewed",
-//   },
-// ];
-
-// const mockTableData: TableData[] = Array.from({ length: 5 }, (_, i) => ({
-//   id: `${i + 1}`,
-//   name: "Mohh_Jumah Lekan",
-//   email: "jimohjamiu@gmail.com",
-//   phone: "08082116547",
-//   date: "Tue 28th June",
-//   status: i % 3 === 0 ? "Active" : i % 3 === 1 ? "Deactivate" : "Deleted",
-// }));
-
-// const CampaignTable: React.FC = () => {
-//   const getStatusStyle = (status: Campaign["status"]): string => {
-//     const styles = {
-//       Pending: "text-orange-500 bg-orange-50 border-orange-200",
-//       Accepted: "text-green-500 bg-green-50 border-green-200",
-//       Rejected: "text-red-500 bg-red-50 border-red-200",
-//       Reviewed: "text-purple-500 bg-purple-50 border-purple-200",
-//     };
-//     return styles[status];
-//   };
-
-//   return (
-//     <Table>
-//       <TableHeader>
-//         <TableRow>
-//           <TableHead>Campaign title</TableHead>
-//           <TableHead>Organisation</TableHead>
-//           <TableHead>Locations</TableHead>
-//           <TableHead>Date submitted</TableHead>
-//           <TableHead>Status</TableHead>
-//           <TableHead></TableHead>
-//         </TableRow>
-//       </TableHeader>
-//       <TableBody>
-//         {campaigns.map((campaign, index) => (
-//           <TableRow key={index}>
-//             <TableCell>{campaign.title}</TableCell>
-//             <TableCell>
-//               <div className="flex items-center gap-2">
-//                 <Avatar className="w-8 h-8">
-//                   {/* <img src="/api/placeholder/32/32" alt={campaign.organizer} /> */}
-//                   <AvatarImage
-//                     src="https://github.com/shadcn.png"
-//                     alt={campaign.organizer}
-//                   />
-//                   <AvatarFallback>CN</AvatarFallback>
-//                 </Avatar>
-//                 <span>{campaign.organizer}</span>
-//               </div>
-//             </TableCell>
-//             <TableCell>
-//               <div className="flex gap-2">
-//                 {campaign.locations.map((location, idx) => (
-//                   <span
-//                     key={idx}
-//                     className="px-2 py-1 bg-gray-100 rounded-lg text-sm"
-//                   >
-//                     {location}
-//                   </span>
-//                 ))}
-//               </div>
-//             </TableCell>
-//             <TableCell>{campaign.date}</TableCell>
-//             <TableCell>
-//               <span
-//                 className={`px-4 py-1 rounded-full text-sm border ${getStatusStyle(
-//                   campaign.status
-//                 )}`}
-//               >
-//                 {campaign.status}
-//               </span>
-//             </TableCell>
-//             <TableCell>
-//               <button className="p-2 hover:bg-gray-100 rounded-full">
-//                 <Eye size="20" color="#000" />
-//               </button>
-//             </TableCell>
-//           </TableRow>
-//         ))}
-//       </TableBody>
-//     </Table>
-//   );
-// };
-
-const CampaignTable: React.FC<{
+export const CampaignTable: React.FC<{
   campaigns: Campaign[];
   // recentUsers: any[];
 }> = ({ campaigns }) => {
@@ -184,6 +69,7 @@ const CampaignTable: React.FC<{
       Accepted: "text-green-500 bg-green-50 border-green-200",
       Rejected: "text-red-500 bg-red-50 border-red-200",
       Reviewed: "text-purple-500 bg-purple-50 border-purple-200",
+      Running: "text-blue-500 bg-purple-50 border-blue-200",
     };
     return styles[status];
   };
@@ -208,26 +94,82 @@ const CampaignTable: React.FC<{
               <div className="flex items-center gap-2">
                 <Avatar className="w-8 h-8">
                   <AvatarImage
-                    src="https://github.com/shadcn.png"
+                    src={campaign?.imageUrl}
                     alt={campaign.organizer}
                   />
-                  <AvatarFallback>CN</AvatarFallback>
+                  <AvatarFallback>
+                    {(() => {
+                      if (!campaign?.organizer) {
+                        return null;
+                      }
+
+                      const nameParts = campaign.organizer.trim().split(" ");
+                      if (nameParts.length === 1) {
+                        return nameParts[0][0]?.toUpperCase();
+                      } else {
+                        return `${nameParts[0][0]}${
+                          nameParts[nameParts.length - 1][0]
+                        }`.toUpperCase();
+                      }
+                    })()}
+                  </AvatarFallback>
                 </Avatar>
                 <span>{campaign.organizer}</span>
               </div>
             </TableCell>
             <TableCell>
-              {/* <div className="flex gap-2">
-                {campaign.locations.map((location, idx) => (
-                  <span
-                    key={idx}
-                    className="px-2 py-1 bg-gray-100 rounded-lg text-sm"
-                  >
-                    {location}
-                  </span>
-                ))}
-              </div> */}
+              <div className="flex gap-2">
+                {campaign.locations?.map((locationGroup, idx) => {
+                  console.log(locationGroup, "locato"); // Logs each array of locations
+                  return (
+                    <div key={idx} className="flex flex-wrap gap-2">
+                      {locationGroup.map(
+                        (
+                          location: {
+                            label:
+                              | string
+                              | number
+                              | bigint
+                              | boolean
+                              | React.ReactElement<
+                                  unknown,
+                                  string | React.JSXElementConstructor<any>
+                                >
+                              | Iterable<React.ReactNode>
+                              | React.ReactPortal
+                              | Promise<
+                                  | string
+                                  | number
+                                  | bigint
+                                  | boolean
+                                  | React.ReactPortal
+                                  | React.ReactElement<
+                                      unknown,
+                                      string | React.JSXElementConstructor<any>
+                                    >
+                                  | Iterable<React.ReactNode>
+                                  | null
+                                  | undefined
+                                >
+                              | null
+                              | undefined;
+                          },
+                          locIdx: React.Key | null | undefined
+                        ) => (
+                          <span
+                            key={locIdx}
+                            className="px-2 py-1 bg-gray-100 rounded-lg text-sm"
+                          >
+                            {location.label} {/* Display each state's label */}
+                          </span>
+                        )
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </TableCell>
+
             <TableCell>{campaign.date}</TableCell>
             <TableCell>
               <span
@@ -329,6 +271,7 @@ const TabbedDataDisplay: React.FC<{
     recentCampaigns?.map((campaign) => ({
       title: campaign.title,
       organizer: campaign.organization,
+      imageUrl: campaign.image_path[0],
       locations: campaign.locations ? [campaign.locations.states] : [],
       date: new Date(campaign.created_at).toLocaleDateString(),
       status: (campaign.status.charAt(0).toUpperCase() +

@@ -47,11 +47,21 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { AnyARecord } from "node:dns";
+import { CampaignTable } from "@/components/dashboard/tableData";
 
 const renderTable = (tdata: any[]) => {
-  return <CampaignTable tdata={tdata} />;
+  return <CampaignTable campaigns={tdata} />;
 };
 
+interface Campaign {
+  title: string;
+  organizer: string;
+  imageUrl: string;
+  locations: string[];
+  date: string;
+  status: "Pending" | "Accepted" | "Rejected" | "Reviewed" | "Running";
+}
 const Page = () => {
   // const [ setOpenFilter] = useState<boolean>(false);
   const [filteredData, setFilteredData] = useState<any[]>(campaignList);
@@ -105,6 +115,26 @@ const Page = () => {
       setFilteredData(campaignGroupList);
     }
   }, [activeTab]);
+
+  const transformedCampaigns =
+    Campaigns?.data?.map(
+      (campaign: {
+        title: any;
+        organization: any;
+        locations: { states: any };
+        created_at: string | number | Date;
+        status: string;
+        image_path: string;
+      }) => ({
+        title: campaign.title,
+        organizer: campaign.organization,
+        imageUrl: campaign.image_path[0],
+        locations: campaign.locations ? [campaign.locations.states] : [],
+        date: new Date(campaign.created_at).toLocaleDateString(),
+        status: (campaign.status.charAt(0).toUpperCase() +
+          campaign.status.slice(1)) as Campaign["status"],
+      })
+    ) || [];
 
   console.log(Campaigns, "Campaigns");
   return (
@@ -217,7 +247,7 @@ const Page = () => {
         </div>
 
         {/* TABLE DATA */}
-        <div className="">{renderTable(Campaigns?.data)}</div>
+        <div className="">{renderTable(transformedCampaigns)}</div>
 
         {/* Pagination */}
         <div className="mt-6">
@@ -260,119 +290,6 @@ const getTypeColor = (type: string) => {
   }
 };
 
-const CampaignTable = ({ tdata }: { tdata: any[] }) => {
-  return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Campaign ID</TableHead>
-          <TableHead>Title</TableHead>
-          <TableHead>Type</TableHead>
-          <TableHead>Description</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead className="text-right">Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {tdata?.map((campaign, index) => (
-          // <TableRow key={index}>
-          //   <TableCell>{data?.title}</TableCell>
-          //   <TableCell className="">{data?.group}</TableCell>
-          //   <TableCell className="table-cell">
-          //     {data?.locations?.join(", ")}
-          //   </TableCell>
-          //   <TableCell className="">{data?.title}</TableCell>
-          //   <TableCell className=" ">{data?.lastUpdated}</TableCell>
-          //   <TableCell className="">
-          //     <StatusPill status={data?.status} />
-          //   </TableCell>
-          //   <TableCell className="">
-          //     <span className="cursor-pointer">
-          //       <BsThreeDots />
-          //     </span>
-          //   </TableCell>
-          // </TableRow>
-
-          <TableRow key={campaign.id}>
-            <TableCell className="font-medium">{campaign.unique_id}</TableCell>
-            <TableCell>{campaign.title}</TableCell>
-            <TableCell>
-              <Badge className={`${getTypeColor(campaign.type)} capitalize`}>
-                {campaign.type}
-              </Badge>
-            </TableCell>
-            <TableCell className="max-w-xs truncate">
-              {campaign.description}
-            </TableCell>
-            <TableCell>
-              <Badge
-                variant="outline"
-                className={
-                  campaign.status === "active"
-                    ? "text-green-600 border-green-600"
-                    : "text-gray-600 border-gray-600"
-                }
-              >
-                {campaign.status || "Unknown"}
-              </Badge>
-            </TableCell>
-            <TableCell className="text-right">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="hover:bg-gray-100 p-2 rounded-full">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem className="cursor-pointer">
-                    <Eye className="mr-2 h-4 w-4" /> View Details
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  );
-};
-
-// const CampaignGroupTable = ({ tdata }: { tdata: any[] }) => {
-//   return (
-//     <Table>
-//       <TableHeader>
-//         <TableRow>
-//           <TableHead>Group Title</TableHead>
-//           <TableHead className="">Description</TableHead>
-//           <TableHead className="table-cell">Total Campaign</TableHead>
-//           <TableHead className=" ">Last updated </TableHead>
-//           <TableHead className="">Action</TableHead>
-//           <TableHead className=""></TableHead>
-//         </TableRow>
-//       </TableHeader>
-//       <TableBody>
-//         {tdata?.map((data, index) => (
-//           <TableRow key={index}>
-//             <TableCell>{data?.title}</TableCell>
-//             <TableCell className="">{data?.description}</TableCell>
-//             <TableCell className="">{data?.totalCampaign}</TableCell>
-//             <TableCell className=" ">{data?.lastUpdated}</TableCell>
-//             <TableCell className="">
-//               <span className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-main-100/5 p-2 px-2.5 text-sm text-main-100">
-//                 <Eye size={20} /> View
-//               </span>
-//             </TableCell>
-//             <TableCell className="">
-//               <span className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#F8F8F8] p-2 px-2.5 text-sm text-[#4F4F4F]">
-//                 <Edit size={20} /> Edit
-//               </span>
-//             </TableCell>
-//           </TableRow>
-//         ))}
-//       </TableBody>
-//     </Table>
-//   );
-// };
 
 export type Status = "draft" | "running" | "completed" | "archived";
 
