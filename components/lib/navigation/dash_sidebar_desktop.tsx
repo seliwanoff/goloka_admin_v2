@@ -8,7 +8,7 @@ import Link from "next/link";
 import { classMerge, cn } from "@/lib/utils";
 // import Logo from "@/public/assets/images/thumb.svg";
 import Goloka from "@/public/assets/images/goloka-full-logo.svg";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import // DocumentCopy,
 // MessageQuestion,
@@ -40,6 +40,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useRemoteUserStore } from "@/stores/remoteUser";
+import { userLogout } from "@/services/auth";
 // import { SheetHeader, SheetTitle } from "@/components/ui/sheet";
 // import { userLogout } from "@/services/auth";
 
@@ -50,19 +51,19 @@ type ComponentProps = {
 const DashSideBarDesktop: React.FC<ComponentProps> = ({ navMenuList }) => {
 
   const pathname = usePathname();
-  // const router = useRouter();
+  const router = useRouter();
 
   // userLogout;
 
   const initiateLogout = () => {
-    // try {
-    //   const res = userLogout();
-    //   console.log(res, "res");
-    //   localStorage.removeItem("whoami");
-    //   router.replace("/signin");
-    // } catch (error) {
-    //   console.log(error, "error");
-    // }
+    try {
+      const res = userLogout();
+      console.log(res, "res");
+      localStorage.removeItem("whoami");
+      router.replace("/signin");
+    } catch (error) {
+      console.log(error, "error");
+    }
   };
 
   return (

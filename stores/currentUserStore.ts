@@ -53,11 +53,8 @@ export const useUserStore = create<UserStore>()(
       setRefetchUser: (refetchFn) => set(() => ({ refetchUser: refetchFn })),
     }),
     {
-      name: "user-storage", // unique name
-      //@ts-ignore
-      storage: typeof window !== "undefined" ? localStorage : undefined,
-      // Optionally, you can specify which parts of the state to persist
-      //@ts-ignore
+      name: "user-storage",
+      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,

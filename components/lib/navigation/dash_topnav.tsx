@@ -53,9 +53,9 @@ import { ArrowLeft } from "iconsax-react";
 import { useMediaQuery } from "@react-hook/media-query";
 // import { Close } from "@radix-ui/react-dialog";
 import { Toaster } from "sonner";
-// import { userLogout } from "@/services/auth";
-// import { useRouter } from "next/navigation";
-// import { useUserStore } from "@/stores/currentUserStore";
+import { userLogout } from "@/services/auth";
+import { useRouter } from "next/navigation";
+import { useUserStore } from "@/stores/currentUserStore";
 import {  generateColor, getInitials } from "@/helper";
 import {
   Dialog,
@@ -64,7 +64,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useRemoteUserStore } from "@/stores/remoteUser";
-import { useUserStore } from "@/stores/currentUserStore";
+// import { useUserStore } from "@/stores/currentUserStore";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 // import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -87,7 +87,7 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
 
   console.log(user, "user");
   console.log(currentUser, "currentUser");
-  // const router = useRouter();
+  const router = useRouter();
   // const params = { per_page: 10, page: 1 };
 
   // const {
@@ -102,7 +102,7 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
   // });
   // const user = { data };
   // const currentUser = useUserStore((state) => state.user);
-  // const logoutUser = useUserStore((state) => state.logoutUser);
+  const logoutUser = useUserStore((state) => state.logoutUser);
   const Name = currentUser?.name;
   const FirstName =  "";
   const isMobile = useMediaQuery("(max-width: 640px)");
@@ -113,15 +113,15 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
   );
   // const initials = useMemo(() => getInitials(Name as string), [Name]);
   const initiateLogout = () => {
-    // try {
-    //   const res = userLogout();
-    //   console.log(res, "res");
-    //   localStorage.removeItem("whoami");
-    //   router.replace("/signin");
-    //   logoutUser();
-    // } catch (error) {
-    //   console.log(error, "error");
-    // }
+    try {
+      const res = userLogout();
+      console.log(res, "res");
+      localStorage.removeItem("whoami");
+      router.replace("/signin");
+      logoutUser();
+    } catch (error) {
+      console.log(error, "error");
+    }
   };
 
 
