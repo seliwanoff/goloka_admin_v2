@@ -29,14 +29,7 @@ interface Tab {
   label: string;
 }
 
-interface TableData {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  date: string;
-  status: "Active" | "Deactivate" | "Deleted";
-}
+
 
 interface Campaign {
   title: string;
@@ -98,14 +91,14 @@ const TabNav: React.FC<{
 //   },
 // ];
 
-const mockTableData: TableData[] = Array.from({ length: 5 }, (_, i) => ({
-  id: `${i + 1}`,
-  name: "Mohh_Jumah Lekan",
-  email: "jimohjamiu@gmail.com",
-  phone: "08082116547",
-  date: "Tue 28th June",
-  status: i % 3 === 0 ? "Active" : i % 3 === 1 ? "Deactivate" : "Deleted",
-}));
+// const mockTableData: TableData[] = Array.from({ length: 5 }, (_, i) => ({
+//   id: `${i + 1}`,
+//   name: "Mohh_Jumah Lekan",
+//   email: "jimohjamiu@gmail.com",
+//   phone: "08082116547",
+//   date: "Tue 28th June",
+//   status: i % 3 === 0 ? "Active" : i % 3 === 1 ? "Deactivate" : "Deleted",
+// }));
 
 // const CampaignTable: React.FC = () => {
 //   const getStatusStyle = (status: Campaign["status"]): string => {
@@ -181,7 +174,10 @@ const mockTableData: TableData[] = Array.from({ length: 5 }, (_, i) => ({
 //   );
 // };
 
-const CampaignTable: React.FC<{ campaigns: Campaign[] }> = ({ campaigns }) => {
+const CampaignTable: React.FC<{
+  campaigns: Campaign[];
+  // recentUsers: any[];
+}> = ({ campaigns }) => {
   const getStatusStyle = (status: Campaign["status"]): string => {
     const styles = {
       Pending: "text-orange-500 bg-orange-50 border-orange-200",
@@ -221,7 +217,7 @@ const CampaignTable: React.FC<{ campaigns: Campaign[] }> = ({ campaigns }) => {
               </div>
             </TableCell>
             <TableCell>
-              <div className="flex gap-2">
+              {/* <div className="flex gap-2">
                 {campaign.locations.map((location, idx) => (
                   <span
                     key={idx}
@@ -230,7 +226,7 @@ const CampaignTable: React.FC<{ campaigns: Campaign[] }> = ({ campaigns }) => {
                     {location}
                   </span>
                 ))}
-              </div>
+              </div> */}
             </TableCell>
             <TableCell>{campaign.date}</TableCell>
             <TableCell>
@@ -254,68 +250,72 @@ const CampaignTable: React.FC<{ campaigns: Campaign[] }> = ({ campaigns }) => {
   );
 };
 
-const DataTable: React.FC<{ data: TableData[] }> = ({ data }) => (
-  <Table>
-    <TableHeader>
-      <TableRow>
-        <TableHead>Name</TableHead>
-        <TableHead>Email</TableHead>
-        <TableHead>Phone number</TableHead>
-        <TableHead>Date joined</TableHead>
-        <TableHead>Status</TableHead>
-        <TableHead></TableHead>
-      </TableRow>
-    </TableHeader>
-    <TableBody>
-      {data.map((item) => (
-        <TableRow key={item.id}>
-          <TableCell>{item.name}</TableCell>
-          <TableCell>{item.email}</TableCell>
-          <TableCell>{item.phone}</TableCell>
-          <TableCell>{item.date}</TableCell>
-          <TableCell>
-            <span
-              className={cn(
-                "px-3 py-1 rounded-full text-sm",
-                item.status === "Active"
-                  ? "bg-green-100 text-green-700"
-                  : item.status === "Deactivate"
-                  ? "bg-orange-100 text-orange-700"
-                  : "bg-red-100 text-red-700"
-              )}
-            >
-              {item.status}
-            </span>
-          </TableCell>
-          <TableCell>
-            <Popover>
-              <PopoverTrigger asChild>
-                <button className="focus:outline-none">
-                  <More size="20" color="#000" />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent className="w-40 p-0">
-                <div className="flex flex-col text-sm">
-                  <button className="flex items-center gap-2 w-full px-4 py-2.5 hover:bg-gray-50 transition-colors text-left">
-                    <Eye size="20" color="#000" /> View Profile
-                  </button>
-                  <button className="flex items-center gap-2 w-full px-4 py-2.5 hover:bg-gray-50 transition-colors text-left text-[#f01313]">
-                    <Danger size="20" color="#f01313" /> Deactivate
-                  </button>
-                </div>
-              </PopoverContent>
-            </Popover>
-          </TableCell>
+const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
+  console.log(data, "hyh");
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Name</TableHead>
+          <TableHead>Email</TableHead>
+          <TableHead>Phone number</TableHead>
+          <TableHead>Date joined</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead></TableHead>
         </TableRow>
-      ))}
-    </TableBody>
-  </Table>
-);
+      </TableHeader>
+      <TableBody>
+        {data.map((item, i) => (
+          <TableRow key={item.name + i}>
+            <TableCell>{item.name}</TableCell>
+            <TableCell>{item.email}</TableCell>
+            <TableCell>{item.phone}</TableCell>
+            <TableCell>{item.date}</TableCell>
+            <TableCell>
+              <span
+                className={cn(
+                  "px-3 py-1 rounded-full text-sm",
+                  item.status === "Active"
+                    ? "bg-green-100 text-green-700"
+                    : item.status === "Deactivate"
+                    ? "bg-orange-100 text-orange-700"
+                    : "bg-red-100 text-red-700"
+                )}
+              >
+                {item.status}
+              </span>
+            </TableCell>
+            <TableCell>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="focus:outline-none">
+                    <More size="20" color="#000" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-40 p-0">
+                  <div className="flex flex-col text-sm">
+                    <button className="flex items-center gap-2 w-full px-4 py-2.5 hover:bg-gray-50 transition-colors text-left">
+                      <Eye size="20" color="#000" /> View Profile
+                    </button>
+                    <button className="flex items-center gap-2 w-full px-4 py-2.5 hover:bg-gray-50 transition-colors text-left text-[#f01313]">
+                      <Danger size="20" color="#f01313" /> Deactivate
+                    </button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+};
 
 const TabbedDataDisplay: React.FC<{
   recentCampaigns?: any[];
   isLoading?: boolean;
-}> = ({ recentCampaigns }) => {
+  recentUsers: any[];
+}> = ({ recentCampaigns, recentUsers }) => {
   const [activeTab, setActiveTab] = useState<Tab["id"]>("campaigns");
 
   const tabs: Tab[] = [
@@ -333,6 +333,15 @@ const TabbedDataDisplay: React.FC<{
       date: new Date(campaign.created_at).toLocaleDateString(),
       status: (campaign.status.charAt(0).toUpperCase() +
         campaign.status.slice(1)) as Campaign["status"],
+    })) || [];
+
+  const userData =
+    recentUsers?.map((recentUser) => ({
+      name: recentUser?.name,
+      email: recentUser?.email,
+      phone: recentUser?.tel,
+      date: recentUser?.created_at,
+      status: recentUser?.status,
     })) || [];
 
   return (
@@ -355,7 +364,7 @@ const TabbedDataDisplay: React.FC<{
       ) : activeTab === "campaigns" ? (
         <CampaignTable campaigns={transformedCampaigns} />
       ) : (
-        <DataTable data={mockTableData} />
+        <DataTable data={userData} />
       )}
 
       <div className="mt-6">{/* Pagination component can be added here */}</div>

@@ -331,6 +331,7 @@ const Dashboard = () => {
       <TabbedDataDisplay
         recentCampaigns={recentCampaigns?.data}
         isLoading={isCampaignsLoading}
+        recentUsers={recentUsers?.data}
       />
     </div>
   );
