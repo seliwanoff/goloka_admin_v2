@@ -181,11 +181,11 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
           <div className=" items-center justify-center space-x-2 flex">
             {/* @ts-ignore */}
 
-            <Button className="h-auto gap-3 rounded-full px-6 py-3 text-sm text-[#FF4C4C]  bg-[#FFEDED] hover:text-[#ed1d1d]">
+            <Button className="h-auto gap-3 rounded-full px-4 py-2 text-sm text-[#FF4C4C]  bg-[#FFEDED] hover:text-[#ed1d1d]">
               <span>X</span>
               Reject
             </Button>
-            <Button className="h-auto gap-3 rounded-full border border-main-100 bg-white px-6 py-3 text-sm text-main-100 ">
+            <Button className="h-auto gap-3 rounded-full border border-main-100 bg-white px-3 py-2 text-sm text-main-100 ">
               <span>
                 <Message size="20" color="#202fd7" />
               </span>
@@ -194,7 +194,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
 
             <Button
               disabled={isContributeDisabled()}
-              className="h-auto gap-3 rounded-full bg-main-100 px-10 py-3 text-sm shadow-lg shadow-blue-50"
+              className="h-auto gap-3 rounded-full bg-main-100 px-4 py-2 text-sm shadow-lg shadow-blue-50"
             >
               <span>
                 <ClipboardText size="20" color="#fff" />
