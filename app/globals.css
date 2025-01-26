@@ -8,6 +8,8 @@
 
 @layer base {
   :root {
+      --color-admin_fee: hsl(220, 90%, 55%);
+  --color-campaign_fee: hsl(340, 80%, 65%);
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;

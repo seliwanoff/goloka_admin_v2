@@ -1,62 +1,21 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+
 "use client";
-import DashboardWidget from "@/components/lib/widgets/dashboard_card";
-// import React, { useState } from "react";
 import {
-  // Calendar,
+
   ClipboardExport,
-  // DocumentUpload,
-  // Eye,
-  // Note,
+
   People,
   Profile2User,
   ProfileAdd,
-  // Setting4,
-  // TrendUp,
-  // Wallet3,
+
 } from "iconsax-react";
 import { Button } from "@/components/ui/button";
 
-// import Pagination from "@/components/lib/navigation/Pagination";
-// import { Card, CardContent } from "@/components/ui/card";
-// import {
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableHead,
-//   TableHeader,
-//   TableRow,
-// } from "@/components/ui/table";
 import { UserSquare } from "lucide-react";
-// import { Input } from "@/components/ui/input";
-// import {
-//   Popover,
-//   PopoverContent,
-//   PopoverTrigger,
-// } from "@/components/ui/popover";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectGroup,
-//   SelectItem,
-//   SelectLabel,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
-// import { Label } from "@/components/ui/label";
-// import { chunkArray} from "@/lib/utils";
-// import { format } from "date-fns";
-// import { Calendar as CalenderDate } from "@/components/ui/calendar";
-// import { responsesTableData } from "@/utils";
-// import { useRouter } from "next/navigation";
-// import {
-//   formatResponseDate,
-//   formatResponseTime,
-//   // getStatusColor,
-//   getStatusText,
-//   Status,
-// } from "@/helper";
+
 import CampaignChart from "@/components/organization-comps/campaign_chart";
 import CampaignSummary from "@/components/organization-comps/campaign_summary";
 import TabbedDataDisplay from "@/components/dashboard/tableData";
@@ -64,39 +23,85 @@ import { useUserStore } from "@/stores/currentUserStore";
 import { useCallback, useEffect, useState } from "react";
 import Calendar from "@/components/dashboard/calendar";
 import { useSearchParams } from "next/navigation";
+import { getDashboardChartStats, getWidgetData } from "@/services/analytics";
+import { useQuery } from "@tanstack/react-query";
+import { DashboardWidget } from "@/components/lib/widgets/dashboard_card";
 // import TabbedDataDisplay from "@/components/dashboard/tableData";
 
 const Dashboard = () => {
+  // Query for dashboard stats
+  // const {
+  //   data: stats,
+  //   error: statsError,
+  //   isError: isStatsError,
+  // } = useQuery({
+  //   queryKey: ["Get dashboard stats"],
+  //   queryFn: getWidgetData,
+  //   retry: 2, // Retry failed requests 2 times
+  // });
   const searchParams = useSearchParams();
   const currentUser = useUserStore((state) => state.user);
 
   // Initialize with fiat as default currencyType
-   const [filters, setFilters] = useState<any>({
-     page: parseInt(searchParams?.get("page") || "1"),
-     pageSize: 15,
-     currencyType: searchParams?.get("currencyType") || "fiat",
-     search: searchParams?.get("search") || undefined,
-     date: searchParams?.get("date") || undefined,
-     time_filter: searchParams?.get("time_filter") || "7_days",
-     start_date: searchParams?.get("start_date") || undefined,
-     end_date: searchParams?.get("end_date") || undefined,
-     year: searchParams?.get("year") || undefined,
-   });
+  const [filters, setFilters] = useState<any>({
+    page: parseInt(searchParams?.get("page") || "1"),
+    pageSize: 15,
+    currencyType: searchParams?.get("currencyType") || "fiat",
+    search: searchParams?.get("search") || undefined,
+    date: searchParams?.get("date") || undefined,
+    time_filter: searchParams?.get("time_filter") || "7_days",
+    start_date: searchParams?.get("start_date") || undefined,
+    end_date: searchParams?.get("end_date") || undefined,
+    year: searchParams?.get("year") || undefined,
+  });
 
+  // Fetch widget data with dynamic parameters
+  const {
+    data: widgetStats,
+    error: widgetError,
+    isLoading: isWidgetLoading,
+  } = useQuery({
+    queryKey: ["dashboard-widgets", filters.time_filter, filters.year],
+    queryFn: () =>
+      getWidgetData({
+        time_filter: filters.time_filter,
+        year: filters.year,
+        start_date: filters.start_date,
+        end_date: filters.end_date,
+      }),
+    retry: 2,
+  });
+
+  // Fetch dashboard chart stats
+  const {
+    data: chartStats,
+    error: chartError,
+    isLoading: isChartLoading,
+  } = useQuery({
+    queryKey: ["dashboard-chart", filters.time_filter, filters.year],
+    queryFn: () =>
+      getDashboardChartStats({
+        time_filter: filters.time_filter,
+        year: filters.year,
+        start_date: filters.start_date,
+        end_date: filters.end_date,
+      }),
+    retry: 2,
+  });
   // Set initial URL params when component mounts
-  useEffect(() => {
-    const initialParams: Record<string, string> = {
-      page: filters.page.toString(),
-      pageSize: filters.pageSize.toString(),
-      currencyType: "fiat", // Always set initial currencyType to fiat
-    };
+  // useEffect(() => {
+  //   const initialParams: Record<string, string> = {
+  //     page: filters.page.toString(),
+  //     pageSize: filters.pageSize.toString(),
+  //     currencyType: "fiat", // Always set initial currencyType to fiat
+  //   };
 
-    if (filters.search) initialParams.search = filters.search;
-    if (filters.date && filters.date !== "select")
-      initialParams.date = filters.date;
+  //   if (filters.search) initialParams.search = filters.search;
+  //   if (filters.date && filters.date !== "select")
+  //     initialParams.date = filters.date;
 
-    // setSearchParams(initialParams);
-  }, []); // Empty dependency array ensures this only runs once on mount
+  //   // setSearchParams(initialParams);
+  // }, []); // Empty dependency array ensures this only runs once on mount
 
   //  const updateSearchParams = useCallback(() => {
   //    const updatedParams: Record<string, string> = {
@@ -131,7 +136,8 @@ const Dashboard = () => {
   // const pages = chunkArray(filteredData, pageSize);
   // const currentPageData = pages[currentPage - 1] || [];
   // const router = useRouter();
-
+  console.log(widgetStats, "widgetStats");
+  console.log(chartStats, "chartStats");
   const [timeOfDay, setTimeOfDay] = useState<string>("day");
 
   useEffect(() => {
@@ -165,19 +171,14 @@ const Dashboard = () => {
   //       return "Hello";
   //   }
   // };
-const handleDateChange = useCallback(
+  const handleDateChange = useCallback(
     (filterType: string, from?: string, to?: string) => {
       const params = new URLSearchParams(searchParams);
+      params.set("time_filter", filterType);
+      if (from) params.set("start_date", from);
+      if (to) params.set("end_date", to);
+      window.history.pushState(null, "", `?${params.toString()}`);
 
-      // Update parameters
-      params.set('time_filter', filterType);
-      if (from) params.set('start_date', from);
-      if (to) params.set('end_date', to);
-
-      // Use router to push new URL
-      window.history.pushState(null, '', `?${params.toString()}`);
-
-      // Update local state
       setFilters((prev: any) => ({
         ...prev,
         date: filterType !== "select" ? filterType : undefined,
@@ -189,6 +190,150 @@ const handleDateChange = useCallback(
     },
     [searchParams]
   );
+
+  // Render widgets with dynamic data
+  // const renderWidgets = () => {
+  //   // Use loading or default states if data is not yet loaded
+  //   const totalUsers = widgetStats?.data?.total_users?.count || "200K";
+  //   const activeUsers = widgetStats?.data?.active_users?.count || "345K";
+  //   const totalOrgs = widgetStats?.data?.total_organizations || "127K";
+  //   const totalContributors =
+  //     widgetStats?.data?.total_contributors?.count || "4K";
+  //   const totalCampaigns = widgetStats?.data?.total_campaigns?.count;
+
+  //   return (
+  //     <>
+  //       <DashboardWidget
+  //         title="Total Users"
+  //         bg="bg-white bg-opacity-[12%]"
+  //         fg="text-white"
+  //         containerBg="bg-gradient-to-tr from-[#3365E3] to-[#1C387D]"
+  //         textColor="text-white"
+  //         icon={Profile2User}
+  //         value={totalUsers}
+  //         footer={
+  //           <span className="font-medium">{activeUsers} Presently active</span>
+  //         }
+  //         isAnalytics={false}
+  //         increase={true}
+  //         percents={40}
+  //       />
+
+  //       <DashboardWidget
+  //         title="Total organization"
+  //         bg="bg-[#FEC53D] bg-opacity-[12%]"
+  //         fg="text-[#FEC53D]"
+  //         icon={People}
+  //         value={totalOrgs}
+  //         footer="vs last month"
+  //         isAnalytics={true}
+  //         increase={true}
+  //         percents={40}
+  //       />
+
+  //       <DashboardWidget
+  //         title="Total Contributors"
+  //         bg="bg-main-100 bg-opacity-[12%]"
+  //         fg="text-main-100"
+  //         icon={UserSquare}
+  //         value={totalContributors}
+  //         footer="vs last month"
+  //         isAnalytics={true}
+  //         increase={true}
+  //         percents={40}
+  //       />
+
+  //       <DashboardWidget
+  //         title="Total Campaigns"
+  //         bg="bg-[#079455] bg-opacity-[12%]"
+  //         fg="text-[#079455]"
+  //         icon={ClipboardExport}
+  //         value={totalCampaigns}
+  //         footer="vs last month"
+  //         isAnalytics={true}
+  //         increase={false}
+  //         percents={40}
+  //       />
+  //     </>
+  //   );
+  // };
+
+const renderWidgets = () => {
+  // Check if data is loading
+  const isLoading = !widgetStats?.data;
+
+  // Extract data with optional chaining and default values
+  const totalUsers = widgetStats?.data?.users?.total ?? 0;
+  const activeUsers = widgetStats?.data?.users?.active ?? 0;
+  const totalOrgs = widgetStats?.data?.total_organizations?.count ?? 0;
+  const orgPercentIncrease =
+    widgetStats?.data?.total_organizations?.percentage_increase ?? 0;
+  const totalContributors = widgetStats?.data?.total_contributors?.count ?? 0;
+  const contributorsPercentIncrease =
+    widgetStats?.data?.total_contributors?.percentage_increase ?? 0;
+  const totalCampaigns = widgetStats?.data?.total_campaigns?.count ?? 0;
+  const campaignsPercentIncrease =
+    widgetStats?.data?.total_campaigns?.percentage_increase ?? 0;
+
+  return (
+    <>
+      <DashboardWidget
+        title="Total Users"
+        bg="bg-white bg-opacity-[12%]"
+        fg="text-white"
+        containerBg="bg-gradient-to-tr from-[#3365E3] to-[#1C387D]"
+        textColor="text-white"
+        icon={Profile2User}
+        value={totalUsers}
+        footer={
+          <span className="font-medium">{activeUsers} Presently active</span>
+        }
+        isAnalytics={false}
+        percentIncrease={null}
+        isLoading={isLoading}
+      />
+
+      <DashboardWidget
+        title="Total Organizations"
+        bg="bg-[#FEC53D] bg-opacity-[12%]"
+        fg="text-[#FEC53D]"
+        icon={People}
+        value={totalOrgs}
+        footer="vs last month"
+        isAnalytics={true}
+        increase={orgPercentIncrease > 0}
+        percentIncrease={Math.abs(orgPercentIncrease)}
+        isLoading={isLoading}
+      />
+
+      <DashboardWidget
+        title="Total Contributors"
+        bg="bg-main-100 bg-opacity-[12%]"
+        fg="text-main-100"
+        icon={UserSquare}
+        value={totalContributors}
+        footer="vs last month"
+        isAnalytics={true}
+        increase={contributorsPercentIncrease > 0}
+        percentIncrease={Math.abs(contributorsPercentIncrease)}
+        isLoading={isLoading}
+      />
+
+      <DashboardWidget
+        title="Total Campaigns"
+        bg="bg-[#079455] bg-opacity-[12%]"
+        fg="text-[#079455]"
+        icon={ClipboardExport}
+        value={totalCampaigns}
+        footer="vs last month"
+        isAnalytics={true}
+        increase={campaignsPercentIncrease > 0}
+        percentIncrease={Math.abs(campaignsPercentIncrease)}
+        isLoading={isLoading}
+      />
+    </>
+  );
+};
   return (
     <div>
       <div className="grid h-max grid-cols-5 gap-6 py-10">
@@ -221,59 +366,9 @@ const handleDateChange = useCallback(
         {/* Stats section */}
         <div className="no-scrollbar col-span-5 mt-4 w-full overflow-x-auto">
           <div className="col-span-5 flex w-max gap-4 lg:grid lg:w-full lg:grid-cols-4 xl:w-full">
-            <>
-              <DashboardWidget
-                title="Total Users"
-                bg="bg-white bg-opacity-[12%]"
-                fg="text-white"
-                containerBg="bg-gradient-to-tr from-[#3365E3] to-[#1C387D]"
-                textColor="text-white"
-                icon={Profile2User}
-                value={`200K`}
-                footer={
-                  <span className="font-medium">345k Presently active</span>
-                }
-                isAnalytics={false}
-                increase={true}
-                percents={40}
-              />
 
-              <DashboardWidget
-                title="Total organization"
-                bg="bg-[#FEC53D] bg-opacity-[12%]"
-                fg="text-[#FEC53D]"
-                icon={People}
-                value={"127K"}
-                footer="vs last month"
-                isAnalytics={true}
-                increase={true}
-                percents={40}
-              />
 
-              <DashboardWidget
-                title="Total Contributors"
-                bg="bg-main-100 bg-opacity-[12%]"
-                fg="text-main-100"
-                icon={UserSquare}
-                value={"4K"}
-                footer="vs last month"
-                isAnalytics={true}
-                increase={true}
-                percents={40}
-              />
-
-              <DashboardWidget
-                title="Total Campaigns"
-                bg="bg-[#079455] bg-opacity-[12%]"
-                fg="text-[#079455]"
-                icon={ClipboardExport}
-                value={"436K"}
-                footer="vs last month"
-                isAnalytics={true}
-                increase={false}
-                percents={40}
-              />
-            </>
+            {renderWidgets()}
           </div>
         </div>
 
@@ -287,7 +382,8 @@ const handleDateChange = useCallback(
             </div>
 
             <div className="flex flex-col items-center gap-10">
-              <CampaignChart />
+              {/* @ts-ignore */}
+              <CampaignChart chartStats={chartStats} />
 
               <div className="ml-auto mt-5 flex w-[90%] items-start justify-between gap-2 text-sm">
                 <div className="flex items-start gap-6">
@@ -297,7 +393,15 @@ const handleDateChange = useCallback(
                       <span className="text-sm text-[#828282]">
                         Total Revenue
                       </span>
-                      <p className="font-semibold text-[#333333]">54</p>
+                      <p className="font-semibold text-[#333333]">
+                        {chartStats?.data
+                          ?.reduce(
+                            (sum: any, item: { admin_fee: any }) =>
+                              sum + item.admin_fee,
+                            0
+                          )
+                          .toFixed(2) || "0.00"}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-start gap-2">
@@ -306,20 +410,24 @@ const handleDateChange = useCallback(
                       <span className="text-sm text-[#828282]">
                         Total Campaign
                       </span>
-                      <p className="font-semibold text-[#333333]">569</p>
+                      <p className="font-semibold text-[#333333]">
+                        {chartStats?.data
+                          ?.reduce(
+                            (sum: any, item: { campaign_fee: any }) =>
+                              sum + item.campaign_fee,
+                            0
+                          )
+                          .toFixed(2) || "0.00"}
+                      </p>
                     </div>
                   </div>
                 </div>
-                {/* <div className="text-right">
-                <p className="text-sm text-[#828282]">Amount spent</p>
-                <h4 className="font-semibold text-[#333333]">$2500</h4>
-              </div> */}
               </div>
             </div>
           </div>
-          <div className="rounded-2xl bg-white p-[14px]">
-            <h3 className="mb-10 text-base font-medium">Campaign summary</h3>
-            <CampaignSummary />
+          <div className="rounded-2xl bg-white ">
+            {/* <h3 className="mb-10 text-base font-medium">Campaign summary</h3> */}
+            <CampaignSummary widgetStats={widgetStats} />
           </div>
         </div>
         {/* RECENT RESPONSES */}

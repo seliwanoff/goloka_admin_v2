@@ -1,23 +1,49 @@
-import React, { ReactNode } from "react";
-import { ArrowDown, ArrowUp, LucideIcon } from "lucide-react";
-import { cn, classMerge } from "@/lib/utils"; // Ensure these utility functions are efficient
-import Link from "next/link";
+import React from "react";
+import { ArrowDown, ArrowUp } from "lucide-react";
+import { cn, classMerge } from "@/lib/utils";
 
-interface ComponentProps {
+// Loading Skeleton Component
+const WidgetSkeleton = () => {
+  return (
+    <div className="rounded-lg bg-gray-100 p-4 animate-pulse">
+      <div className="flex justify-between">
+        <div className="space-y-2">
+          <div className="h-4 bg-gray-300 rounded w-24"></div>
+          <div className="h-8 bg-gray-300 rounded w-36"></div>
+        </div>
+        <div className="h-12 w-12 bg-gray-300 rounded-full"></div>
+      </div>
+      <div className="mt-3 h-4 bg-gray-300 rounded w-40"></div>
+    </div>
+  );
+};
+
+interface DashboardWidgetProps {
   bg: string;
   fg: string;
-  footer: string | ReactNode;
+  footer: string | React.ReactNode;
   containerBg?: string;
-  icon: React.ElementType; // Explicitly typing the icon prop
-  value: string | number | null; // Allow value to be nullable
+  icon: React.ElementType;
+  value: string | number | null;
   title: string;
-  percents: number | null; // Allow percents to be nullable
+  percentIncrease: number | null;
   increase?: boolean;
   isAnalytics?: boolean;
   textColor?: string;
+  isLoading?: boolean;
 }
 
-const DashboardWidget: React.FC<ComponentProps> = ({ increase, ...props }) => {
+const DashboardWidget: React.FC<DashboardWidgetProps> = ({
+  isLoading = false,
+  percentIncrease,
+  increase,
+  ...props
+}) => {
+  // If loading, return skeleton
+  if (isLoading) {
+    return <WidgetSkeleton />;
+  }
+
   return (
     <div className={cn("rounded-lg bg-white p-4", props.containerBg)}>
       <div className="flex justify-between">
@@ -28,7 +54,7 @@ const DashboardWidget: React.FC<ComponentProps> = ({ increase, ...props }) => {
           <h3
             className={cn(
               "mt-3 text-2xl font-semibold text-[#333333]",
-              props.textColor,
+              props.textColor
             )}
           >
             {props.value !== null ? props.value : "0.00"}
@@ -39,25 +65,20 @@ const DashboardWidget: React.FC<ComponentProps> = ({ increase, ...props }) => {
             className={classMerge(
               "flex items-center justify-center rounded-full p-3",
               props.bg,
-              props.fg,
+              props.fg
             )}
           >
-            <props.icon
-              size={26}
-          
-              color="currentColor"
-              strokeWidth={1}
-            />
+            <props.icon size={26} color="currentColor" strokeWidth={1} />
           </span>
         </div>
       </div>
 
-      {props.isAnalytics && props.percents !== null ? (
+      {props.isAnalytics && percentIncrease !== null ? (
         <div className="mt-3 flex items-center gap-2 text-sm font-semibold">
           <p
             className={classMerge(
               "flex items-center gap-1 text-sm font-semibold",
-              increase ? "text-green-600" : "text-rose-600",
+              increase ? "text-green-600" : "text-rose-600"
             )}
           >
             {increase ? (
@@ -65,7 +86,7 @@ const DashboardWidget: React.FC<ComponentProps> = ({ increase, ...props }) => {
             ) : (
               <ArrowDown className="text-rose-600" size={16} />
             )}
-            <span>{props.percents}%</span>
+            <span>{percentIncrease}%</span>
           </p>
           <p className="text-sm font-medium text-gray-600">{props.footer}</p>
         </div>
@@ -78,4 +99,4 @@ const DashboardWidget: React.FC<ComponentProps> = ({ increase, ...props }) => {
   );
 };
 
-export default DashboardWidget;
+export { DashboardWidget, WidgetSkeleton };
