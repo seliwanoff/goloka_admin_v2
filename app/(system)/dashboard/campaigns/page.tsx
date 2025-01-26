@@ -56,6 +56,7 @@ const renderTable = (tdata: any[]) => {
 
 interface Campaign {
   title: string;
+  id: string;
   organizer: string;
   imageUrl: string;
   locations: string[];
@@ -120,6 +121,7 @@ const Page = () => {
     Campaigns?.data?.map(
       (campaign: {
         title: any;
+        id: string;
         organization: any;
         locations: { states: any };
         created_at: string | number | Date;
@@ -127,6 +129,7 @@ const Page = () => {
         image_path: string;
       }) => ({
         title: campaign.title,
+        id: campaign.id,
         organizer: campaign.organization,
         imageUrl: campaign.image_path[0],
         locations: campaign.locations ? [campaign.locations.states] : [],

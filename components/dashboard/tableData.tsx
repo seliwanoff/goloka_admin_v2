@@ -23,6 +23,13 @@ import {
 import { cn } from "@/lib/utils";
 import ReportCardGrid from "../report/reportCard";
 import { myReports } from "@/app/(system)/dashboard/report/page";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
+import { usePathname, useRouter } from "next/navigation";
 
 interface Tab {
   id: "campaigns" | "contributors" | "organizations" | "reports";
@@ -31,6 +38,7 @@ interface Tab {
 
 interface Campaign {
   title: string;
+  id: string;
   organizer: string;
   imageUrl: string;
   locations: any[];
@@ -59,10 +67,23 @@ const TabNav: React.FC<{
   </div>
 );
 
-export const CampaignTable: React.FC<{
-  campaigns: Campaign[];
-  // recentUsers: any[];
-}> = ({ campaigns }) => {
+export const CampaignTable: React.FC<{ campaigns: Campaign[] }> = ({
+  campaigns,
+}) => {
+  const router = useRouter();
+  const currentPath = usePathname();
+
+  const navigateToCampaign = (id: string) => {
+    let targetPath = "";
+    if (currentPath?.includes("/dashboard/campaign")) {
+      targetPath = `${currentPath}/${id}`;
+    } else {
+      targetPath = `/dashboard/campaign/${id}`;
+    }
+
+    router.push(targetPath);
+  };
+
   const getStatusStyle = (status: Campaign["status"]): string => {
     const styles = {
       Pending: "text-orange-500 bg-orange-50 border-orange-200",
@@ -73,7 +94,7 @@ export const CampaignTable: React.FC<{
     };
     return styles[status];
   };
-  console.log(campaigns, "campaigns");
+
   return (
     <Table>
       <TableHeader>
@@ -89,7 +110,17 @@ export const CampaignTable: React.FC<{
       <TableBody>
         {campaigns.map((campaign, index) => (
           <TableRow key={index}>
-            <TableCell>{campaign.title}</TableCell>
+            {/* Campaign Title with Routing */}
+            <TableCell>
+              <button
+                onClick={() => navigateToCampaign(campaign.id)}
+                className="text-blue-600 hover:underline"
+              >
+                {campaign.title}
+              </button>
+            </TableCell>
+
+            {/* Organizer Information */}
             <TableCell>
               <div className="flex items-center gap-2">
                 <Avatar className="w-8 h-8">
@@ -99,9 +130,7 @@ export const CampaignTable: React.FC<{
                   />
                   <AvatarFallback>
                     {(() => {
-                      if (!campaign?.organizer) {
-                        return null;
-                      }
+                      if (!campaign?.organizer) return null;
 
                       const nameParts = campaign.organizer.trim().split(" ");
                       if (nameParts.length === 1) {
@@ -117,60 +146,60 @@ export const CampaignTable: React.FC<{
                 <span>{campaign.organizer}</span>
               </div>
             </TableCell>
+
+            {/* Locations */}
             <TableCell>
-              <div className="flex gap-2">
-                {campaign.locations?.map((locationGroup, idx) => {
-                  console.log(locationGroup, "locato"); // Logs each array of locations
-                  return (
-                    <div key={idx} className="flex flex-wrap gap-2">
-                      {locationGroup.map(
-                        (
-                          location: {
-                            label:
+              <div className="flex gap-2 flex-wrap">
+                {campaign.locations?.flatMap((locationGroup, idx) =>
+                  locationGroup.map(
+                    (
+                      location: {
+                        label:
+                          | string
+                          | number
+                          | bigint
+                          | boolean
+                          | React.ReactElement<
+                              unknown,
+                              string | React.JSXElementConstructor<any>
+                            >
+                          | Iterable<React.ReactNode>
+                          | React.ReactPortal
+                          | Promise<
                               | string
                               | number
                               | bigint
                               | boolean
+                              | React.ReactPortal
                               | React.ReactElement<
                                   unknown,
                                   string | React.JSXElementConstructor<any>
                                 >
                               | Iterable<React.ReactNode>
-                              | React.ReactPortal
-                              | Promise<
-                                  | string
-                                  | number
-                                  | bigint
-                                  | boolean
-                                  | React.ReactPortal
-                                  | React.ReactElement<
-                                      unknown,
-                                      string | React.JSXElementConstructor<any>
-                                    >
-                                  | Iterable<React.ReactNode>
-                                  | null
-                                  | undefined
-                                >
                               | null
-                              | undefined;
-                          },
-                          locIdx: React.Key | null | undefined
-                        ) => (
-                          <span
-                            key={locIdx}
-                            className="px-2 py-1 bg-gray-100 rounded-lg text-sm"
-                          >
-                            {location.label} {/* Display each state's label */}
-                          </span>
-                        )
-                      )}
-                    </div>
-                  );
-                })}
+                              | undefined
+                            >
+                          | null
+                          | undefined;
+                      },
+                      locIdx: any
+                    ) => (
+                      <span
+                        key={`${idx}-${locIdx}`}
+                        className="px-2 py-1 bg-gray-100 rounded-lg text-sm"
+                      >
+                        {location.label}
+                      </span>
+                    )
+                  )
+                )}
               </div>
             </TableCell>
 
+            {/* Date Submitted */}
             <TableCell>{campaign.date}</TableCell>
+
+            {/* Status */}
             <TableCell>
               <span
                 className={`px-4 py-1 rounded-full text-sm border ${getStatusStyle(
@@ -180,10 +209,23 @@ export const CampaignTable: React.FC<{
                 {campaign.status}
               </span>
             </TableCell>
+
+            {/* Eye Icon with Tooltip and Routing */}
             <TableCell>
-              <button className="p-2 hover:bg-gray-100 rounded-full">
-                <Eye size="20" color="#000" />
-              </button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => navigateToCampaign(campaign.id)}
+                      // variant="outline"
+                    >
+                      {" "}
+                      <Eye size="20" color="#000" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>view more</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </TableCell>
           </TableRow>
         ))}
@@ -270,8 +312,9 @@ const TabbedDataDisplay: React.FC<{
   const transformedCampaigns =
     recentCampaigns?.map((campaign) => ({
       title: campaign.title,
+      id: campaign.id,
       organizer: campaign.organization,
-      imageUrl: campaign.image_path[0],
+      imageUrl: campaign.image_path?.[0],
       locations: campaign.locations ? [campaign.locations.states] : [],
       date: new Date(campaign.created_at).toLocaleDateString(),
       status: (campaign.status.charAt(0).toUpperCase() +

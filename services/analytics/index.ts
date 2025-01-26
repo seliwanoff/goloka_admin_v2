@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { queryClient } from "@/components/layout/tanstackProvider";
 import { fetchData, ServerResponse } from "@/lib/api";
+import { UseQueryResult } from "@tanstack/react-query";
+import { AxiosResponse } from "axios";
 
 export type ServerResponseOrNull<T> = ServerResponse<T> | null;
 
@@ -69,7 +72,6 @@ export const getResponseStats = async (): Promise<
   }
 };
 
-
 export const getRecentCampaigns = async (params?: {
   per_page?: number;
   page?: number;
@@ -111,9 +113,7 @@ export const getRecentUsers = async (params?: {
       ? `?${queryParams.toString()}`
       : "";
 
-    return await fetchData<ServerResponse<any>>(
-      `recent-users${queryString}`
-    );
+    return await fetchData<ServerResponse<any>>(`recent-users${queryString}`);
   } catch (error) {
     console.error(error);
     return null;
@@ -170,3 +170,18 @@ export const getAllCampaigns = async (params?: {
     return null;
   }
 };
+
+export const getCampaignById = async (
+  Id: string
+): Promise<UseQueryResult<AxiosResponse<any>>> =>
+  await queryClient.fetchQuery({
+    queryKey: ["Task by TaskId"],
+    queryFn: async () => {
+      try {
+        return await fetchData(`campaigns/${Id}/questions`);
+      } catch (error) {
+        // return null;
+        console.log(error);
+      }
+    },
+  });
