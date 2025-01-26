@@ -77,7 +77,7 @@ const SignIn: React.FC<PageProps> = ({}) => {
       //@ts-ignore
       loginUser(response?.user);
       // Also set in cookie for middleware
-      document.cookie = `auth_token=${access_token}; path=/; max-age=86400`;
+      // document.cookie = `auth_token=${access_token}; path=/; max-age=86400`;
 
       toast.success("Sign in successful");
 
