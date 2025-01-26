@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+"use client";
 import React, { useState } from "react";
 // import { Card } from "@/components/ui/card";
 import {
@@ -44,34 +46,6 @@ interface Campaign {
   status: "Pending" | "Accepted" | "Rejected" | "Reviewed";
 }
 
-// const ActionPopover = ({ onView, onDeactivate }) => {
-//   return (
-//     <Popover>
-//       <PopoverTrigger asChild>
-//         <button className="focus:outline-none">
-//           <More size="22" color="#000" />
-//         </button>
-//       </PopoverTrigger>
-//       <PopoverContent className="w-40 p-0" sideOffset={5} align="end">
-//         <div className="flex flex-col text-sm">
-//           <button
-//             onClick={onView}
-//             className="flex items-center gap-2 w-full px-4 py-2.5 hover:bg-gray-50 transition-colors text-left"
-//           >
-//             <Eye size="20" color="#000" /> View Profile
-//           </button>
-//           <button
-//             onClick={onDeactivate}
-//             className="flex items-center gap-2 w-full px-4 py-2.5 hover:bg-gray-50 transition-colors text-left text-[#dc1e1e]"
-//           >
-//             <Danger size="20" color="#dc1e1e" /> Deactivate
-//           </button>
-//         </div>
-//       </PopoverContent>
-//     </Popover>
-//   );
-// };
-
 const TabNav: React.FC<{
   tabs: Tab[];
   activeTab: Tab["id"];
@@ -93,36 +67,36 @@ const TabNav: React.FC<{
   </div>
 );
 
-const campaigns: Campaign[] = [
-  {
-    title: "Agriculture & Food Security",
-    organizer: "Muhammad Jamiu",
-    locations: ["Lagos", "Kwara", "Abuja"],
-    date: "Tue 28th June - 9:30 AM",
-    status: "Pending",
-  },
-  {
-    title: "Agriculture & Food Security",
-    organizer: "Muhammad Jamiu",
-    locations: ["Lagos", "Kwara", "Abuja"],
-    date: "Tue 28th June - 9:30 AM",
-    status: "Accepted",
-  },
-  {
-    title: "Agriculture & Food Security",
-    organizer: "Muhammad Jamiu",
-    locations: ["Lagos", "Kwara", "Abuja"],
-    date: "Tue 28th June - 9:30 AM",
-    status: "Rejected",
-  },
-  {
-    title: "Agriculture & Food Security",
-    organizer: "Muhammad Jamiu",
-    locations: ["Lagos", "Kwara", "Abuja"],
-    date: "Tue 28th June - 9:30 AM",
-    status: "Reviewed",
-  },
-];
+// const campaigns: Campaign[] = [
+//   {
+//     title: "Agriculture & Food Security",
+//     organizer: "Muhammad Jamiu",
+//     locations: ["Lagos", "Kwara", "Abuja"],
+//     date: "Tue 28th June - 9:30 AM",
+//     status: "Pending",
+//   },
+//   {
+//     title: "Agriculture & Food Security",
+//     organizer: "Muhammad Jamiu",
+//     locations: ["Lagos", "Kwara", "Abuja"],
+//     date: "Tue 28th June - 9:30 AM",
+//     status: "Accepted",
+//   },
+//   {
+//     title: "Agriculture & Food Security",
+//     organizer: "Muhammad Jamiu",
+//     locations: ["Lagos", "Kwara", "Abuja"],
+//     date: "Tue 28th June - 9:30 AM",
+//     status: "Rejected",
+//   },
+//   {
+//     title: "Agriculture & Food Security",
+//     organizer: "Muhammad Jamiu",
+//     locations: ["Lagos", "Kwara", "Abuja"],
+//     date: "Tue 28th June - 9:30 AM",
+//     status: "Reviewed",
+//   },
+// ];
 
 const mockTableData: TableData[] = Array.from({ length: 5 }, (_, i) => ({
   id: `${i + 1}`,
@@ -133,7 +107,81 @@ const mockTableData: TableData[] = Array.from({ length: 5 }, (_, i) => ({
   status: i % 3 === 0 ? "Active" : i % 3 === 1 ? "Deactivate" : "Deleted",
 }));
 
-const CampaignTable: React.FC = () => {
+// const CampaignTable: React.FC = () => {
+//   const getStatusStyle = (status: Campaign["status"]): string => {
+//     const styles = {
+//       Pending: "text-orange-500 bg-orange-50 border-orange-200",
+//       Accepted: "text-green-500 bg-green-50 border-green-200",
+//       Rejected: "text-red-500 bg-red-50 border-red-200",
+//       Reviewed: "text-purple-500 bg-purple-50 border-purple-200",
+//     };
+//     return styles[status];
+//   };
+
+//   return (
+//     <Table>
+//       <TableHeader>
+//         <TableRow>
+//           <TableHead>Campaign title</TableHead>
+//           <TableHead>Organisation</TableHead>
+//           <TableHead>Locations</TableHead>
+//           <TableHead>Date submitted</TableHead>
+//           <TableHead>Status</TableHead>
+//           <TableHead></TableHead>
+//         </TableRow>
+//       </TableHeader>
+//       <TableBody>
+//         {campaigns.map((campaign, index) => (
+//           <TableRow key={index}>
+//             <TableCell>{campaign.title}</TableCell>
+//             <TableCell>
+//               <div className="flex items-center gap-2">
+//                 <Avatar className="w-8 h-8">
+//                   {/* <img src="/api/placeholder/32/32" alt={campaign.organizer} /> */}
+//                   <AvatarImage
+//                     src="https://github.com/shadcn.png"
+//                     alt={campaign.organizer}
+//                   />
+//                   <AvatarFallback>CN</AvatarFallback>
+//                 </Avatar>
+//                 <span>{campaign.organizer}</span>
+//               </div>
+//             </TableCell>
+//             <TableCell>
+//               <div className="flex gap-2">
+//                 {campaign.locations.map((location, idx) => (
+//                   <span
+//                     key={idx}
+//                     className="px-2 py-1 bg-gray-100 rounded-lg text-sm"
+//                   >
+//                     {location}
+//                   </span>
+//                 ))}
+//               </div>
+//             </TableCell>
+//             <TableCell>{campaign.date}</TableCell>
+//             <TableCell>
+//               <span
+//                 className={`px-4 py-1 rounded-full text-sm border ${getStatusStyle(
+//                   campaign.status
+//                 )}`}
+//               >
+//                 {campaign.status}
+//               </span>
+//             </TableCell>
+//             <TableCell>
+//               <button className="p-2 hover:bg-gray-100 rounded-full">
+//                 <Eye size="20" color="#000" />
+//               </button>
+//             </TableCell>
+//           </TableRow>
+//         ))}
+//       </TableBody>
+//     </Table>
+//   );
+// };
+
+const CampaignTable: React.FC<{ campaigns: Campaign[] }> = ({ campaigns }) => {
   const getStatusStyle = (status: Campaign["status"]): string => {
     const styles = {
       Pending: "text-orange-500 bg-orange-50 border-orange-200",
@@ -143,7 +191,7 @@ const CampaignTable: React.FC = () => {
     };
     return styles[status];
   };
-
+  console.log(campaigns, "campaigns");
   return (
     <Table>
       <TableHeader>
@@ -163,7 +211,6 @@ const CampaignTable: React.FC = () => {
             <TableCell>
               <div className="flex items-center gap-2">
                 <Avatar className="w-8 h-8">
-                  {/* <img src="/api/placeholder/32/32" alt={campaign.organizer} /> */}
                   <AvatarImage
                     src="https://github.com/shadcn.png"
                     alt={campaign.organizer}
@@ -265,7 +312,10 @@ const DataTable: React.FC<{ data: TableData[] }> = ({ data }) => (
   </Table>
 );
 
-const TabbedDataDisplay: React.FC = () => {
+const TabbedDataDisplay: React.FC<{
+  recentCampaigns?: any[];
+  isLoading?: boolean;
+}> = ({ recentCampaigns }) => {
   const [activeTab, setActiveTab] = useState<Tab["id"]>("campaigns");
 
   const tabs: Tab[] = [
@@ -274,6 +324,16 @@ const TabbedDataDisplay: React.FC = () => {
     { id: "organizations", label: "Recent Organizations" },
     { id: "reports", label: "Recent Reports" },
   ];
+
+  const transformedCampaigns =
+    recentCampaigns?.map((campaign) => ({
+      title: campaign.title,
+      organizer: campaign.organization,
+      locations: campaign.locations ? [campaign.locations.states] : [],
+      date: new Date(campaign.created_at).toLocaleDateString(),
+      status: (campaign.status.charAt(0).toUpperCase() +
+        campaign.status.slice(1)) as Campaign["status"],
+    })) || [];
 
   return (
     <div className="w-full p-6 bg-white rounded-3xl">
@@ -293,7 +353,7 @@ const TabbedDataDisplay: React.FC = () => {
           columns={1}
         />
       ) : activeTab === "campaigns" ? (
-        <CampaignTable />
+        <CampaignTable campaigns={transformedCampaigns} />
       ) : (
         <DataTable data={mockTableData} />
       )}

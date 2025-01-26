@@ -4,13 +4,10 @@
 
 "use client";
 import {
-
   ClipboardExport,
-
   People,
   Profile2User,
   ProfileAdd,
-
 } from "iconsax-react";
 import { Button } from "@/components/ui/button";
 
@@ -23,22 +20,17 @@ import { useUserStore } from "@/stores/currentUserStore";
 import { useCallback, useEffect, useState } from "react";
 import Calendar from "@/components/dashboard/calendar";
 import { useSearchParams } from "next/navigation";
-import { getDashboardChartStats, getWidgetData } from "@/services/analytics";
+import {
+  getAdminReports,
+  getDashboardChartStats,
+  getRecentCampaigns,
+  getRecentUsers,
+  getWidgetData,
+} from "@/services/analytics";
 import { useQuery } from "@tanstack/react-query";
 import { DashboardWidget } from "@/components/lib/widgets/dashboard_card";
-// import TabbedDataDisplay from "@/components/dashboard/tableData";
 
 const Dashboard = () => {
-  // Query for dashboard stats
-  // const {
-  //   data: stats,
-  //   error: statsError,
-  //   isError: isStatsError,
-  // } = useQuery({
-  //   queryKey: ["Get dashboard stats"],
-  //   queryFn: getWidgetData,
-  //   retry: 2, // Retry failed requests 2 times
-  // });
   const searchParams = useSearchParams();
   const currentUser = useUserStore((state) => state.user);
 
@@ -88,54 +80,39 @@ const Dashboard = () => {
       }),
     retry: 2,
   });
-  // Set initial URL params when component mounts
-  // useEffect(() => {
-  //   const initialParams: Record<string, string> = {
-  //     page: filters.page.toString(),
-  //     pageSize: filters.pageSize.toString(),
-  //     currencyType: "fiat", // Always set initial currencyType to fiat
-  //   };
 
-  //   if (filters.search) initialParams.search = filters.search;
-  //   if (filters.date && filters.date !== "select")
-  //     initialParams.date = filters.date;
+  const {
+    data: recentCampaigns,
+    error: campaignsError,
+    isLoading: isCampaignsLoading,
+  } = useQuery({
+    queryKey: ["recent-campaigns"],
+    queryFn: () => getRecentCampaigns({ per_page: 10 }),
+    retry: 2,
+  });
 
-  //   // setSearchParams(initialParams);
-  // }, []); // Empty dependency array ensures this only runs once on mount
+  const {
+    data: recentUsers,
+    error: usersError,
+    isLoading: isUsersLoading,
+  } = useQuery({
+    queryKey: ["recent-users"],
+    queryFn: () => getRecentUsers({ per_page: 10, user_type: "contributor" }),
+    retry: 2,
+  });
 
-  //  const updateSearchParams = useCallback(() => {
-  //    const updatedParams: Record<string, string> = {
-  //      page: filters.page.toString(),
-  //      pageSize: filters.pageSize.toString(),
-  //      currencyType: filters.currencyType,
-  //      time_filter: filters.time_filter,
-  //    };
-
-  //    // Add optional parameters
-  //    if (filters.search) updatedParams.search = filters.search;
-  //    if (filters.date && filters.date !== "select")
-  //      updatedParams.date = filters.date;
-  //    if (filters.start_date) updatedParams.start_date = filters.start_date;
-  //    if (filters.end_date) updatedParams.end_date = filters.end_date;
-  //    if (filters.year) updatedParams.year = filters.year;
-
-  //   //  setSearchParams(updatedParams);
-  //  }, [filters]);
-
-  // const [filteredData, setFilteredData] = useState<Response[]>(
-  //   responseData?.data?.filter(
-  //     (item: { status: string }) => item?.status === activeTab,
-  //   ),
-  // );
-
-  // const [filteredData] = useState<unknown[]>(responsesTableData);
-  // const [ setOpenFilter] = useState<boolean>(false);
-  // const [date, setDate] = useState<Date>();
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const [pageSize, setPageSize] = useState<number>(10);
-  // const pages = chunkArray(filteredData, pageSize);
-  // const currentPageData = pages[currentPage - 1] || [];
-  // const router = useRouter();
+  const {
+    data: adminReports,
+    error: reportsError,
+    isLoading: isReportsLoading,
+  } = useQuery({
+    queryKey: ["admin-reports"],
+    queryFn: () => getAdminReports({ per_page: 10 }),
+    retry: 2,
+  });
+  console.log("Recent Campaigns:", recentCampaigns);
+  console.log("Recent Users:", recentUsers);
+  console.log("Admin Reports:", adminReports);
   console.log(widgetStats, "widgetStats");
   console.log(chartStats, "chartStats");
   const [timeOfDay, setTimeOfDay] = useState<string>("day");
@@ -157,20 +134,6 @@ const Dashboard = () => {
     setTimeOfDay(getCurrentTimeOfDay());
   }, []);
 
-  // const getGreeting = () => {
-  //   switch (timeOfDay) {
-  //     case "morning":
-  //       return "Good morning";
-  //     case "day":
-  //       return "Good day";
-  //     case "evening":
-  //       return "Good evening";
-  //     case "night":
-  //       return "Good night";
-  //     default:
-  //       return "Hello";
-  //   }
-  // };
   const handleDateChange = useCallback(
     (filterType: string, from?: string, to?: string) => {
       const params = new URLSearchParams(searchParams);
@@ -191,149 +154,82 @@ const Dashboard = () => {
     [searchParams]
   );
 
-  // Render widgets with dynamic data
-  // const renderWidgets = () => {
-  //   // Use loading or default states if data is not yet loaded
-  //   const totalUsers = widgetStats?.data?.total_users?.count || "200K";
-  //   const activeUsers = widgetStats?.data?.active_users?.count || "345K";
-  //   const totalOrgs = widgetStats?.data?.total_organizations || "127K";
-  //   const totalContributors =
-  //     widgetStats?.data?.total_contributors?.count || "4K";
-  //   const totalCampaigns = widgetStats?.data?.total_campaigns?.count;
+  const renderWidgets = () => {
+    // Check if data is loading
+    const isLoading = !widgetStats?.data;
 
-  //   return (
-  //     <>
-  //       <DashboardWidget
-  //         title="Total Users"
-  //         bg="bg-white bg-opacity-[12%]"
-  //         fg="text-white"
-  //         containerBg="bg-gradient-to-tr from-[#3365E3] to-[#1C387D]"
-  //         textColor="text-white"
-  //         icon={Profile2User}
-  //         value={totalUsers}
-  //         footer={
-  //           <span className="font-medium">{activeUsers} Presently active</span>
-  //         }
-  //         isAnalytics={false}
-  //         increase={true}
-  //         percents={40}
-  //       />
+    // Extract data with optional chaining and default values
+    const totalUsers = widgetStats?.data?.users?.total ?? 0;
+    const activeUsers = widgetStats?.data?.users?.active ?? 0;
+    const totalOrgs = widgetStats?.data?.total_organizations?.count ?? 0;
+    const orgPercentIncrease =
+      widgetStats?.data?.total_organizations?.percentage_increase ?? 0;
+    const totalContributors = widgetStats?.data?.total_contributors?.count ?? 0;
+    const contributorsPercentIncrease =
+      widgetStats?.data?.total_contributors?.percentage_increase ?? 0;
+    const totalCampaigns = widgetStats?.data?.total_campaigns?.count ?? 0;
+    const campaignsPercentIncrease =
+      widgetStats?.data?.total_campaigns?.percentage_increase ?? 0;
 
-  //       <DashboardWidget
-  //         title="Total organization"
-  //         bg="bg-[#FEC53D] bg-opacity-[12%]"
-  //         fg="text-[#FEC53D]"
-  //         icon={People}
-  //         value={totalOrgs}
-  //         footer="vs last month"
-  //         isAnalytics={true}
-  //         increase={true}
-  //         percents={40}
-  //       />
+    return (
+      <>
+        <DashboardWidget
+          title="Total Users"
+          bg="bg-white bg-opacity-[12%]"
+          fg="text-white"
+          containerBg="bg-gradient-to-tr from-[#3365E3] to-[#1C387D]"
+          textColor="text-white"
+          icon={Profile2User}
+          value={totalUsers}
+          footer={
+            <span className="font-medium">{activeUsers} Presently active</span>
+          }
+          isAnalytics={false}
+          percentIncrease={null}
+          isLoading={isLoading}
+        />
 
-  //       <DashboardWidget
-  //         title="Total Contributors"
-  //         bg="bg-main-100 bg-opacity-[12%]"
-  //         fg="text-main-100"
-  //         icon={UserSquare}
-  //         value={totalContributors}
-  //         footer="vs last month"
-  //         isAnalytics={true}
-  //         increase={true}
-  //         percents={40}
-  //       />
+        <DashboardWidget
+          title="Total Organizations"
+          bg="bg-[#FEC53D] bg-opacity-[12%]"
+          fg="text-[#FEC53D]"
+          icon={People}
+          value={totalOrgs}
+          footer="vs last month"
+          isAnalytics={true}
+          increase={orgPercentIncrease > 0}
+          percentIncrease={Math.abs(orgPercentIncrease)}
+          isLoading={isLoading}
+        />
 
-  //       <DashboardWidget
-  //         title="Total Campaigns"
-  //         bg="bg-[#079455] bg-opacity-[12%]"
-  //         fg="text-[#079455]"
-  //         icon={ClipboardExport}
-  //         value={totalCampaigns}
-  //         footer="vs last month"
-  //         isAnalytics={true}
-  //         increase={false}
-  //         percents={40}
-  //       />
-  //     </>
-  //   );
-  // };
+        <DashboardWidget
+          title="Total Contributors"
+          bg="bg-main-100 bg-opacity-[12%]"
+          fg="text-main-100"
+          icon={UserSquare}
+          value={totalContributors}
+          footer="vs last month"
+          isAnalytics={true}
+          increase={contributorsPercentIncrease > 0}
+          percentIncrease={Math.abs(contributorsPercentIncrease)}
+          isLoading={isLoading}
+        />
 
-const renderWidgets = () => {
-  // Check if data is loading
-  const isLoading = !widgetStats?.data;
-
-  // Extract data with optional chaining and default values
-  const totalUsers = widgetStats?.data?.users?.total ?? 0;
-  const activeUsers = widgetStats?.data?.users?.active ?? 0;
-  const totalOrgs = widgetStats?.data?.total_organizations?.count ?? 0;
-  const orgPercentIncrease =
-    widgetStats?.data?.total_organizations?.percentage_increase ?? 0;
-  const totalContributors = widgetStats?.data?.total_contributors?.count ?? 0;
-  const contributorsPercentIncrease =
-    widgetStats?.data?.total_contributors?.percentage_increase ?? 0;
-  const totalCampaigns = widgetStats?.data?.total_campaigns?.count ?? 0;
-  const campaignsPercentIncrease =
-    widgetStats?.data?.total_campaigns?.percentage_increase ?? 0;
-
-  return (
-    <>
-      <DashboardWidget
-        title="Total Users"
-        bg="bg-white bg-opacity-[12%]"
-        fg="text-white"
-        containerBg="bg-gradient-to-tr from-[#3365E3] to-[#1C387D]"
-        textColor="text-white"
-        icon={Profile2User}
-        value={totalUsers}
-        footer={
-          <span className="font-medium">{activeUsers} Presently active</span>
-        }
-        isAnalytics={false}
-        percentIncrease={null}
-        isLoading={isLoading}
-      />
-
-      <DashboardWidget
-        title="Total Organizations"
-        bg="bg-[#FEC53D] bg-opacity-[12%]"
-        fg="text-[#FEC53D]"
-        icon={People}
-        value={totalOrgs}
-        footer="vs last month"
-        isAnalytics={true}
-        increase={orgPercentIncrease > 0}
-        percentIncrease={Math.abs(orgPercentIncrease)}
-        isLoading={isLoading}
-      />
-
-      <DashboardWidget
-        title="Total Contributors"
-        bg="bg-main-100 bg-opacity-[12%]"
-        fg="text-main-100"
-        icon={UserSquare}
-        value={totalContributors}
-        footer="vs last month"
-        isAnalytics={true}
-        increase={contributorsPercentIncrease > 0}
-        percentIncrease={Math.abs(contributorsPercentIncrease)}
-        isLoading={isLoading}
-      />
-
-      <DashboardWidget
-        title="Total Campaigns"
-        bg="bg-[#079455] bg-opacity-[12%]"
-        fg="text-[#079455]"
-        icon={ClipboardExport}
-        value={totalCampaigns}
-        footer="vs last month"
-        isAnalytics={true}
-        increase={campaignsPercentIncrease > 0}
-        percentIncrease={Math.abs(campaignsPercentIncrease)}
-        isLoading={isLoading}
-      />
-    </>
-  );
-};
+        <DashboardWidget
+          title="Total Campaigns"
+          bg="bg-[#079455] bg-opacity-[12%]"
+          fg="text-[#079455]"
+          icon={ClipboardExport}
+          value={totalCampaigns}
+          footer="vs last month"
+          isAnalytics={true}
+          increase={campaignsPercentIncrease > 0}
+          percentIncrease={Math.abs(campaignsPercentIncrease)}
+          isLoading={isLoading}
+        />
+      </>
+    );
+  };
   return (
     <div>
       <div className="grid h-max grid-cols-5 gap-6 py-10">
@@ -366,8 +262,6 @@ const renderWidgets = () => {
         {/* Stats section */}
         <div className="no-scrollbar col-span-5 mt-4 w-full overflow-x-auto">
           <div className="col-span-5 flex w-max gap-4 lg:grid lg:w-full lg:grid-cols-4 xl:w-full">
-
-
             {renderWidgets()}
           </div>
         </div>
@@ -434,45 +328,15 @@ const renderWidgets = () => {
 
         {/* TABLE */}
       </div>
-      <TabbedDataDisplay />
+      <TabbedDataDisplay
+        recentCampaigns={recentCampaigns?.data}
+        isLoading={isCampaignsLoading}
+      />
     </div>
   );
 };
 
 export default Dashboard;
-
-// Define props for the StatusPill component
-// interface StatusPillProps {
-//   status: Status;
-// }
-
-// const StatusPill: React.FC<StatusPillProps> = ({ status }) => {
-//   return (
-//     <span
-//       className={cn(
-//         "inline-flex items-center justify-center rounded-full border px-2 py-1 text-xs font-medium",
-//         getStatusColor(status)
-//       )}
-//     >
-//       {getStatusText(status)}
-//     </span>
-//   );
-// };
-
-// const getStatusColor = (status: Status) => {
-//   switch (status?.toLowerCase()) {
-//     case "pending":
-//       return "bg-orange-400/5 border-orange-400 text-orange-400";
-//     case "reviewed":
-//       return "bg-violet-500/5 border-violet-500 text-violet-500";
-//     case "accepted":
-//       return "bg-emerald-600/5 border-emerald-600 text-emerald-600";
-//     case "rejected":
-//       return "bg-red-500/5 border-red-500 text-red-500";
-//     default:
-//       return "bg-gray-500/5 border-gray-500 text-gray-500";
-//   }
-// };
 
 export const responsesTableData = [
   // On Review (with unread)

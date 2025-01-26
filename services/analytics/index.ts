@@ -86,7 +86,7 @@ export const getRecentCampaigns = async (params?: {
       : "";
 
     return await fetchData<ServerResponse<any>>(
-      `admin/recent-campaigns${queryString}`
+      `recent-campaigns${queryString}`
     );
   } catch (error) {
     console.error(error);
@@ -112,7 +112,7 @@ export const getRecentUsers = async (params?: {
       : "";
 
     return await fetchData<ServerResponse<any>>(
-      `admin/recent-users${queryString}`
+      `recent-users${queryString}`
     );
   } catch (error) {
     console.error(error);
@@ -135,7 +135,7 @@ export const getAdminReports = async (params?: {
       ? `?${queryParams.toString()}`
       : "";
 
-    return await fetchData<ServerResponse<any>>(`admin/reports${queryString}`);
+    return await fetchData<ServerResponse<any>>(`reports${queryString}`);
   } catch (error) {
     console.error(error);
     return null;
