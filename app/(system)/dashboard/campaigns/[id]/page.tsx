@@ -10,30 +10,17 @@ import React, { useState, useEffect, useMemo } from "react";
 
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
-import { Dot, Eye, LoaderCircle, SquarePen, Workflow } from "lucide-react";
-import { ArchiveMinus, ClipboardText, Message, Note } from "iconsax-react";
-// import Map from "@/public/assets/images/tasks/tasks.png";
+import { Dot, Eye } from "lucide-react";
+import {  ClipboardText, Message, Note } from "iconsax-react";
+
 import Link from "next/link";
 
-// import { useStepper } from "@/context/TaskStepperContext.tsx";
-// import TaskStepper from "@/components/task-stepper/TaskStepper";
-// import { Toaster } from "@/components/ui/sonner";
-
-// import { getCampaignQuestion, getTaskById } from "@/services/contributor";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
-// import {
-//   bookmarkCampaign,
-//   createCampaignResponse,
-//   removeBookmark,
-// } from "@/services/campaign";
 
-import dynamic from "next/dynamic";
 import { toast } from "sonner";
-// import { getAResponse } from "@/services/response";
-// import { BookmarkButton } from "@/components/contributor/BookmarkButton";
-// import Map from "@/components/map/map";
+
 import { useRemoteUserStore } from "@/stores/remoteUser";
 import { getCampaignById } from "@/services/analytics";
 import { getStatusColor } from "@/helper";
@@ -108,7 +95,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
   const [isBookmarkLoading, setIsBookmarkLoading] = useState(false);
   const { id: taskId } = useParams();
   const [responseId, setResponseId] = useState<string | null>(null);
-  // const { step } = useStepper();
+
   const { user } = useRemoteUserStore();
   const USER_CURRENCY_SYMBOL = user?.country?.["currency-symbol"];
   const {
@@ -120,11 +107,6 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
     queryFn: async () => await getCampaignById(taskId as string),
   });
   console.log(task, "task");
-  //   const { data: getResponse, refetch: refetchResponse } = useQuery({
-  //     queryKey: ["get a Response", responseId],
-  //     queryFn: async () => (responseId ? await getAResponse(responseId) : null),
-  //     enabled: !!responseId,
-  //   });
 
   //@ts-ignore
   const locations = useMemo(() => task?.data?.locations, [task]);
@@ -142,18 +124,6 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
     }
   }, [searchParams]);
 
-  //   const getButtonText = () => {
-  //     //@ts-ignore
-  //     if (!task?.data?.responses || task.data.responses.length === 0) {
-  //       return "Contribute";
-  //     }
-  //     //@ts-ignore
-  //     const hasDraftResponse = task.data.responses.some(
-  //       //@ts-ignore
-  //       (response) => response.status === "draft"
-  //     );
-  //     return hasDraftResponse ? "Continue" : "Contribute";
-  //   };
   const isContributeDisabled = () => {
     return (
       //@ts-ignore
@@ -165,63 +135,6 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
     );
   };
 
-  //   const onContribute = async () => {
-  //     setLoading(true);
-  //     try {
-  //       //@ts-ignore
-  //       if (task?.data?.responses?.length === 0) {
-  //         // Create new response if there are no responses
-  //         const response = await createCampaignResponse({}, taskId as string);
-  //         console.log(response, " first call");
-
-  //         // Fixed URL format - use & instead of second ?
-  //         router.push(
-  //           //@ts-ignore
-  //           `${window.location.pathname}?responseID=${response.data?.id}&stepper=true&step=1`
-  //         );
-
-  //         //@ts-ignore
-  //         toast.success(response.message);
-  //       } else if (getButtonText() === "Continue") {
-  //         // Find the draft response
-  //         //@ts-ignore
-  //         const draftResponse = task.data.responses.find(
-  //           //@ts-ignore
-  //           (response) => response.status === "draft"
-  //         );
-
-  //         if (draftResponse?.status === "draft") {
-  //           setResponseId(draftResponse.id);
-  //           await refetchResponse();
-  //           console.log(getResponse, "getResponse");
-
-  //           // Uncomment and fix URL format here too
-  //           router.push(
-  //             `${window.location.pathname}?responseID=${draftResponse.id}&stepper=true&step=1`
-  //           );
-  //         }
-  //         //@ts-ignore
-  //       } else if (task?.data?.allows_multiple_responses === 1) {
-  //         // Create new response if multiple responses are allowed
-  //         const response = await createCampaignResponse({}, taskId as string);
-
-  //         // Fixed URL format here as well
-  //         router.push(
-  //           //@ts-ignore
-  //           `${window.location.pathname}?responseID=${response.data?.id}&stepper=true&step=1`
-  //         );
-
-  //         //@ts-ignore
-  //         toast.success(response.message);
-  //       }
-  //     } catch (error) {
-  //       console.error(error);
-  //       toast.error("An error occurred");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
   const onViewResponse = () => {
     //@ts-ignore
     if (task?.data?.responses && task.data.responses.length > 0) {
@@ -232,49 +145,9 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
     }
   };
 
-  //   const handleBookmark = async () => {
-  //     setIsBookmarkLoading(true);
-  //     try {
-  //       //@ts-ignore
-  //       if (task?.data?.is_bookmarked) {
-  //         const response = await removeBookmark(taskId as string);
-  //         refetch();
-  //         if (response) {
-  //           toast.success(response?.message);
-  //           setIsBookmarkLoading(false);
-  //         }
-  //       } else {
-  //         const response = await bookmarkCampaign({}, taskId as string);
-  //         refetch();
-  //         //@ts-ignore
-  //         toast.success(response?.message);
-  //         setIsBookmarkLoading(false);
-  //       }
-  //     } catch (err) {
-  //       setIsBookmarkLoading(false);
-  //       toast.warning("Error with bookmark operation:");
-  //     }
-  //   };
-
-  //   console.log(quest, "quest");
-  const updateStepUrl = (newStep: number) => {
-    router.push(`${window.location.pathname}?stepper=true&step=${newStep}`);
-  };
-  //   console.log(getResponse, "getResponse");
   console.log(task, "task");
   //@ts-ignore
   const locationData = task?.data?.locations;
-  const WrappedTaskStepper = () => (
-    // <TaskStepper
-    //   response={getResponse}
-    //   //@ts-ignore
-    //   quest={quest}
-    //   onStepChange={(newStep: any) => {
-    //     updateStepUrl(newStep);
-    //   }}
-    // />
-    <></>
-  );
 
   //@ts-ignore
   const endDate = moment(task?.data?.campaign?.ends_at).format("DD MMMM YYYY");
@@ -381,7 +254,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
                 Campaign Details
               </h3>
               <div className="mt-6 flex flex-wrap gap-5 md:justify-between">
-                <div className="">
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F]">
                   <div className="flex items-center">
                     <h4 className="font-medium text-[#101828]">
                       {/* @ts-ignore */}
@@ -390,24 +263,15 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
                   </div>
                   <p className="text-sm text-gray-400">Responses</p>
                 </div>
-                {/* <div className="">
-                    <div className="flex items-center">
-                      <h4 className="font-medium text-[#101828]">{Date}</h4>
-                      <div className="font-medium text-[#101828]">
-                        <Dot size={30} />
-                      </div>
-                      <span className="font-medium text-[#101828]">{Time}</span>
-                    </div>
-                    <p className="text-sm text-gray-400">Responses</p>
-                  </div> */}
-                <div>
+
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F]">
                   <h4 className="text-[#101828]">
                     {/* @ts-ignore */}
                     {task?.data?.campaign?.number_of_responses_received}
                   </h4>
                   <p className="text-sm text-gray-400">Expected response</p>
                 </div>
-                <div>
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F]">
                   <div className="flex gap-2 flex-wrap">
                     {locationx?.states && Array.isArray(locationx.states) ? (
                       locationx.states.map((state: any, idx: any) => (
@@ -424,20 +288,23 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
                   </div>
                   <p className="text-sm text-gray-400">Locations</p>
                 </div>
-
-                <div className="md:text-left">
-                  <h4 className="font-medium text-[#101828]">
-                    {USER_CURRENCY_SYMBOL} {/* @ts-ignore */}
-                    {task?.data?.campaign?.payment_rate_for_response}{" "}
-                  </h4>
-                  <p className="text-sm text-gray-400">Per response</p>
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F]">
+                  <div className="md:text-left">
+                    <h4 className="font-medium text-[#101828]">
+                      {USER_CURRENCY_SYMBOL} {/* @ts-ignore */}
+                      {task?.data?.campaign?.payment_rate_for_response}{" "}
+                    </h4>
+                    <p className="text-sm text-gray-400">Per response</p>
+                  </div>
                 </div>
-                <div className="md:text-left">
-                  <h4 className="font-medium text-[#101828]">
-                    {/* @ts-ignore */}
-                    {task?.data?.campaign?.campaign_group}{" "}
-                  </h4>
-                  <p className="text-sm text-gray-400">Campaign</p>
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F]">
+                  <div className="md:text-left">
+                    <h4 className="font-medium text-[#101828]">
+                      {/* @ts-ignore */}
+                      {task?.data?.campaign?.campaign_group}{" "}
+                    </h4>
+                    <p className="text-sm text-gray-400">Campaign</p>
+                  </div>
                 </div>
               </div>
               <div className="mt-8 flex items-center justify-between">
@@ -458,7 +325,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
                   </div>
                   <span className="text-sm text-gray-400">Date Created</span>
                 </div>
-                <div>
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F]">
                   <div className="flex items-center">
                     <h4 className="font-medium text-[#101828]">{startDate}</h4>
                     <div className="font-medium text-[#101828]">
@@ -470,7 +337,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
                   </div>
                   <span className="text-sm text-gray-400">Start on</span>
                 </div>
-                <div>
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F]">
                   <div className="flex items-center">
                     <h4 className="font-medium text-[#101828]">{endDate}</h4>
                     <div className="font-medium text-[#101828]">
