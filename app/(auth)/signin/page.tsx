@@ -17,6 +17,7 @@ import { userSignIn } from "@/services/auth";
 import { useRouter } from "next/navigation";
 import { FaSpinner } from "react-icons/fa";
 import { toast } from "sonner";
+import { useUserStore } from "@/stores/currentUserStore";
 // import { getContributorsProfile } from "@/services/contributor";
 // import { useQuery } from "@tanstack/react-query";
 // import { useRemoteUserStore } from "@/stores/remoteUser";
@@ -36,50 +37,11 @@ const SignIn: React.FC<PageProps> = ({}) => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>();
-
+  const loginUser = useUserStore((state) => state.loginUser);
   const handleToggle1 = () => {
     setEye1((prev: boolean) => !prev);
   };
   const [isLoading, setIsLoading] = useState(false);
-
-  // const onSubmit: SubmitHandler<FormValues> = async (data) => {
-  //   setIsLoading(true);
-
-  //   try {
-  //     const { email, password } = data;
-  //     console.log(data);
-
-  //     const response = await userSignIn(email, password);
-
-  //     if (!response) {
-  //       throw new Error(
-  //         "Failed to sign in. Please check your credentials and try again."
-  //       );
-  //     }
-
-  //     console.log(response, "response.data");
-
-  //     const { access_token, token_type, refresh_token } = response;
-
-  //     const storeTokens = () => {
-  //       localStorage.setItem("access_token", JSON.stringify(access_token));
-  //       localStorage.setItem("refresh_token", JSON.stringify(refresh_token));
-  //       localStorage.setItem("token_type", JSON.stringify(token_type));
-  //     };
-
-  //     // Redirect to the dashboard
-  //     storeTokens();
-  //     toast.success("Sign in successful");
-  //     router.replace("/dashboard/root");
-  //   } catch (error: any) {
-  //     console.error("Sign-in error:", error);
-  //     toast.error(
-  //       error?.response?.data?.message || "Failed to sign in. Please try again."
-  //     );
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setIsLoading(true);
@@ -88,23 +50,32 @@ const SignIn: React.FC<PageProps> = ({}) => {
       const { email, password } = data;
       const response = await userSignIn(email, password);
 
+      console.log("Full response:", response); // Log the entire response
+
+      // Check if response exists and has the expected structure
       if (!response) {
+        console.error("Invalid response structure:", response);
         throw new Error("Failed to sign in");
       }
-
-      console.log(response, "jjju");
       //@ts-ignore
-      const { access_token, token_type, refresh_token } = response;
+      const { access_token, token_type, refresh_token } = response.tokens;
 
-      console.log(access_token, "access_token");
-      console.log(refresh_token, "refresh_token");
-      console.log(token_type, "token_type");
+      // Validate token existence
+      if (!access_token || !refresh_token || !token_type) {
+        console.error("Missing tokens:", {
+          access_token,
+          refresh_token,
+          token_type,
+        });
+        throw new Error("Invalid authentication tokens");
+      }
 
       // Store tokens in localStorage
       localStorage.setItem("access_token", JSON.stringify(access_token));
       localStorage.setItem("refresh_token", JSON.stringify(refresh_token));
       localStorage.setItem("token_type", JSON.stringify(token_type));
-
+      //@ts-ignore
+      loginUser(response?.user);
       // Also set in cookie for middleware
       document.cookie = `auth_token=${access_token}; path=/; max-age=86400`;
 
@@ -116,7 +87,21 @@ const SignIn: React.FC<PageProps> = ({}) => {
       router.replace(callbackUrl);
     } catch (error: any) {
       console.error("Sign-in error:", error);
-      toast.error(error?.response?.data?.message || "Failed to sign in");
+
+      // More detailed error logging
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        console.error("Server responded with error:", error.response.data);
+        toast.error(error.response.data?.message || "Failed to sign in");
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("No response received:", error.request);
+        toast.error("No response from server. Please check your connection.");
+      } else {
+        // Something happened in setting up the request
+        console.error("Error setting up request:", error.message);
+        toast.error(error.message || "Failed to sign in");
+      }
     } finally {
       setIsLoading(false);
     }

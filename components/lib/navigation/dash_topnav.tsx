@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -64,6 +65,9 @@ import {
 } from "@/components/ui/dialog";
 import { useRemoteUserStore } from "@/stores/remoteUser";
 import { useUserStore } from "@/stores/currentUserStore";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+// import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 // import { getNotifications } from "@/services/response";
 
 type ComponentProps = {};
@@ -99,7 +103,7 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
   // const user = { data };
   // const currentUser = useUserStore((state) => state.user);
   // const logoutUser = useUserStore((state) => state.logoutUser);
-  // const Name = currentUser?.name;
+  const Name = currentUser?.name;
   const FirstName =  "";
   const isMobile = useMediaQuery("(max-width: 640px)");
   // const backgroundColor = useMemo(() => generateColor(FirstName), [FirstName]);
@@ -107,7 +111,7 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
     () => generateColor(FirstName.trim().toLowerCase()),
     [FirstName],
   );
-  const initials = useMemo(() => getInitials(FirstName), [FirstName]);
+  // const initials = useMemo(() => getInitials(Name as string), [Name]);
   const initiateLogout = () => {
     // try {
     //   const res = userLogout();
@@ -154,7 +158,7 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
                 <span
                   className={classMerge(
                     "absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-rose-500",
-                    notificationData?.length > 0 ? "block" : "hidden",
+                    notificationData?.length > 0 ? "block" : "hidden"
                   )}
                 />
               </div>
@@ -191,43 +195,52 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
 
           {/* user profile bubble */}
           {/* @ts-ignore */}
-          {user && user.data && (
+          {user && (
             <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
               <PopoverTrigger className="transit shadow-1 cursor-pointer items-center justify-center gap-3 rounded-full hover:bg-gray-100 lg:flex lg:bg-[#F7F7F8] lg:px-5 lg:py-1.5">
-                {/* <div className="w-9">
+                <div className="w-9">
                   <AspectRatio ratio={1}>
-                    <Image
+                    {/* <Image
                       src={user.data.profile_img || UserProfileImg}
                       alt="user-profile-img"
                       className="rounded-full"
                       fill
-                    />
+                    /> */}
+                    <Avatar>
+                      <AvatarImage src={user.profile_photo_url!} alt="@user" />
+                      {/* <AvatarFallback> {initials}</AvatarFallback> */}
+                    </Avatar>
                   </AspectRatio>
-                </div> */}
-                <div
+                </div>
+                {/* <div
                   className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold text-white`}
                   style={{ backgroundColor }}
                 >
                   {initials}
-                </div>
+                </div> */}
 
                 <div className="hidden flex-col items-start justify-center lg:flex">
-                  <p className="text-base font-semibold">{FirstName}</p>
-                  {/* {
-
+                  <p className="text-base font-semibold">{currentUser?.name}</p>
+                  {
                     {
-                      INDIVIDUAL: (
-                        <p className="-mt-1 text-sm font-light">
-                          Individual Account
-                        </p>
+                      // INDIVIDUAL: (
+                      //   <p className="-mt-1 text-sm font-light">
+                      //     Individual Account
+                      //   </p>
+                      // ),
+                      // ORGANISATION: (
+                      //   <p className="-mt-1 text-sm font-light">
+                      //     Organisation Account
+                      //   </p>
+                      // ),
+                      super_admin: (
+                        <p className="-mt-1 text-sm font-light">Super Admin</p>
                       ),
-                      ORGANISATION: (
-                        <p className="-mt-1 text-sm font-light">
-                          Organisation Account
-                        </p>
+                      admin: (
+                        <p className="-mt-1 text-sm font-light">Admin User</p>
                       ),
-                    }[user.account_type || "INDIVIDUAL"]
-                  } */}
+                    }[currentUser?.current_role || "admin"]
+                  }
                 </div>
 
                 <ChevronDown strokeWidth={1.5} className="hidden lg:flex" />
@@ -238,27 +251,24 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
                     className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold text-white`}
                     style={{ backgroundColor }}
                   >
-                    {initials}
+                    {/* {initials} */}
                   </div>
                   <div className="flex flex-col justify-center">
                     <p className="text-base font-semibold">
-                      <p className="text-base font-semibold">{FirstName}</p>
+                      <p className="text-base font-semibold">{Name}</p>
                     </p>
-                    {/* {
-
+                    {
                       {
-                        INDIVIDUAL: (
+                        super_admin: (
                           <p className="-mt-1 text-sm font-light">
-                            Individual Account
+                            Super Admin
                           </p>
                         ),
-                        ORGANISATION: (
-                          <p className="-mt-1 text-sm font-light">
-                            Organisation Account
-                          </p>
+                        admin: (
+                          <p className="-mt-1 text-sm font-light">Admin User</p>
                         ),
-                      }[user.data.account_type || "INDIVIDUAL"]
-                    } */}
+                      }[currentUser?.current_role || "admin"]
+                    }
                   </div>
                 </div>
                 <Separator className="my-4" />

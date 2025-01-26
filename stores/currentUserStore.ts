@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
@@ -24,31 +25,46 @@ interface UserStore {
   refetchUser: () => Promise<any>;
 }
 
-export const useUserStore = create<UserStore>()((set) => ({
-  user: null,
-  isAuthenticated: false,
-  refetchUser: async () => Promise.resolve(),
-
-  setUser: (userData) =>
-    set(() => ({
-      user: userData,
-      isAuthenticated: !!userData,
-    })),
-
-  loginUser: (userData) =>
-    set(() => ({
-      user: userData,
-      isAuthenticated: true,
-    })),
-
-  logoutUser: () =>
-    set(() => ({
+export const useUserStore = create<UserStore>()(
+  persist(
+    (set) => ({
       user: null,
       isAuthenticated: false,
-    })),
+      refetchUser: async () => Promise.resolve(),
 
-  setRefetchUser: (refetchFn) => set(() => ({ refetchUser: refetchFn })),
-}));
+      setUser: (userData) =>
+        set(() => ({
+          user: userData,
+          isAuthenticated: !!userData,
+        })),
+
+      loginUser: (userData) =>
+        set(() => ({
+          user: userData,
+          isAuthenticated: true,
+        })),
+
+      logoutUser: () =>
+        set(() => ({
+          user: null,
+          isAuthenticated: false,
+        })),
+
+      setRefetchUser: (refetchFn) => set(() => ({ refetchUser: refetchFn })),
+    }),
+    {
+      name: "user-storage", // unique name
+      //@ts-ignore
+      storage: typeof window !== "undefined" ? localStorage : undefined,
+      // Optionally, you can specify which parts of the state to persist
+      //@ts-ignore
+      partialize: (state) => ({
+        user: state.user,
+        isAuthenticated: state.isAuthenticated,
+      }),
+    }
+  )
+);
 
 
 
