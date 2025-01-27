@@ -241,7 +241,6 @@ const Dashboard = () => {
               <span className="text-main-100">{currentUser?.name} 👋</span> How
               is your {timeOfDay} going
             </h1>
-            {/* Hi Mohh_Jumah👋 How is your day going */}
             <p className="text-gray-600">
               Here is the summary of what is presently happening on Goloka
             </p>
@@ -289,12 +288,14 @@ const Dashboard = () => {
                       </span>
                       <p className="font-semibold text-[#333333]">
                         {chartStats?.data
-                          ?.reduce(
-                            (sum: any, item: { admin_fee: any }) =>
-                              sum + item.admin_fee,
-                            0
-                          )
-                          .toFixed(2) || "0.00"}
+                          ? Number(
+                              chartStats.data.reduce(
+                                (sum: number, item: { admin_fee: number }) =>
+                                  sum + (item.admin_fee || 0),
+                                0
+                              )
+                            ).toFixed(2)
+                          : "0.00"}
                       </p>
                     </div>
                   </div>
@@ -306,12 +307,14 @@ const Dashboard = () => {
                       </span>
                       <p className="font-semibold text-[#333333]">
                         {chartStats?.data
-                          ?.reduce(
-                            (sum: any, item: { campaign_fee: any }) =>
-                              sum + item.campaign_fee,
-                            0
-                          )
-                          .toFixed(2) || "0.00"}
+                          ? Number(
+                              chartStats.data.reduce(
+                                (sum: number, item: { campaign_fee: number }) =>
+                                  sum + (item.campaign_fee || 0),
+                                0
+                              )
+                            ).toFixed(2)
+                          : "0.00"}
                       </p>
                     </div>
                   </div>
@@ -320,7 +323,6 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="rounded-2xl bg-white ">
-            {/* <h3 className="mb-10 text-base font-medium">Campaign summary</h3> */}
             <CampaignSummary widgetStats={widgetStats} />
           </div>
         </div>

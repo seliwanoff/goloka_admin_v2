@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // apiService.ts
 import axiosInstance from "./axiosInstance";
 import { UseQueryResult, QueryFunction, useQuery } from "@tanstack/react-query";
@@ -60,9 +63,9 @@ const fetchDataById = async <T>(
 };
 
 const updateDataById = async <T>(
-  resource: string,
   id: string,
-  data: any,
+  resource?: string,
+  data?: any,
   options = {},
 ): Promise<T> => {
   const url = `${resource}/${id}`;
@@ -92,7 +95,7 @@ const uploadQuestionFile = async (
   responseId: string,
   formData: FormData,
 ): Promise<any> => {
-  let toastId: string | number = toast.loading("Uploading file... 0%");
+  const toastId: string | number = toast.loading("Uploading file... 0%");
 
   try {
     const endpoint = `/contributor/responses/${responseId}/answer/upload`;

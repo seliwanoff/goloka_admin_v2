@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { cn, classMerge } from "@/lib/utils";
 import { Pie, PieChart, Sector } from "recharts";
-import {  ClipboardExport } from "iconsax-react";
+import { ClipboardExport } from "iconsax-react";
+import { DynamicChart } from "../dashboard/dynamicWrapper";
 
 const chartDataSummary = [
   { type: "Pending", summary: 3857, fill: "#F2994A" },
@@ -42,36 +43,39 @@ const TotalRevenueCard = ({ widgetStats }: any) => {
   );
 };
 
-const CampaignSummary = ({ widgetStats }:any) => {
+const CampaignSummary = ({ widgetStats }: any) => {
   return (
     <div className="flex flex-col items-center gap-6">
       <TotalRevenueCard widgetStats={widgetStats} />
-      <PieChart width={220} height={220}>
-        <Pie
-          data={chartDataSummary}
-          dataKey="summary"
-          nameKey="type"
-          cx="50%"
-          cy="50%"
-          innerRadius={60}
-          outerRadius={90}
-          fill="#8884d8"
-          label
-        >
-          {chartDataSummary.map((entry, index) => (
-            <Sector
-              key={`sector-${index}`}
-              cx={50}
-              cy={50}
-              innerRadius={60}
-              outerRadius={90}
-              fill={entry.fill}
-              // payload={entry}
-              cornerRadius={10}
-            />
-          ))}
-        </Pie>
-      </PieChart>
+      <DynamicChart>
+        <PieChart width={220} height={220}>
+          <Pie
+            data={chartDataSummary}
+            dataKey="summary"
+            nameKey="type"
+            cx="50%"
+            cy="50%"
+            innerRadius={60}
+            outerRadius={90}
+            fill="#8884d8"
+            label
+          >
+            {chartDataSummary.map((entry, index) => (
+              <Sector
+                key={`sector-${index}`}
+                cx={50}
+                cy={50}
+                innerRadius={60}
+                outerRadius={90}
+                fill={entry.fill}
+                // payload={entry}
+                cornerRadius={10}
+              />
+            ))}
+          </Pie>
+        </PieChart>
+      </DynamicChart>
+
       <div className="flex justify-center gap-6">
         {chartDataSummary.map((item, index) => (
           <div key={index} className="flex items-center gap-2">
