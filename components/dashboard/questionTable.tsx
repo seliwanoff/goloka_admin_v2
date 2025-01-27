@@ -12,6 +12,7 @@ import { Switch } from "@/components/ui/switch";
 
 import { GripHorizontal } from "lucide-react";
 import { Eye, Message } from "iconsax-react";
+import { tS } from "@/helper";
 
 interface Question {
   id: number;
@@ -100,7 +101,7 @@ const QuestionTable: React.FC<QuestionTableProps> = ({ questions }) => {
                 <GripHorizontal className="h-4 w-4" />
               </TableCell>
               <TableCell>{question.label}</TableCell>
-              <TableCell>{question.type}</TableCell>
+              <TableCell>{tS(question.type)}</TableCell>
               <TableCell>
                 <Switch
                   className="scale-75"

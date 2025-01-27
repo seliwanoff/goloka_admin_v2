@@ -1,7 +1,8 @@
-import { cn } from "@/lib/utils";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// import { cn } from "@/lib/utils";
 import axios from "axios";
 import moment from "moment";
-import { usePathname } from "next/navigation";
+// import { usePathname } from "next/navigation";
 import { format } from "date-fns";
 
 export function numberWithCommas(x: any) {
@@ -42,10 +43,10 @@ export const formatDate = (
     .replace("MM", month)
     .replace("YYYY", year.toString());
 };
-interface StatusPillProps {
-  status?: string;
-  className?: string;
-}
+export const tS = (str: string) => {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+};
 
 // Define possible statuses as a union type
 export type Status =
@@ -54,7 +55,9 @@ export type Status =
   | "reviewed"
   | "approved"
   | "rejected"
-  | "accepted";
+  | "accepted"
+  | "running"
+  | "completed"; // Add new statuses
 
 // Utility function to return the appropriate color classes
 export const getStatusColor = (status: Status) => {
@@ -67,13 +70,17 @@ export const getStatusColor = (status: Status) => {
       return "bg-blue-500/5 border-blue-500 text-blue-500";
     case "approved":
     case "accepted":
+    case "completed": // Completed shares the same color as approved
       return "bg-emerald-600/5 border-emerald-600 text-emerald-600";
+    case "running": // New status with its unique color
+      return "bg-yellow-400/5 border-yellow-400 text-yellow-400";
     case "rejected":
       return "bg-red-500/5 border-red-500 text-red-500";
     default:
       return "bg-gray-500/5 border-gray-500 text-gray-500";
   }
 };
+
 
 // Utility function to format the status text
 export const getStatusText = (status: Status | string) => {
@@ -141,7 +148,7 @@ export const formatNotifications = (apiResponse: any) => {
   };
 
   return apiResponse?.data?.map((notification: any) => {
-    const { type, data, created_at } = notification;
+    const {  data, created_at } = notification;
 
     return {
       type: typeMapping[data?.type] || "TASK", // Default to TASK if no mapping exists
