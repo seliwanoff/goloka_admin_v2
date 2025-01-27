@@ -95,6 +95,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
   const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
   const [isAcceptDialogOpen, setIsAcceptDialogOpen] = useState(false);
   const [isAcceptLoading, setIsAcceptLoading] = useState(false);
+  const [isRejectLoading, setIsRejectLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
@@ -183,7 +184,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
     formData.append("status", "approved");
 
     try {
-      await console.log(formData, "formData");
+      // await console.log(formData, "formData");
       const res = await updateCampaignStatus(campaignId as string, formData);
       if (res) {
         setIsAcceptLoading(false);
@@ -205,10 +206,28 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
     title: string;
     description: string;
   }) => {
+    setIsRejectLoading(true);
     const formData = new FormData();
     formData.append("status", "rejected");
     formData.append("message", `${data.title}: ${data.description}`);
     console.log(data, "tht");
+    try {
+      // await console.log(formData, "formData");
+      const res = await updateCampaignStatus(campaignId as string, formData);
+      if (res) {
+        setIsRejectLoading(false);
+        //@ts-ignore
+        toast.success(res?.message);
+        // console.log(res?.message);
+      }
+    } catch (error) {
+      console.log(error);
+      setIsRejectLoading(false);
+      toast.warning(
+        //@ts-ignore
+        error?.message || "Could not perform this action at the moment"
+      );
+    }
   };
   return (
     <>
@@ -219,6 +238,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
         onAccept={handleAcceptCampaign}
       />
       <RejectCampaignDialog
+        loading={isRejectLoading}
         open={isRejectDialogOpen}
         onOpenChange={setIsRejectDialogOpen}
         onSubmit={handleRejectSubmit}

@@ -15,8 +15,10 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { FaSpinner } from "react-icons/fa";
 
 interface RejectCampaignDialogProps {
+  loading: boolean;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (data: { title: string; description: string }) => void;
@@ -34,6 +36,7 @@ const rejectionReasons = [
 ];
 
 export default function RejectCampaignDialog({
+  loading,
   open,
   onOpenChange,
   onSubmit,
@@ -56,14 +59,6 @@ export default function RejectCampaignDialog({
             <DialogTitle className="text-xl font-semibold">
               Reject Campaign
             </DialogTitle>
-            {/* <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6 rounded-full"
-              onClick={() => onOpenChange(false)}
-            >
-              <X className="h-4 w-4" />
-            </Button> */}
           </div>
         </DialogHeader>
 
@@ -108,7 +103,11 @@ export default function RejectCampaignDialog({
           className="w-full bg-red-500 hover:bg-red-600 text-white rounded-full"
           onClick={handleSubmit}
         >
-          Reject campaign
+          {loading ? (
+            <FaSpinner className="animate-spin" />
+          ) : (
+            "Reject campaign"
+          )}
         </Button>
       </DialogContent>
     </Dialog>
