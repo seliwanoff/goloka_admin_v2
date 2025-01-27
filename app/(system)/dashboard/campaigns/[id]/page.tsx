@@ -22,10 +22,12 @@ import moment from "moment";
 import { toast } from "sonner";
 
 import { useRemoteUserStore } from "@/stores/remoteUser";
-import { getCampaignById } from "@/services/analytics";
+import { getCampaignById, updateCampaignStatus } from "@/services/analytics";
 import { getStatusColor } from "@/helper";
 import { cn } from "@/lib/utils";
 import QuestionTable from "@/components/dashboard/questionTable";
+import AcceptCampaignDialog from "@/components/campaign/acceptCampaign";
+import RejectCampaignDialog from "@/components/campaign/rejectCampaign";
 
 const SkeletonBox = ({ className }: { className?: string }) => (
   <div className={`animate-pulse bg-gray-300 ${className}`}></div>
@@ -90,11 +92,14 @@ type PageProps = {};
 
 const TaskDetail: React.FC<PageProps> = ({}) => {
   const [isStepper, setIsStepper] = useState<boolean>(false);
+  const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
+  const [isAcceptDialogOpen, setIsAcceptDialogOpen] = useState(false);
+  const [isAcceptLoading, setIsAcceptLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [isBookmarkLoading, setIsBookmarkLoading] = useState(false);
-  const { id: taskId } = useParams();
+  const { id: campaignId } = useParams();
   const [responseId, setResponseId] = useState<string | null>(null);
 
   const { user } = useRemoteUserStore();
@@ -105,7 +110,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
     refetch,
   } = useQuery({
     queryKey: ["Get task"],
-    queryFn: async () => await getCampaignById(taskId as string),
+    queryFn: async () => await getCampaignById(campaignId as string),
   });
   console.log(task, "task");
 
@@ -172,9 +177,52 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
     return <SkeletonLoader />;
   }
 
+  const handleAcceptCampaign = async () => {
+    setIsAcceptLoading(true);
+    const formData = new FormData();
+    formData.append("status", "approved");
+
+    try {
+      await console.log(formData, "formData");
+      const res = await updateCampaignStatus(campaignId as string, formData);
+      if (res) {
+        setIsAcceptLoading(false);
+        //@ts-ignore
+        toast.success(res?.message);
+        // console.log(res?.message);
+      }
+    } catch (error) {
+      console.log(error);
+      setIsAcceptLoading(false);
+      toast.warning(
+        //@ts-ignore
+        error?.message || "Could not perform this action at the moment"
+      );
+    }
+  };
+
+  const handleRejectSubmit = async (data: {
+    title: string;
+    description: string;
+  }) => {
+    const formData = new FormData();
+    formData.append("status", "rejected");
+    formData.append("message", `${data.title}: ${data.description}`);
+    console.log(data, "tht");
+  };
   return (
     <>
-      {/* <Toaster richColors position={"top-right"} /> */}
+      <AcceptCampaignDialog
+        loading={isAcceptLoading}
+        open={isAcceptDialogOpen}
+        onOpenChange={setIsAcceptDialogOpen}
+        onAccept={handleAcceptCampaign}
+      />
+      <RejectCampaignDialog
+        open={isRejectDialogOpen}
+        onOpenChange={setIsRejectDialogOpen}
+        onSubmit={handleRejectSubmit}
+      />
       <section className="space-y-4 py-8 pt-[34px]">
         <div className="flex items-center justify-between">
           <CustomBreadCrumbs />
@@ -182,7 +230,10 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
           <div className=" items-center justify-center space-x-2 flex">
             {/* @ts-ignore */}
 
-            <Button className="h-auto gap-3 rounded-full px-4 py-2 text-sm text-[#FF4C4C]  bg-[#FFEDED] hover:text-[#ed1d1d]">
+            <Button
+              onClick={() => setIsRejectDialogOpen(true)}
+              className="h-auto gap-3 rounded-full px-4 py-2 text-sm text-[#FF4C4C]  bg-[#FFEDED] hover:text-[#ed1d1d]"
+            >
               <span>X</span>
               Reject
             </Button>
@@ -194,7 +245,8 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
             </Button>
 
             <Button
-              disabled={isContributeDisabled()}
+              onClick={() => setIsAcceptDialogOpen(true)}
+              // disabled={isContributeDisabled()}
               className="h-auto gap-3 rounded-full bg-main-100 px-4 py-2 text-sm shadow-lg shadow-blue-50"
             >
               <span>
@@ -365,41 +417,12 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
           {/* -- Tasks section */}
           {/* ####################################### */}
           <div className="col-span-5 mt-8">
-            {/* <div className="mb-6 flex justify-between">
-              <h3 className="text-lg font-semibold text-[#333]">
-                Related Tasks
-              </h3>
-
-              <Link
-                href="/dashboard/marketplace"
-                className="text-lg font-semibold text-main-100"
-              >
-                See all
-              </Link>
-            </div> */}
-
             {/* Task list */}
-            <div >
+            <div>
               {/* @ts-ignore */}
               <QuestionTable questions={task?.data?.questions} />
             </div>
           </div>
-
-          {/* MOBILE CTA */}
-          {/* <div className="fixed bottom-0 left-0 z-10 flex w-full items-center justify-start space-x-2 bg-white p-5 md:hidden">
-
-            {task?.data?.responses && task.data.responses.length > 0 && (
-              <Button
-                onClick={onViewResponse}
-                className="h-auto gap-3 rounded-full border border-main-100 bg-white px-8 py-3 text-sm text-main-100 shadow-lg shadow-main-100 hover:bg-main-100 hover:text-white"
-              >
-                <span>
-                  <Eye size={20} />
-                </span>
-                View
-              </Button>
-            )}
-          </div> */}
         </>
       </section>
     </>

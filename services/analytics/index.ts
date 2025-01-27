@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { queryClient } from "@/components/layout/tanstackProvider";
-import { fetchData, ServerResponse, updateDataById } from "@/lib/api";
+import { fetchData, postData, ServerResponse } from "@/lib/api";
 import { UseQueryResult } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
 
@@ -216,18 +216,36 @@ export const getCampaignById = async (
 //   }
 // };
 
+// export const updateCampaignStatus = async (
+//   userId: string,
+//   data: FormData
+// ): Promise<ServerResponseOrNull<any>> => {
+//   try {
+//     return await updateDataById<ServerResponse<any>>(
+//       `campaigns/${userId}/status-update`,
+//       data
+//     );
+//   } catch (error) {
+//     console.log(error);
+//     return null;
+//   }
+// };
+
 export const updateCampaignStatus = async (
   userId: string,
   data: FormData
-): Promise<ServerResponseOrNull<any>> => {
-  try {
-    return await updateDataById<ServerResponse<any>>(
-      `campaigns/${userId}/status-update`,
-      undefined,
-      data
-    );
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
-};
+): Promise<UseQueryResult<AxiosResponse<any>>> =>
+  await queryClient.fetchQuery({
+    queryKey: ["ResetPassword"],
+    queryFn: async () => {
+      try {
+        return await postData<ServerResponse<any>>(
+          `campaigns/${userId}/status-update`,
+          data
+        );
+      } catch (error) {
+        console.error("Error updating campaigns:", error);
+        throw error;
+      }
+    },
+  });
