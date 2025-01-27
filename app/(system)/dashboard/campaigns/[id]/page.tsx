@@ -436,7 +436,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
           {/* ####################################### */}
           {/* -- Tasks section */}
           {/* ####################################### */}
-          <div className="col-span-5 mt-8">
+          <div className=" mt-8 bg-[#fff]">
             {/* Task list */}
             <div>
               {/* @ts-ignore */}

@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
+
 import { GripHorizontal } from "lucide-react";
 import { Eye, Message } from "iconsax-react";
 
@@ -64,7 +64,9 @@ const QuestionTable: React.FC<QuestionTableProps> = ({ questions }) => {
 
   return (
     <div className="w-full rounded">
-      <div className="p-4 font-bold border-b">{data.length} Questions</div>
+      <div className="p-4 font-bold border-b border-[#F2F2F2]">
+        {data.length} Questions
+      </div>
       <Table>
         <TableHeader>
           <TableRow>
@@ -85,8 +87,12 @@ const QuestionTable: React.FC<QuestionTableProps> = ({ questions }) => {
               onDragEnd={handleDragEnd}
               onDragOver={(e) => e.preventDefault()}
               className={`
-                hover:bg-gray-100
-                ${dragOverItemRef.current === index ? "bg-gray-200" : ""}
+                hover:bg-gray-50
+                ${
+                  dragOverItemRef.current === index ? "bg-gray-200" : ""
+                } cursor-move   ${
+                index !== data.length - 1 ? "border-b border-[#F2F2F2]" : ""
+              }
                 cursor-move
               `}
             >
@@ -104,22 +110,18 @@ const QuestionTable: React.FC<QuestionTableProps> = ({ questions }) => {
               </TableCell>
               <TableCell>
                 <div className="flex gap-2">
-                  <Button variant="secondary" size="default" className="text sm">
+                  <button className="text-xs px-2 py-1  flex items-center bg-[#F8F8F8] rounded-full">
                     <span className="mr-2">
                       <Eye size="16" color="#000" />
                     </span>
                     View
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    size="default"
-                    className="text-[#3365E3] bg-[#cad6f5] text-xs px-2 py-1"
-                  >
+                  </button>
+                  <button className="text-[#3365E3] bg-[#cad6f5] text-xs px-2 py-1 flex items-center rounded-full">
                     <span className="mr-2">
                       <Message size="14" color="#3365E3" />
                     </span>
-                    Review
-                  </Button>
+                    <span> Review</span>
+                  </button>
                 </div>
               </TableCell>
             </TableRow>
