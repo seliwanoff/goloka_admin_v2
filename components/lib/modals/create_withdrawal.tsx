@@ -11,10 +11,10 @@ import { useMediaQuery } from "@react-hook/media-query";
 import { useShowPin, useWithdrawStepper } from "@/stores/misc";
 import { useAddBeneficiaryOverlay, useWithdrawOverlay } from "@/stores/overlay";
 import { cn } from "@/lib/utils";
-import WithdrawalStepper from "@/components/wallet_comps/withdrawal_stepper";
+// import WithdrawalStepper from "@/components/wallet_comps/withdrawal_stepper";
 import { ArrowLeft } from "iconsax-react";
 import { useUserStore } from "@/stores/currentUserStore";
-import CreatePinComponent from "@/components/wallet_comps/createPin/createPinComponent";
+// import CreatePinComponent from "@/components/wallet_comps/createPin/createPinComponent";
 
 const CreateWithdrawal = () => {
   const { open, setOpen } = useWithdrawOverlay();
@@ -75,7 +75,7 @@ const CreateWithdrawal = () => {
                 )}
               />
 
-              <WithdrawalStepper />
+              {/* <WithdrawalStepper /> */}
             </DialogContent>
           </Dialog>
         </>
@@ -113,7 +113,7 @@ const CreateWithdrawal = () => {
               </div>
 
               <div className="mt-11">
-                <WithdrawalStepper />
+                {/* <WithdrawalStepper /> */}
               </div>
             </div>
           </div>

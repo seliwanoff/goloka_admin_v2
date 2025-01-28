@@ -111,12 +111,12 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({
               {/* Attached files section */}
               {msg.image_paths && msg.image_paths.length > 0 && (
                 <div className={`mt-2 ${msg.message ? "border-t pt-2" : ""}`}>
-                  {msg.image_paths.map((imageUrl, index) => {
+                  {msg.image_paths.map((imageUrl: string, index: React.Key | null | undefined) => {
                     // Safely handle different possible formats of image paths
                     const fileName =
                       typeof imageUrl === "string"
                         ? imageUrl.split("/").pop()
-                        : (imageUrl as any)?.name || `Image ${index + 1}`;
+                        : (imageUrl as any)?.name || `Image ${index}`;
 
                     return (
                       <div key={index} className="mb-1 flex items-center gap-2">
@@ -128,7 +128,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({
                     );
                   })}
 
-                  {msg.image_paths.map((imageUrl, index) => {
+                  {msg.image_paths.map((imageUrl: File, index: React.Key | null | undefined) => {
                     // Safely handle image URL
                     const src =
                       typeof imageUrl === "string"
@@ -139,7 +139,7 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({
                       <Image
                         key={index}
                         src={src}
-                        alt={`Attached image ${index + 1}`}
+                        alt={`Attached image ${index}`}
                         width={200}
                         height={200}
                         className="mt-2 rounded-lg"

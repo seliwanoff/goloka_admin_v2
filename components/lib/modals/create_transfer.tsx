@@ -12,7 +12,7 @@ import { useTransferStepper, useWithdrawStepper } from "@/stores/misc";
 import { useTransferOverlay } from "@/stores/overlay";
 import { cn } from "@/lib/utils";
 import { ArrowLeft } from "iconsax-react";
-import TransferStepper from "@/components/wallet_comps/transfer_stepper";
+// import TransferStepper from "@/components/wallet_comps/transfer_stepper";
 
 const CreateTransfer = () => {
   const { openTransfer, setOpenTransfer } = useTransferOverlay();
@@ -64,7 +64,7 @@ const CreateTransfer = () => {
                   step === 2 && "mt-8",
                 )}
               />
-              <TransferStepper />
+              {/* <TransferStepper /> */}
             </DialogContent>
           </Dialog>
         </>
@@ -100,7 +100,7 @@ const CreateTransfer = () => {
               </div>
 
               <div className="mt-11">
-                <TransferStepper />
+                {/* <TransferStepper /> */}
               </div>
             </div>
           </div>
