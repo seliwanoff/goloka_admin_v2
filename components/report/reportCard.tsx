@@ -20,7 +20,7 @@ type Report = {
 };
 
 type ReportCardGridProps = {
-  reports: Report[];
+  reports: any[];
   isLoading?: boolean;
   error?: Error | null;
   onReportClick?: (report: Report) => void;

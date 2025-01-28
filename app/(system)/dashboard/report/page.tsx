@@ -6,13 +6,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { chunkArray, cn } from "@/lib/utils";
+import { chunkArray, cn, myReports } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar, CloseCircle, Message, Sms } from "iconsax-react";
 import { Search } from "lucide-react";
 import React, { useState } from "react";
 import { Calendar as CalenderDate } from "@/components/ui/calendar";
-import Img from "@/public/assets/images/reviewer.jpg";
+
 import Image, { StaticImageData } from "next/image";
 import Pagination from "@/components/lib/navigation/Pagination";
 import {
@@ -116,6 +116,7 @@ const Report = () => {
         <ReportCardGrid
           reports={currentPageData}
           isLoading={false}
+          //@ts-ignore
           onReportClick={handleOpenReport}
           columns={1}
         />
@@ -256,173 +257,4 @@ interface IReport {
   date: string;
 }
 
-export const myReports = [
-  {
-    title: "Report title goes here",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
-    photo: Img,
-    name: "Mohh_Jumah",
-    date: "Tue 18th June, 2024",
-  },
-  {
-    title: "Report title goes here",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
-    photo: Img,
-    name: "Mohh_Jumah",
-    date: "Tue 29th June, 2024",
-  },
-  {
-    title: "Report title goes here",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
-    photo: Img,
-    name: "Mohh_Jumah",
-    date: "Tue 28th June, 2024",
-  },
-  {
-    title: "Report title goes here",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
-    photo: Img,
-    name: "Mohh_Jumah",
-    date: "Tue 18th June, 2024",
-  },
-  {
-    title: "Report title goes here",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
-    photo: Img,
-    name: "Mohh_Jumah",
-    date: "Tue 29th June, 2024",
-  },
-  {
-    title: "Report title goes here",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
-    photo: Img,
-    name: "Mohh_Jumah",
-    date: "Tue 28th June, 2024",
-  },
-  {
-    title: "Report title goes here",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
-    photo: Img,
-    name: "Mohh_Jumah",
-    date: "Tue 18th June, 2024",
-  },
-  {
-    title: "Report title goes here",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
-    photo: Img,
-    name: "Mohh_Jumah",
-    date: "Tue 29th June, 2024",
-  },
-  {
-    title: "Report title goes here",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
-    photo: Img,
-    name: "Mohh_Jumah",
-    date: "Tue 28th June, 2024",
-  },
-  {
-    title: "Report title goes here",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
-    photo: Img,
-    name: "Mohh_Jumah",
-    date: "Tue 18th June, 2024",
-  },
-  {
-    title: "Report title goes here",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
-    photo: Img,
-    name: "Mohh_Jumah",
-    date: "Tue 29th June, 2024",
-  },
-  {
-    title: "Report title goes here",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
-    photo: Img,
-    name: "Mohh_Jumah",
-    date: "Tue 28th June, 2024",
-  },
-  {
-    title: "Report title goes here",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
-    photo: Img,
-    name: "Mohh_Jumah",
-    date: "Tue 18th June, 2024",
-  },
-  {
-    title: "Report title goes here",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
-    photo: Img,
-    name: "Mohh_Jumah",
-    date: "Tue 29th June, 2024",
-  },
-  {
-    title: "Report4 title goes here",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
-    photo: Img,
-    name: "Mohh_Jumah",
-    date: "Tue 28th June, 2024",
-  },
-  {
-    title: "Report title goes here",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
-    photo: Img,
-    name: "Mohh_Jumah",
-    date: "Tue 18th June, 2024",
-  },
-  {
-    title: "Report title goes here",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
-    photo: Img,
-    name: "Mohh_Jumah",
-    date: "Tue 29th June, 2024",
-  },
-  {
-    title: "Report title goes here",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
-    photo: Img,
-    name: "Mohh_Jumah",
-    date: "Tue 28th June, 2024",
-  },
-  {
-    title: "Report title goes here",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
-    photo: Img,
-    name: "Mohh_Jumah",
-    date: "Tue 18th June, 2024",
-  },
-  {
-    title: "Report title goes here",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
-    photo: Img,
-    name: "Mohh_Jumah",
-    date: "Tue 29th June, 2024",
-  },
-  {
-    title: "Report 2 title goes here",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
-    photo: Img,
-    name: "Mohh_Jumah",
-    date: "Tue 28th June, 2024",
-  },
-];
+

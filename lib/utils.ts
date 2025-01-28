@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prefer-const */
 import clsx from "clsx";
-// import { type ClassValue } from "clsx";
+import Img from "@/public/assets/images/reviewer.jpg";
 import { twMerge } from "tailwind-merge";
 import React from "react";
 import { baseURL } from "./axiosInstance";
@@ -89,5 +91,177 @@ export const walletStatus = (status: string) => {
       return "bg-[#FF0000] border border-[#FF0000] bg-opacity-5 text-[#FF0000]";
   }
 };
+
+
+export const myReports = [
+  {
+    title: "Report title goes here",
+    description:
+      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
+    photo: Img,
+    name: "Mohh_Jumah",
+    date: "Tue 18th June, 2024",
+  },
+  {
+    title: "Report title goes here",
+    description:
+      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
+    photo: Img,
+    name: "Mohh_Jumah",
+    date: "Tue 29th June, 2024",
+  },
+  {
+    title: "Report title goes here",
+    description:
+      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
+    photo: Img,
+    name: "Mohh_Jumah",
+    date: "Tue 28th June, 2024",
+  },
+  {
+    title: "Report title goes here",
+    description:
+      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
+    photo: Img,
+    name: "Mohh_Jumah",
+    date: "Tue 18th June, 2024",
+  },
+  {
+    title: "Report title goes here",
+    description:
+      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
+    photo: Img,
+    name: "Mohh_Jumah",
+    date: "Tue 29th June, 2024",
+  },
+  {
+    title: "Report title goes here",
+    description:
+      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
+    photo: Img,
+    name: "Mohh_Jumah",
+    date: "Tue 28th June, 2024",
+  },
+  {
+    title: "Report title goes here",
+    description:
+      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
+    photo: Img,
+    name: "Mohh_Jumah",
+    date: "Tue 18th June, 2024",
+  },
+  {
+    title: "Report title goes here",
+    description:
+      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
+    photo: Img,
+    name: "Mohh_Jumah",
+    date: "Tue 29th June, 2024",
+  },
+  {
+    title: "Report title goes here",
+    description:
+      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
+    photo: Img,
+    name: "Mohh_Jumah",
+    date: "Tue 28th June, 2024",
+  },
+  {
+    title: "Report title goes here",
+    description:
+      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
+    photo: Img,
+    name: "Mohh_Jumah",
+    date: "Tue 18th June, 2024",
+  },
+  {
+    title: "Report title goes here",
+    description:
+      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
+    photo: Img,
+    name: "Mohh_Jumah",
+    date: "Tue 29th June, 2024",
+  },
+  {
+    title: "Report title goes here",
+    description:
+      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
+    photo: Img,
+    name: "Mohh_Jumah",
+    date: "Tue 28th June, 2024",
+  },
+  {
+    title: "Report title goes here",
+    description:
+      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
+    photo: Img,
+    name: "Mohh_Jumah",
+    date: "Tue 18th June, 2024",
+  },
+  {
+    title: "Report title goes here",
+    description:
+      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
+    photo: Img,
+    name: "Mohh_Jumah",
+    date: "Tue 29th June, 2024",
+  },
+  {
+    title: "Report4 title goes here",
+    description:
+      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
+    photo: Img,
+    name: "Mohh_Jumah",
+    date: "Tue 28th June, 2024",
+  },
+  {
+    title: "Report title goes here",
+    description:
+      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
+    photo: Img,
+    name: "Mohh_Jumah",
+    date: "Tue 18th June, 2024",
+  },
+  {
+    title: "Report title goes here",
+    description:
+      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
+    photo: Img,
+    name: "Mohh_Jumah",
+    date: "Tue 29th June, 2024",
+  },
+  {
+    title: "Report title goes here",
+    description:
+      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
+    photo: Img,
+    name: "Mohh_Jumah",
+    date: "Tue 28th June, 2024",
+  },
+  {
+    title: "Report title goes here",
+    description:
+      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
+    photo: Img,
+    name: "Mohh_Jumah",
+    date: "Tue 18th June, 2024",
+  },
+  {
+    title: "Report title goes here",
+    description:
+      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
+    photo: Img,
+    name: "Mohh_Jumah",
+    date: "Tue 29th June, 2024",
+  },
+  {
+    title: "Report 2 title goes here",
+    description:
+      "Lorem ipsum dolor sit amet consectetur. Aliquam vitae amet purus lorem nunc. Odio vestibulum ...",
+    photo: Img,
+    name: "Mohh_Jumah",
+    date: "Tue 28th June, 2024",
+  },
+];
 
 

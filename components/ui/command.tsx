@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 // components/ui/command.tsx
 import * as React from "react";
 import { type DialogProps } from "@radix-ui/react-dialog";
