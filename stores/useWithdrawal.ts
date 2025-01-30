@@ -1,4 +1,4 @@
-import { withdrawFunds } from "@/services/wallets";
+// import { withdrawFunds } from "@/services/wallets";
 import { toast } from "sonner";
 import { create } from "zustand";
 
@@ -57,15 +57,10 @@ export const useWalletStore = create<TransactionState>((set) => ({
     set({ loading: true, error: null, response: null }); // Start loading
 
     try {
-      const response = await withdrawFunds(
-        amount,
-        pin,
-        bank_code,
-        account_number,
-        save_account,
-      );
-
+      const response = await [];
+//@ts-ignore
       set({ response: response.data, loading: false }); // Save response and stop loading
+      //@ts-ignore
       console.log("Transaction Successful:", response.data);
     } catch (error: any) {
       // console.log(error?.response?.data?.message, "jgjjgjgj");

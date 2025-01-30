@@ -1,4 +1,4 @@
-import { TransferFunds, withdrawFunds } from "@/services/wallets";
+// import { TransferFunds, withdrawFunds } from "@/services/wallets";
 import { toast } from "sonner";
 import { create } from "zustand";
 
@@ -49,7 +49,7 @@ setAccountName: (accountName) => set({ accountName }),
 
       try {
         //@ts-ignore
-        const response = await TransferFunds(amount, pin, wallet_id);
+        const response = await [];
         //@ts-ignore
         set({ response: response, loading: false }); // Save response and stop loading
         console.log("Transaction Successful:", response);
