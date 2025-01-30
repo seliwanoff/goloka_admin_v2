@@ -66,7 +66,7 @@ const QuestionTable: React.FC<QuestionTableProps> = ({ questions }) => {
   return (
     <div className="w-full rounded">
       <div className="p-4 font-bold border-b border-[#F2F2F2]">
-        {data.length} Questions
+        {data?.length} Questions
       </div>
       <Table>
         <TableHeader>
@@ -79,7 +79,7 @@ const QuestionTable: React.FC<QuestionTableProps> = ({ questions }) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map((question, index) => (
+          {data?.map((question, index) => (
             <TableRow
               key={question.id}
               draggable

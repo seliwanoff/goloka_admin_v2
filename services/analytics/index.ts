@@ -3,7 +3,7 @@
 import { queryClient } from "@/components/layout/tanstackProvider";
 import { fetchData, postData, ServerResponse } from "@/lib/api";
 import { UseQueryResult } from "@tanstack/react-query";
-import { AxiosResponse } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 
 export type ServerResponseOrNull<T> = ServerResponse<T> | null;
 
@@ -171,20 +171,51 @@ export const getAllCampaigns = async (params?: {
   }
 };
 
+// export const getCampaignById = async (
+//   Id: string
+// ): Promise<UseQueryResult<AxiosResponse<any>>> =>
+//   await queryClient.fetchQuery({
+//     queryKey: ["Task by TaskId"],
+//     queryFn: async () => {
+//       try {
+//         return await fetchData(`campaigns/${Id}/questions`);
+//       } catch (error) {
+//         // return null;
+//         console.log(error);
+//       }
+//     },
+//   });
+
 export const getCampaignById = async (
-  Id: string
-): Promise<UseQueryResult<AxiosResponse<any>>> =>
-  await queryClient.fetchQuery({
-    queryKey: ["Task by TaskId"],
+  id: string
+): Promise<UseQueryResult<any>> => {
+  return await queryClient.fetchQuery({
+    queryKey: ["campaign by TaskId", id], // Include id in queryKey for proper caching
     queryFn: async () => {
       try {
-        return await fetchData(`campaigns/${Id}/questions`);
+        const response = await fetchData<any>(`campaigns/${id}/questions`);
+        if (!response) {
+          throw new Error("No data received from server");
+        }
+
+        return response;
       } catch (error) {
-        // return null;
-        console.log(error);
+        if (error instanceof AxiosError) {
+          throw new Error(
+            error.response?.data?.message || "Failed to fetch campaign data"
+          );
+        }
+        throw new Error(
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred"
+        );
       }
     },
+    staleTime: 5 * 60 * 1000,
   });
+};
+
 // export const updateCampaignStatus = async (
 //   Id: string
 // ): Promise<UseQueryResult<AxiosResponse<any>>> =>
