@@ -1,9 +1,7 @@
-import React from 'react'
+import MessagingInterface from "@/components/messaging/messaging-interface";
 
-const Messages = () => {
-  return (
-    <div>Messages</div>
-  )
+
+
+export default function MessagesPage() {
+  return <MessagingInterface />;
 }
-
-export default Messages
