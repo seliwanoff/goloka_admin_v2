@@ -93,7 +93,7 @@ const MessagingInterface: React.FC = () => {
   };
 
   return (
-    <div className="flex h-[850px] bg-white p-4">
+    <div className="flex h-[850px] bg-white p-4 mt-8 rounded-2xl">
       <div className="flex w-full border rounded-lg overflow-hidden">
         {/* Sidebar */}
         <div
