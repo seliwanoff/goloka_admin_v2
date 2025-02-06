@@ -1,9 +1,8 @@
-import React from 'react'
+import ProfilePage from "@/components/user/ProfileAvatar";
+import React from "react";
 
 const Users = () => {
-  return (
-    <div>Users</div>
-  )
-}
+  return <ProfilePage />;
+};
 
-export default Users
+export default Users;
