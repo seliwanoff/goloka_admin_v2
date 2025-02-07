@@ -74,16 +74,26 @@ const Page = () => {
   const currentPageData = pages[currentPage - 1] || [];
   const [activeStatus, setActiveStatus] = useState<string>("all");
 
-  const {
+   const {
     data: Campaigns,
     error: campaignsError,
     isLoading: isCampaignsLoading,
   } = useQuery({
-    queryKey: ["recent-campaigns"],
-    queryFn: () => getAllCampaigns({ per_page: 10 }),
+    queryKey: ["recent-campaigns", currentPage, pageSize],
+    queryFn: () => getAllCampaigns({
+      per_page: pageSize,
+      page: currentPage
+    }),
     retry: 2,
   });
+ const handlePageChange = (page: number) => {
+   setCurrentPage(page);
+ };
 
+ const handleRowSizeChange = (size: number) => {
+   setPageSize(size);
+   setCurrentPage(1); // Reset to first page when changing page size
+ };
   useEffect(() => {
     function filter(status: string) {
       return campaignList?.filter(
@@ -116,7 +126,7 @@ const Page = () => {
       setFilteredData(campaignGroupList);
     }
   }, [activeTab]);
-
+  console.log(Campaigns, "Campaigns?.data");
   const transformedCampaigns =
     Campaigns?.data?.map(
       (campaign: {
@@ -145,24 +155,6 @@ const Page = () => {
       {/* HEADING */}
       <div className="mb-8 flex items-center justify-between">
         <h2 className="text-xl font-semibold text-main-100">Campaigns</h2>
-
-        {/* <div className="inline-flex items-center gap-2">
-          <Button
-            variant="outline"
-            className="rounded-[50px] border-main-100 text-main-100"
-          >
-            Create campaign group
-          </Button>
-          <Button
-            variant="outline"
-            className="items-center gap-2 rounded-[50px] bg-main-100 text-white"
-          >
-            <span>
-              <Note />
-            </span>
-            Create new campaign
-          </Button>
-        </div> */}
       </div>
 
       {/* TABLE OPTIONS */}
@@ -254,14 +246,15 @@ const Page = () => {
 
         {/* Pagination */}
         <div className="mt-6">
-          <Pagination
-            // @ts-ignore
-            totalPages={pages?.length}
-            currentPage={currentPage}
-            onPageChange={setCurrentPage}
-            RowSize={pageSize}
-            onRowSizeChange={setPageSize}
-          />
+          {/* @ts-ignore */}
+          {Campaigns?.pagination && (
+            <Pagination
+            {/* @ts-ignore */}
+              pagination={Campaigns.pagination}
+              onPageChange={handlePageChange}
+              onRowSizeChange={handleRowSizeChange}
+            />
+          )}
         </div>
       </div>
     </section>
@@ -292,7 +285,6 @@ const getTypeColor = (type: string) => {
       return "bg-gray-100 text-gray-800";
   }
 };
-
 
 export type Status = "draft" | "running" | "completed" | "archived";
 

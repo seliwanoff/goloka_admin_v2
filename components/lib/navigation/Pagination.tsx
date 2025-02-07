@@ -12,36 +12,36 @@ import { cn } from "@/lib/utils";
 import { ArrowLeft2, ArrowRight2 } from "iconsax-react";
 
 interface PaginationProps {
-  totalItems: number;
-  currentPage: number;
-  pageSize: number;
+  pagination: {
+    current_page: number;
+    per_page: number;
+    total_items: number;
+    total_pages: number;
+  };
   onPageChange: (page: number) => void;
   onRowSizeChange: (size: number) => void;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
-  totalItems,
-  currentPage,
-  pageSize,
+  pagination,
   onPageChange,
   onRowSizeChange,
 }) => {
-  // Calculate total pages based on total items and page size
-  const totalPages = Math.ceil(totalItems / pageSize);
+  const { current_page, per_page, total_items, total_pages } = pagination;
 
   const getPageNumbers = () => {
     const pageGroupSize = 3;
-    let startPage = Math.max(1, currentPage - Math.floor(pageGroupSize / 2));
-    const endPage = Math.min(totalPages, startPage + pageGroupSize - 1);
+    let startPage = Math.max(1, current_page - Math.floor(pageGroupSize / 2));
+    const endPage = Math.min(total_pages, startPage + pageGroupSize - 1);
 
     // Adjust start page if we're near the end
-    if (endPage === totalPages) {
-      startPage = Math.max(1, totalPages - pageGroupSize + 1);
+    if (endPage === total_pages) {
+      startPage = Math.max(1, total_pages - pageGroupSize + 1);
     }
 
     return Array.from(
       { length: Math.min(pageGroupSize, endPage - startPage + 1) },
-      (_, index) => startPage + index,
+      (_, index) => startPage + index
     );
   };
 
@@ -53,7 +53,7 @@ const Pagination: React.FC<PaginationProps> = ({
         <div className="hidden items-center gap-3 sm:inline-flex">
           <p>Rows per page</p>
           <Select
-            value={pageSize?.toString()}
+            value={per_page?.toString()}
             onValueChange={(value) => onRowSizeChange(Number(value))}
           >
             <SelectTrigger className="h-7 w-auto gap-2 px-2 focus:border-main-100 focus-visible:ring-0 focus-visible:ring-offset-0">
@@ -62,7 +62,7 @@ const Pagination: React.FC<PaginationProps> = ({
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Rows per page</SelectLabel>
-                {[10, 20, 30, 40, 50].map((size) => (
+                {[9, 18, 27, 36, 45].map((size) => (
                   <SelectItem key={size} value={size.toString()}>
                     {size}
                   </SelectItem>
@@ -71,8 +71,8 @@ const Pagination: React.FC<PaginationProps> = ({
             </SelectContent>
           </Select>
         </div>
-        <span>
-          {currentPage} of {totalPages}
+        <span className="text-sm text-gray-600">
+          Page {current_page} of {total_pages} ({total_items} items)
         </span>
       </div>
       <div className="flex items-center justify-between gap-4">
@@ -80,8 +80,8 @@ const Pagination: React.FC<PaginationProps> = ({
           variant="outline"
           size="sm"
           className="border-0 bg-transparent p-0 hover:bg-transparent hover:text-main-100"
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 1}
+          onClick={() => onPageChange(current_page - 1)}
+          disabled={current_page === 1}
         >
           <span>
             <ArrowLeft2 size="20" />
@@ -93,9 +93,9 @@ const Pagination: React.FC<PaginationProps> = ({
             variant="outline"
             className={cn(
               "h-6 w-6 p-2 text-sm",
-              page === currentPage
+              page === current_page
                 ? "bg-main-100 text-white hover:bg-blue-700 hover:text-white"
-                : "",
+                : ""
             )}
             key={page}
             onClick={() => onPageChange(page)}
@@ -107,8 +107,8 @@ const Pagination: React.FC<PaginationProps> = ({
           variant="outline"
           size="sm"
           className="border-0 bg-transparent p-0 hover:bg-transparent hover:text-main-100"
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
+          onClick={() => onPageChange(current_page + 1)}
+          disabled={current_page === total_pages}
         >
           Next{" "}
           <span>

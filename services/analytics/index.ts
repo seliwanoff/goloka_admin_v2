@@ -2,6 +2,7 @@
 
 import { queryClient } from "@/components/layout/tanstackProvider";
 import { fetchData, postData, ServerResponse } from "@/lib/api";
+import { useContributorStore } from "@/stores/contributors";
 import { UseQueryResult } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
 
@@ -90,6 +91,29 @@ export const getRecentCampaigns = async (params?: {
     return await fetchData<ServerResponse<any>>(
       `recent-campaigns${queryString}`
     );
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+export const getUsers = async (params?: {
+  // user_type = "useContributorStore";
+  status?: string;
+  per_page?: number;
+  page?: number;
+}): Promise<ServerResponseOrNull<any>> => {
+  try {
+    const queryParams = new URLSearchParams();
+
+    if (params?.per_page)
+      queryParams.set("per_page", params.per_page.toString());
+    if (params?.page) queryParams.set("page", params.page.toString());
+
+    const queryString = queryParams.toString()
+      ? `?${queryParams.toString()}`
+      : "";
+
+    return await fetchData<ServerResponse<any>>(`users${queryString}`);
   } catch (error) {
     console.error(error);
     return null;

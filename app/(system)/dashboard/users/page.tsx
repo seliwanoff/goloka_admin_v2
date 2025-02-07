@@ -1,8 +1,31 @@
+
+'use client'
+import TabbedDataDisplay from "@/components/dashboard/tableData";
 import ProfilePage from "@/components/user/ProfileAvatar";
+import { getUsers } from "@/services/analytics";
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
 
 const Users = () => {
-  return <ProfilePage />;
+    const {
+      data: users,
+      error: userError,
+      isLoading,
+    } = useQuery({
+      queryKey: ["recent-campaigns"],
+      queryFn: () => getUsers({ per_page: 10 }),
+      retry: 2,
+    });
+  return (
+    <div>
+      <ProfilePage />
+      <TabbedDataDisplay
+        recentCampaigns={[]}
+        isLoading={isLoading}
+        recentUsers={users?.data}
+      />
+    </div>
+  );
 };
 
 export default Users;

@@ -188,6 +188,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
       const res = await updateCampaignStatus(campaignId as string, formData);
       if (res) {
         setIsAcceptLoading(false);
+        refetch();
         //@ts-ignore
         toast.success(res?.message);
         // console.log(res?.message);
@@ -216,6 +217,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
       const res = await updateCampaignStatus(campaignId as string, formData);
       if (res) {
         setIsRejectLoading(false);
+        refetch();
         //@ts-ignore
         toast.success(res?.message);
         // console.log(res?.message);
@@ -263,7 +265,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
               </span>
               Review
             </Button>
-
+            {task?.data?.campaign?.status.toLowerCase() !== "approved" && (
             <Button
               onClick={() => setIsAcceptDialogOpen(true)}
               // disabled={isContributeDisabled()}
@@ -274,6 +276,8 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
               </span>
               Accept Campaign
             </Button>
+
+)}
           </div>
         </div>
 
