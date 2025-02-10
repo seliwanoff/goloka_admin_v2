@@ -74,26 +74,27 @@ const Page = () => {
   const currentPageData = pages[currentPage - 1] || [];
   const [activeStatus, setActiveStatus] = useState<string>("all");
 
-   const {
+  const {
     data: Campaigns,
     error: campaignsError,
     isLoading: isCampaignsLoading,
   } = useQuery({
     queryKey: ["recent-campaigns", currentPage, pageSize],
-    queryFn: () => getAllCampaigns({
-      per_page: pageSize,
-      page: currentPage
-    }),
+    queryFn: () =>
+      getAllCampaigns({
+        per_page: pageSize,
+        page: currentPage,
+      }),
     retry: 2,
   });
- const handlePageChange = (page: number) => {
-   setCurrentPage(page);
- };
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
- const handleRowSizeChange = (size: number) => {
-   setPageSize(size);
-   setCurrentPage(1); // Reset to first page when changing page size
- };
+  const handleRowSizeChange = (size: number) => {
+    setPageSize(size);
+    setCurrentPage(1); // Reset to first page when changing page size
+  };
   useEffect(() => {
     function filter(status: string) {
       return campaignList?.filter(
@@ -249,7 +250,8 @@ const Page = () => {
           {/* @ts-ignore */}
           {Campaigns?.pagination && (
             <Pagination
-            {/* @ts-ignore */}
+              //@ts-ignore
+
               pagination={Campaigns.pagination}
               onPageChange={handlePageChange}
               onRowSizeChange={handleRowSizeChange}
