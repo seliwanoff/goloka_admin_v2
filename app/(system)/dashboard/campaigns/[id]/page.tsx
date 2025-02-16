@@ -10,7 +10,7 @@ import React, { useState, useEffect, useMemo } from "react";
 
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
-import { Dot, Eye } from "lucide-react";
+import { Dot, Eye, X } from "lucide-react";
 import { ClipboardText, Message, Note } from "iconsax-react";
 
 import Link from "next/link";
@@ -186,9 +186,10 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
     try {
       // await console.log(formData, "formData");
       const res = await updateCampaignStatus(campaignId as string, formData);
+      console.log(res, "rer");
       if (res) {
-        setIsAcceptLoading(false);
         refetch();
+        setIsAcceptLoading(false);
         //@ts-ignore
         toast.success(res?.message);
         // console.log(res?.message);
@@ -198,7 +199,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
       setIsAcceptLoading(false);
       toast.warning(
         //@ts-ignore
-        error?.message || "Could not perform this action at the moment"
+        error?.response?.data?.message
       );
     }
   };
@@ -215,9 +216,10 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
     try {
       // await console.log(formData, "formData");
       const res = await updateCampaignStatus(campaignId as string, formData);
+      console.log(res, "rer");
       if (res) {
-        setIsRejectLoading(false);
         refetch();
+        setIsRejectLoading(false);
         //@ts-ignore
         toast.success(res?.message);
         // console.log(res?.message);
@@ -227,10 +229,12 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
       setIsRejectLoading(false);
       toast.warning(
         //@ts-ignore
-        error?.message || "Could not perform this action at the moment"
+        error?.response?.data?.message
       );
     }
   };
+  // @ts-ignore
+  const { className, label } = getStatusColor(task?.data?.campaign?.status);
   return (
     <>
       <AcceptCampaignDialog
@@ -256,7 +260,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
               onClick={() => setIsRejectDialogOpen(true)}
               className="h-auto gap-3 rounded-full px-4 py-2 text-sm text-[#FF4C4C]  bg-[#FFEDED] hover:text-[#ed1d1d]"
             >
-              <span>X</span>
+              <X size="20" />
               Reject
             </Button>
             <Button className="h-auto gap-3 rounded-full border border-main-100 bg-white px-3 py-2 text-sm text-main-100 ">
@@ -266,18 +270,17 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
               Review
             </Button>
             {task?.data?.campaign?.status.toLowerCase() !== "approved" && (
-            <Button
-              onClick={() => setIsAcceptDialogOpen(true)}
-              // disabled={isContributeDisabled()}
-              className="h-auto gap-3 rounded-full bg-main-100 px-4 py-2 text-sm shadow-lg shadow-blue-50"
-            >
-              <span>
-                <ClipboardText size="20" color="#fff" />
-              </span>
-              Accept Campaign
-            </Button>
-
-)}
+              <Button
+                onClick={() => setIsAcceptDialogOpen(true)}
+                // disabled={isContributeDisabled()}
+                className="h-auto gap-3 rounded-full bg-main-100 px-4 py-2 text-sm shadow-lg shadow-blue-50"
+              >
+                <span>
+                  <ClipboardText size="20" color="#fff" />
+                </span>
+                Accept Campaign
+              </Button>
+            )}
           </div>
         </div>
 
@@ -313,13 +316,10 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
             <div className="hidden items-center justify-center space-x-2 md:flex">
               <span
                 className={cn(
-                  "self-end rounded-full px-3 py-2 text-xs font-medium md:self-center md:px-8 md:py-2.5",
-                  //@ts-ignore
-                  getStatusColor(task?.data?.campaign?.status)
+                  `self-end rounded-full px-3 py-2 text-xs font-medium md:self-center md:px-8 md:py-2.5 ${className}`
                 )}
               >
-                {/* @ts-ignore */}
-                {task?.data?.campaign?.status}
+                {label}
               </span>
             </div>
           </div>

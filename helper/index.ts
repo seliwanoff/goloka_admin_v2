@@ -32,7 +32,7 @@ export const generateURL = (pathname: string, id: number) => {
 };
 export const formatDate = (
   dateString: string,
-  format: string = "DD/MM/YYYY",
+  format: string = "DD/MM/YYYY"
 ) => {
   const date = new Date(dateString);
   const day = date.getDate().toString().padStart(2, "0");
@@ -57,30 +57,63 @@ export type Status =
   | "rejected"
   | "accepted"
   | "running"
-  | "completed"; // Add new statuses
+  | "completed";
 
-// Utility function to return the appropriate color classes
-export const getStatusColor = (status: Status) => {
-  switch (status) {
-    case "draft":
-      return "bg-violet-500/5 border-violet-500 text-violet-500";
-    case "pending":
-      return "bg-orange-400/5 border-orange-400 text-orange-400";
-    case "reviewed":
-      return "bg-blue-500/5 border-blue-500 text-blue-500";
-    case "approved":
-    case "accepted":
-    case "completed": // Completed shares the same color as approved
-      return "bg-emerald-600/5 border-emerald-600 text-emerald-600";
-    case "running": // New status with its unique color
-      return "bg-yellow-400/5 border-yellow-400 text-yellow-400";
-    case "rejected":
-      return "bg-red-500/5 border-red-500 text-red-500";
-    default:
-      return "bg-gray-500/5 border-gray-500 text-gray-500";
-  }
+// Utility function to convert status to sentence case
+export const formatStatus = (status: Status): string => {
+  return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
 };
 
+// Type for the return value of getStatusColor
+export type StatusDisplay = {
+  className: string;
+  label: string;
+};
+
+// Utility function to return the appropriate color classes and formatted status
+export const getStatusColor = (status: Status): StatusDisplay => {
+  const label = formatStatus(status);
+
+  switch (status) {
+    case "draft":
+      return {
+        className: "bg-violet-500/5 border-violet-500 text-violet-500",
+        label,
+      };
+    case "pending":
+      return {
+        className: "bg-orange-400/5 border-orange-400 text-orange-400",
+        label,
+      };
+    case "reviewed":
+      return {
+        className: "bg-blue-500/5 border-blue-500 text-blue-500",
+        label,
+      };
+    case "approved":
+    case "accepted":
+    case "completed":
+      return {
+        className: "bg-emerald-600/5 border-emerald-600 text-emerald-600",
+        label,
+      };
+    case "running":
+      return {
+        className: "bg-yellow-400/5 border-yellow-400 text-yellow-400",
+        label,
+      };
+    case "rejected":
+      return {
+        className: "bg-red-500/5 border-red-500 text-red-500",
+        label,
+      };
+    default:
+      return {
+        className: "bg-gray-500/5 border-gray-500 text-gray-500",
+        label,
+      };
+  }
+};
 
 // Utility function to format the status text
 export const getStatusText = (status: Status | string) => {
@@ -92,7 +125,7 @@ export const getStatusText = (status: Status | string) => {
 export const getAddressFromLatLng = async (lat: number, lng: number) => {
   const path = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;
   const res = await axios.get<{ results: { formatted_address: string }[] }>(
-    path,
+    path
   );
   return res.data.results[0].formatted_address;
 };
@@ -148,7 +181,7 @@ export const formatNotifications = (apiResponse: any) => {
   };
 
   return apiResponse?.data?.map((notification: any) => {
-    const {  data, created_at } = notification;
+    const { data, created_at } = notification;
 
     return {
       type: typeMapping[data?.type] || "TASK", // Default to TASK if no mapping exists

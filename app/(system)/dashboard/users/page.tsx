@@ -12,7 +12,7 @@ const Users = () => {
       error: userError,
       isLoading,
     } = useQuery({
-      queryKey: ["recent-campaigns"],
+      queryKey: ["USERS"],
       queryFn: () => getUsers({ per_page: 10 }),
       retry: 2,
     });
