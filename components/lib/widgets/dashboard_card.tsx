@@ -21,12 +21,12 @@ const WidgetSkeleton = () => {
 interface DashboardWidgetProps {
   bg: string;
   fg: string;
-  footer: string | React.ReactNode;
+  footer?: string | React.ReactNode;
   containerBg?: string;
   icon: React.ElementType;
   value: string | number | null;
   title: string;
-  percentIncrease: number | null;
+  percentIncrease?: number | null;
   increase?: boolean;
   isAnalytics?: boolean;
   textColor?: string;

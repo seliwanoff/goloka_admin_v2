@@ -296,10 +296,11 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
 };
 
 const TabbedDataDisplay: React.FC<{
+  isTabHidden?: boolean;
   recentCampaigns?: any[];
   isLoading?: boolean;
   recentUsers: any[];
-}> = ({ recentCampaigns, recentUsers }) => {
+}> = ({ recentCampaigns, recentUsers, isTabHidden }) => {
   const [activeTab, setActiveTab] = useState<Tab["id"]>("campaigns");
 
   const tabs: Tab[] = [
@@ -332,12 +333,18 @@ const TabbedDataDisplay: React.FC<{
 
   return (
     <div className="w-full p-6 bg-white rounded-3xl">
-      <div className="mb-6 flex items-center justify-between">
-        <TabNav tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
-        <Button variant="link" className="text-blue-600">
-          See all
-        </Button>
-      </div>
+      {!isTabHidden && (
+        <div className="mb-6 flex items-center justify-between">
+          <TabNav
+            tabs={tabs}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+          />
+          <Button variant="link" className="text-blue-600">
+            See all
+          </Button>
+        </div>
+      )}
 
       {activeTab === "reports" ? (
         <ReportCardGrid

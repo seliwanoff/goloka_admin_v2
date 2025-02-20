@@ -72,6 +72,14 @@ export const getResponseStats = async (): Promise<
     return null;
   }
 };
+export const getUsersStats = async (): Promise<ServerResponseOrNull<any>> => {
+  try {
+    return await fetchData<ServerResponse<any>>("/users/stats");
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
 
 export const getRecentCampaigns = async (params?: {
   per_page?: number;
@@ -97,7 +105,7 @@ export const getRecentCampaigns = async (params?: {
   }
 };
 export const getUsers = async (params?: {
-  // user_type = "useContributorStore";
+  user_type: string;
   status?: string;
   per_page?: number;
   page?: number;
@@ -108,6 +116,8 @@ export const getUsers = async (params?: {
     if (params?.per_page)
       queryParams.set("per_page", params.per_page.toString());
     if (params?.page) queryParams.set("page", params.page.toString());
+    if (params?.user_type) queryParams.set("page", params.user_type.toString());
+    if (params?.status) queryParams.set("page", params.status.toString());
 
     const queryString = queryParams.toString()
       ? `?${queryParams.toString()}`

@@ -173,7 +173,7 @@ const SignIn: React.FC<PageProps> = ({}) => {
             )}
           </Label>
           <Link
-            href="/forget_password"
+            href="#"
             className="mt-6 inline-block text-sm capitalize text-main-100"
           >
             forgot password?
@@ -186,18 +186,18 @@ const SignIn: React.FC<PageProps> = ({}) => {
             >
               {isLoading ? <FaSpinner className="animate-spin" /> : "Login"}
             </Button>
-            <Button className="h-12 w-full gap-2 rounded-full border border-main-100 bg-main-100 bg-opacity-15 text-base font-light text-white hover:bg-current">
+            {/* <Button className="h-12 w-full gap-2 rounded-full border border-main-100 bg-main-100 bg-opacity-15 text-base font-light text-white hover:bg-current">
               <FcGoogle size={20} />{" "}
               <span className="text-neutral-600">Login with Google</span>
-            </Button>
+            </Button> */}
           </div>
 
-          <p className="my-8 text-center">
+          {/* <p className="my-8 text-center">
             Don’t have an account? &nbsp;
             <Link href="/signup" className="text-main-100">
               Sign up
             </Link>
-          </p>
+          </p> */}
         </form>
       </div>
     </div>
