@@ -110,11 +110,11 @@ const Dashboard = () => {
     queryFn: () => getAdminReports({ per_page: 10 }),
     retry: 2,
   });
-  console.log("Recent Campaigns:", recentCampaigns);
-  console.log("Recent Users:", recentUsers);
-  console.log("Admin Reports:", adminReports);
-  console.log(widgetStats, "widgetStats");
-  console.log(chartStats, "chartStats");
+  // console.log("Recent Campaigns:", recentCampaigns);
+  // console.log("Recent Users:", recentUsers);
+  // console.log("Admin Reports:", adminReports);
+  // console.log(widgetStats, "widgetStats");
+  // console.log(chartStats, "chartStats");
   const [timeOfDay, setTimeOfDay] = useState<string>("day");
 
   useEffect(() => {

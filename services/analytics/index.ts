@@ -116,8 +116,8 @@ export const getUsers = async (params?: {
     if (params?.per_page)
       queryParams.set("per_page", params.per_page.toString());
     if (params?.page) queryParams.set("page", params.page.toString());
-    if (params?.user_type) queryParams.set("page", params.user_type.toString());
-    if (params?.status) queryParams.set("page", params.status.toString());
+    if (params?.user_type) queryParams.set("user_type", params.user_type.toString());
+    if (params?.status) queryParams.set("status", params.status.toString());
 
     const queryString = queryParams.toString()
       ? `?${queryParams.toString()}`

@@ -13,8 +13,8 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-// import {  Search } from "lucide-react";
-import { Danger, More, Eye } from "iconsax-react";
+// import { usePathname, useRouter } from "next/navigation";
+import { Danger, More, Eye, Setting4 } from "iconsax-react";
 import {
   Popover,
   PopoverContent,
@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/popover";
 import { cn, myReports } from "@/lib/utils";
 import ReportCardGrid from "../report/reportCard";
-// import { myReports } from "@/app/(system)/dashboard/report/page";
+import { Calendar as CalenderDate } from "@/components/ui/calendar";
 import {
   Tooltip,
   TooltipContent,
@@ -30,6 +30,10 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import { usePathname, useRouter } from "next/navigation";
+import { Calendar, Search } from "lucide-react";
+import { Input } from "../ui/input";
+import { format } from "date-fns";
+import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 
 interface Tab {
   id: "campaigns" | "contributors" | "organizations" | "reports";
@@ -301,7 +305,31 @@ const TabbedDataDisplay: React.FC<{
   isLoading?: boolean;
   recentUsers: any[];
 }> = ({ recentCampaigns, recentUsers, isTabHidden }) => {
-  const [activeTab, setActiveTab] = useState<Tab["id"]>("campaigns");
+  const pathname = usePathname();
+  const router = useRouter();
+
+  // Get the last segment of the URL path
+  const getActiveTabFromPath = () => {
+    const pathSegments = pathname?.split("/").filter(Boolean); // filter removes empty strings
+
+    // If no segments (root path) or last segment is 'dashboard', return 'campaigns'
+    if (
+      !pathSegments?.length ||
+      pathSegments[pathSegments.length - 1] === "root"
+    ) {
+      return "campaigns";
+    }
+
+    const lastSegment = pathSegments[pathSegments.length - 1];
+    return lastSegment || "campaigns";
+  };
+  //@ts-ignore
+  const [activeTab, setActiveTab] = useState<any[]["id"]>(
+    getActiveTabFromPath() as string
+  );
+  //@ts-ignore
+  const [activeUserTab, setActiveUserTab] = useState<any[]["value"]>("contributors");
+  const [date, setDate] = useState<Date>();
 
   const tabs: Tab[] = [
     { id: "campaigns", label: "Recent Campaigns" },
@@ -333,7 +361,7 @@ const TabbedDataDisplay: React.FC<{
 
   return (
     <div className="w-full p-6 bg-white rounded-3xl">
-      {!isTabHidden && (
+      {!isTabHidden ? (
         <div className="mb-6 flex items-center justify-between">
           <TabNav
             tabs={tabs}
@@ -343,6 +371,84 @@ const TabbedDataDisplay: React.FC<{
           <Button variant="link" className="text-blue-600">
             See all
           </Button>
+        </div>
+      ) : (
+        <div className="flex items-center justify-between">
+          <div className="flex justify-between gap-4 lg:justify-start">
+            {/* -- search section */}
+            <div className="relative flex w-[250px] items-center justify-center md:w-[250px]">
+              <Search className="absolute left-3 text-gray-500" size={18} />
+              <Input
+                placeholder="Search task, organization"
+                type="text"
+                className="w-full rounded-full bg-gray-50 pl-10"
+              />
+            </div>
+
+            <div className="hidden lg:flex lg:gap-4">
+              {/* DATE */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-min justify-start gap-3 rounded-full px-3 pr-1 text-center text-sm font-normal"
+                    )}
+                  >
+                    {date ? format(date, "PPP") : <span>Select date</span>}
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F8F8]">
+                      <Calendar size={20} color="#828282" className="m-0" />
+                    </span>{" "}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <CalenderDate
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            {/* -- filter icon */}
+            <div
+              // onClick={() => setOpenFilter(true)}
+              className="inline-flex cursor-pointer items-center justify-center gap-3 rounded-full border bg-white p-1 pr-3 lg:hidden"
+            >
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F8F8]">
+                <Setting4 size={20} />
+              </span>
+              <span>Filter</span>
+            </div>
+          </div>
+
+          <div>
+            <Tabs
+              value={activeUserTab}
+              onValueChange={(val) => setActiveUserTab(val)}
+              className="w-full md:w-max"
+            >
+              <TabsList
+                className={cn(
+                  "w-full justify-start rounded-full bg-[#F1F1F1] px-1 py-6 sm:w-auto md:justify-center"
+                )}
+              >
+                {userTabs.map((tab: any, index: number) => (
+                  <TabsTrigger
+                    value={tab?.value}
+                    key={index}
+                    className={cn(
+                      "flex-grow rounded-full py-2.5 text-sm font-normal data-[state=active]:bg-blue-700 data-[state=active]:text-white sm:flex-grow-0"
+                    )}
+                  >
+                    {tab.label}
+                  </TabsTrigger>
+                ))}{" "}
+              </TabsList>
+            </Tabs>
+          </div>
         </div>
       )}
 
@@ -366,3 +472,13 @@ const TabbedDataDisplay: React.FC<{
 };
 
 export default TabbedDataDisplay;
+const userTabs = [
+  {
+    label: "Contributors",
+    value: "contributors",
+  },
+  {
+    label: "Organization",
+    value: "organization",
+  },
+];
