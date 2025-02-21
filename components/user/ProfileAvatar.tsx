@@ -15,6 +15,8 @@ type ProfileData = {
 // components/ProfileAvatar.tsx
 import Image, { StaticImageData } from "next/image";
 import avatar from "../../public/assets/images/avatar.png";
+import { modifyUser } from "@/services/analytics";
+import { useQuery } from "@tanstack/react-query";
 
 const ProfileAvatar = ({
   imageUrl,
@@ -77,6 +79,13 @@ const MessageIcon = () => (
 // components/ProfileCard.tsx
 
 const ProfileCard = ({ data }: { data: ProfileData }) => {
+ 
+  const handleUser = async () => {
+    try {
+      const response = await modifyUser("2", "deactivate");
+    } catch (e) {}
+  };
+
   return (
     <div className="bg-white p-8 rounded-xl shadow-sm flex-1 flex-col w-[65%] items-center justify-between h-full">
       <div className="flex items-center justify-between gap-8 w-full">
@@ -98,10 +107,10 @@ const ProfileCard = ({ data }: { data: ProfileData }) => {
         </div>
       </div>
       <div className="w-full space-x-3 flex justify-between mt-auto pt-8">
-        <button className="w-full px-6 py-2 bg-[#E9B384] text-white rounded-lg hover:bg-[#E9B384]/90 transition">
+        <button className="w-full px-6 py-2 bg-[#f69845] text-white rounded-full hover:bg-[#E9B384]/90 transition">
           Deactivate account
         </button>
-        <button className="w-full px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2">
+        <button className="w-full px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition flex items-center justify-center gap-2">
           <MessageIcon />
           Message
         </button>

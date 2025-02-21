@@ -13,9 +13,9 @@ import {
 import React, { useState } from "react";
 
 const UserPage = () => {
-      const [userType, setUserType] = useState<"contributor" | "organization">(
-        "contributor"
-      );
+  const [userType, setUserType] = useState<"contributor" | "organization">(
+    "contributor"
+  );
   const {
     data: users,
     error,
@@ -28,8 +28,7 @@ const UserPage = () => {
         user_type: userType,
       }),
     retry: 2,
-    staleTime: 1000 * 60, // Consider data fresh for 1 minute
-    // cacheTime: 1000 * 60 * 5, // Keep data in cache for 5 minutes
+    staleTime: 1000 * 60,
   });
 
   const {
@@ -40,18 +39,18 @@ const UserPage = () => {
     queryKey: ["USERS_STATS"],
     queryFn: () => getUsersStats(),
     retry: 2,
-    staleTime: 1000 * 60, // Consider data fresh for 1 minute
-    // cacheTime: 1000 * 60 * 5, // Keep data in cache for 5 minutes
+    staleTime: 1000 * 60,
   });
 
   console.log(usersStats, "usersStats");
-   const handleUserTabChange = (newTab: string) => {
-    const newUserType = newTab === 'contributors' ? 'contributor' : 'organization';
+  const handleUserTabChange = (newTab: string) => {
+    const newUserType =
+      newTab === "contributors" ? "contributor" : "organization";
     setUserType(newUserType);
   };
   console.log(users, "usersxx");
   const renderWidgets = () => {
-    //   const Loading = isLoading;
+    
 
     const activeUsers = usersStats?.data?.active_users ?? 0;
     const deactivatedUser = usersStats?.data?.deactivated_accounts ?? 0;
@@ -113,8 +112,10 @@ const UserPage = () => {
           recentCampaigns={[]}
           isLoading={isLoading}
           recentUsers={users?.data}
-           onUserTabChange={handleUserTabChange}
-          activeUsersTab={userType === 'contributor' ? 'contributors' : 'organization'}
+          onUserTabChange={handleUserTabChange}
+          activeUsersTab={
+            userType === "contributor" ? "contributors" : "organization"
+          }
         />
       </div>
     </div>

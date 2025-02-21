@@ -116,7 +116,8 @@ export const getUsers = async (params?: {
     if (params?.per_page)
       queryParams.set("per_page", params.per_page.toString());
     if (params?.page) queryParams.set("page", params.page.toString());
-    if (params?.user_type) queryParams.set("user_type", params.user_type.toString());
+    if (params?.user_type)
+      queryParams.set("user_type", params.user_type.toString());
     if (params?.status) queryParams.set("status", params.status.toString());
 
     const queryString = queryParams.toString()
@@ -249,14 +250,46 @@ export const getCampaignById = async (
     staleTime: 5 * 60 * 1000,
   });
 };
-export const getUserById = async (
-  id: string
-): Promise<UseQueryResult<any>> => {
+export const getUserById = async (id: string): Promise<UseQueryResult<any>> => {
   return await queryClient.fetchQuery({
     queryKey: ["user by", id], // Include id in queryKey for proper caching
     queryFn: async () => {
       try {
-        const response = await fetchData<any>(`users/${id}/?user_type=contributor`);
+        const response = await fetchData<any>(
+          `users/${id}/?user_type=contributor`
+        );
+        if (!response) {
+          throw new Error("No data received from server");
+        }
+
+        return response;
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          throw new Error(
+            error.response?.data?.message || "Failed to fetch campaign data"
+          );
+        }
+        throw new Error(
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred"
+        );
+      }
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+};
+export const modifyUser = async (
+  id: string,
+  type: string
+): Promise<UseQueryResult<any>> => {
+  return await queryClient.fetchQuery({
+    queryKey: ["modify by", id, type],
+    queryFn: async () => {
+      try {
+        const response = await fetchData<any>(
+          `users/${id}/${type}/?user_type=contributor`
+        );
         if (!response) {
           throw new Error("No data received from server");
         }
@@ -279,51 +312,6 @@ export const getUserById = async (
   });
 };
 
-// export const updateCampaignStatus = async (
-//   Id: string
-// ): Promise<UseQueryResult<AxiosResponse<any>>> =>
-//   await queryClient.fetchQuery({
-//     queryKey: ["Task by TaskId"],
-//     queryFn: async () => {
-//       try {
-//         return await fetchData(`campaigns/${Id}/questions`);
-//       } catch (error) {
-//         // return null;
-//         console.log(error);
-//       }
-//     },
-//   });
-
-// ~ =============================================>
-// ~ ======= Update a user by its id  -->
-// ~ =============================================>
-// export const updateCampaignStatus = async (
-//   userId: string,
-// ): Promise<ServerResponseOrNull<any>> => {
-//   try {
-//     return await updateDataById<ServerResponse<any>>(
-//       `campaigns/${userId}/status-update`,
-//     );
-//   } catch (error) {
-//     console.log(error);
-//     return null;
-//   }
-// };
-
-// export const updateCampaignStatus = async (
-//   userId: string,
-//   data: FormData
-// ): Promise<ServerResponseOrNull<any>> => {
-//   try {
-//     return await updateDataById<ServerResponse<any>>(
-//       `campaigns/${userId}/status-update`,
-//       data
-//     );
-//   } catch (error) {
-//     console.log(error);
-//     return null;
-//   }
-// };
 
 export const updateCampaignStatus = async (
   userId: string,
