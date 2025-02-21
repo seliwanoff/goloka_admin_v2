@@ -299,12 +299,13 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
   );
 };
 
-const TabbedDataDisplay: React.FC<{
-  isTabHidden?: boolean;
-  recentCampaigns?: any[];
-  isLoading?: boolean;
-  recentUsers: any[];
-}> = ({ recentCampaigns, recentUsers, isTabHidden }) => {
+const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
+  recentCampaigns,
+  recentUsers,
+  isTabHidden,
+  onUserTabChange,
+  activeUsersTab = "contributors",
+}) => {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -328,7 +329,7 @@ const TabbedDataDisplay: React.FC<{
     getActiveTabFromPath() as string
   );
   //@ts-ignore
-  const [activeUserTab, setActiveUserTab] = useState<any[]["value"]>("contributors");
+  const [activeUserTab, setActiveUserTab] =useState<any[]["value"]>(activeUsersTab);
   const [date, setDate] = useState<Date>();
 
   const tabs: Tab[] = [
@@ -337,7 +338,10 @@ const TabbedDataDisplay: React.FC<{
     { id: "organizations", label: "Recent Organizations" },
     { id: "reports", label: "Recent Reports" },
   ];
-
+  const handleUserTabChange = (value: string) => {
+    setActiveUserTab(value);
+    onUserTabChange?.(value);
+  };
   const transformedCampaigns =
     recentCampaigns?.map((campaign) => ({
       title: campaign.title,
@@ -427,7 +431,7 @@ const TabbedDataDisplay: React.FC<{
           <div>
             <Tabs
               value={activeUserTab}
-              onValueChange={(val) => setActiveUserTab(val)}
+              onValueChange={handleUserTabChange}
               className="w-full md:w-max"
             >
               <TabsList
@@ -482,3 +486,12 @@ const userTabs = [
     value: "organization",
   },
 ];
+
+interface TabbedDataDisplayProps {
+  isTabHidden?: boolean;
+  recentCampaigns?: any[];
+  isLoading?: boolean;
+  recentUsers: any[];
+  onUserTabChange?: (tab: string) => void;
+  activeUsersTab?: string;
+}

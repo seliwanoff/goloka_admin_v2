@@ -10,21 +10,26 @@ import {
   ProfileRemove,
   ProfileTick,
 } from "iconsax-react";
-import React from "react";
+import React, { useState } from "react";
 
 const UserPage = () => {
+      const [userType, setUserType] = useState<"contributor" | "organization">(
+        "contributor"
+      );
   const {
     data: users,
     error,
     //    isLoading,
   } = useQuery({
-    queryKey: ["USERS"],
+    queryKey: ["USERS", userType],
     queryFn: () =>
       getUsers({
         per_page: 10,
-        user_type: "contributor",
+        user_type: userType,
       }),
     retry: 2,
+    staleTime: 1000 * 60, // Consider data fresh for 1 minute
+    // cacheTime: 1000 * 60 * 5, // Keep data in cache for 5 minutes
   });
 
   const {
@@ -35,9 +40,15 @@ const UserPage = () => {
     queryKey: ["USERS_STATS"],
     queryFn: () => getUsersStats(),
     retry: 2,
+    staleTime: 1000 * 60, // Consider data fresh for 1 minute
+    // cacheTime: 1000 * 60 * 5, // Keep data in cache for 5 minutes
   });
 
   console.log(usersStats, "usersStats");
+   const handleUserTabChange = (newTab: string) => {
+    const newUserType = newTab === 'contributors' ? 'contributor' : 'organization';
+    setUserType(newUserType);
+  };
 //   console.log(users, "usersxx");
   const renderWidgets = () => {
     //   const Loading = isLoading;
@@ -102,6 +113,8 @@ const UserPage = () => {
           recentCampaigns={[]}
           isLoading={isLoading}
           recentUsers={users?.data}
+           onUserTabChange={handleUserTabChange}
+          activeUsersTab={userType === 'contributor' ? 'contributors' : 'organization'}
         />
       </div>
     </div>
