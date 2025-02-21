@@ -49,7 +49,7 @@ const UserPage = () => {
     const newUserType = newTab === 'contributors' ? 'contributor' : 'organization';
     setUserType(newUserType);
   };
-//   console.log(users, "usersxx");
+  console.log(users, "usersxx");
   const renderWidgets = () => {
     //   const Loading = isLoading;
 

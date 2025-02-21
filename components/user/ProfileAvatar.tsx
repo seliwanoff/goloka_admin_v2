@@ -115,35 +115,54 @@ const ProfileSummary = ({ data }: { data: ProfileData }) => {
     <div className="bg-white p-8 rounded-xl shadow-sm w-[35%] space-y-3">
       <h2 className=" font-semibold mb-6">Profile summary</h2>
       <div className="bg-gray-50 p-6 rounded-xl items-center flex justify-center">
-        <div className="mb-2">
-          <div className="text-blue-600 text-2xl font-bold">
-            ${data.amountEarned.toLocaleString()}
+        <div className="mb-2 text-center">
+          <div className="text-blue-600 text-2xl font-bold text-center">
+            ₦ {data?.amountEarned?.toLocaleString()}
           </div>
-          <div className="text-blue-600">Amount earned</div>
+          <div className="text-blue-600 text-center">Amount earned</div>
         </div>
       </div>
       <div className="flex  gap-4 items-center justify-between w-full ">
-        <StatItem label="Contribution" value={data.contribution} />
-        <StatItem label="Present location" value={data.location} />
-        <StatItem label="Reports" value={data.reports} />
+        <StatItem label="Contribution" value={data?.contribution} />
+        <StatItem label="Present location" value={data?.location} />
+        <StatItem label="Reports" value={data?.reports} />
       </div>
     </div>
   );
 };
+interface ProfilePageProps {
+  user: {
+    name: string;
+    email: string;
+    profile_photo: null;
+    tel: string;
+    user_type: string;
+    created_at: Date;
+    status: string;
+    contributions_count: number;
+    reports_count: number;
+    location: string;
+    amount_earned: number;
+  };
+  isLoading?: boolean;
+}
 
 // pages/profile.tsx
-export default function ProfilePage() {
+export default function ProfilePage({ user, isLoading }: ProfilePageProps) {
+  if (isLoading) {
+    return <ProfileSkeleton />;
+  }
   const profileData: ProfileData = {
-    name: "Jamiu Muhammed",
-    email: "jimohjamiu@gmail.com",
-    userType: "Contributor",
-    phoneNumber: "08082653737",
-    status: "Active",
-    amountEarned: 200500,
-    contribution: 465,
-    location: "Lagos",
-    reports: 4,
-    imageUrl: avatar,
+    name: user?.name,
+    email: user?.email,
+    userType: user?.user_type,
+    phoneNumber: user?.tel,
+    status: user?.status,
+    amountEarned: user?.amount_earned,
+    contribution: user?.contributions_count,
+    location: user?.location,
+    reports: user?.reports_count,
+    imageUrl: user?.profile_photo || avatar,
   };
 
   return (
@@ -155,3 +174,58 @@ export default function ProfilePage() {
     </div>
   );
 }
+
+const ProfileSkeleton = () => {
+  return (
+    <div className="min-h-screen bg-gray-100 p-4">
+      <div className="flex gap-4 max-w-7xl mx-auto">
+        {/* Profile Card Skeleton */}
+        <div className="bg-white p-8 rounded-xl shadow-sm flex-1 flex-col w-[65%] items-center justify-between h-full animate-pulse">
+          <div className="flex items-center justify-between gap-8 w-full">
+            {/* Avatar and Name Skeleton */}
+            <div className="flex flex-col items-center space-y-4 w-[50%]">
+              <div className="w-24 h-24 rounded-full bg-gray-200" />
+              <div className="h-8 w-40 bg-gray-200 rounded" />
+            </div>
+
+            {/* Profile Fields Skeleton */}
+            <div className="flex-1 space-y-8 w-[50%]">
+              <div className="space-y-4">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="flex justify-between">
+                    <div className="h-4 w-20 bg-gray-200 rounded" />
+                    <div className="h-4 w-32 bg-gray-200 rounded" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          {/* Buttons Skeleton */}
+          <div className="w-full space-x-3 flex justify-between mt-auto pt-8">
+            <div className="w-full h-10 bg-gray-200 rounded-lg" />
+            <div className="w-full h-10 bg-gray-200 rounded-lg" />
+          </div>
+        </div>
+
+        {/* Profile Summary Skeleton */}
+        <div className="bg-white p-8 rounded-xl shadow-sm w-[35%] space-y-3 animate-pulse">
+          <div className="h-6 w-32 bg-gray-200 rounded mb-6" />
+          <div className="bg-gray-50 p-6 rounded-xl">
+            <div className="flex flex-col items-center">
+              <div className="h-8 w-32 bg-gray-200 rounded mb-2" />
+              <div className="h-4 w-24 bg-gray-200 rounded" />
+            </div>
+          </div>
+          <div className="flex gap-4 items-center justify-between w-full">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex flex-col items-start space-y-2">
+                <div className="h-4 w-16 bg-gray-200 rounded" />
+                <div className="h-3 w-12 bg-gray-200 rounded" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

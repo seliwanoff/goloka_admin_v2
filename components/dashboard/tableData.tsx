@@ -240,6 +240,12 @@ export const CampaignTable: React.FC<{ campaigns: Campaign[] }> = ({
 
 const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
   console.log(data, "hyh");
+   const router = useRouter();
+
+
+  const reroute = (data: any) => {
+    router.push(`/dashboard/users/${data}`);
+  }
   return (
     <Table>
       <TableHeader>
@@ -282,10 +288,16 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
                 </PopoverTrigger>
                 <PopoverContent className="w-40 p-0">
                   <div className="flex flex-col text-sm">
-                    <button className="flex items-center gap-2 w-full px-4 py-2.5 hover:bg-gray-50 transition-colors text-left">
+                    <button
+                      onClick={() => reroute(item?.email)}
+                      className="flex items-center gap-2 w-full px-4 py-2.5 hover:bg-gray-50 transition-colors text-left"
+                    >
                       <Eye size="20" color="#000" /> View Profile
                     </button>
-                    <button className="flex items-center gap-2 w-full px-4 py-2.5 hover:bg-gray-50 transition-colors text-left text-[#f01313]">
+                    <button
+                      // onClick={}
+                      className="flex items-center gap-2 w-full px-4 py-2.5 hover:bg-gray-50 transition-colors text-left text-[#f01313]"
+                    >
                       <Danger size="20" color="#f01313" /> Deactivate
                     </button>
                   </div>
