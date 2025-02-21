@@ -1,5 +1,6 @@
 "use client";
 import TabbedDataDisplay from "@/components/dashboard/tableData";
+import CustomBreadCrumbs from "@/components/lib/navigation/custom_breadcrumbs";
 import ProfilePage from "@/components/user/ProfileAvatar";
 import { getUserById, getUsers } from "@/services/analytics";
 import { useQuery } from "@tanstack/react-query";
@@ -21,9 +22,11 @@ const Users = () => {
   console.log(user, "USER");
   return (
     <div>
-      <ProfilePage
-        user={user?.data}
-        isLoading={isLoading} />
+      <div className="mt-6">
+
+      <CustomBreadCrumbs />
+      </div>
+      <ProfilePage user={user?.data} isLoading={isLoading} />
       {/* <TabbedDataDisplay
         recentCampaigns={[]}
         isLoading={isLoading}

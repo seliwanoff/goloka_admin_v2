@@ -17,6 +17,18 @@ import Image, { StaticImageData } from "next/image";
 import avatar from "../../public/assets/images/avatar.png";
 import { modifyUser } from "@/services/analytics";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { CheckCircle, XCircle } from "lucide-react";
+import { FaSpinner } from "react-icons/fa";
+import { Textarea } from "@/components/ui/textarea";
 
 const ProfileAvatar = ({
   imageUrl,
@@ -78,12 +90,33 @@ const MessageIcon = () => (
 
 // components/ProfileCard.tsx
 
-const ProfileCard = ({ data }: { data: ProfileData }) => {
- 
-  const handleUser = async () => {
+const ProfileCard = ({
+  data,
+  onStatusChange,
+}: {
+  data: ProfileData;
+  onStatusChange: (status: string, reason?: string) => Promise<void>;
+}) => {
+  const [loading, setLoading] = useState(false);
+  const [openActivate, setOpenActivate] = useState(false);
+  const [openDeactivate, setOpenDeactivate] = useState(false);
+  const [deactivateReason, setDeactivateReason] = useState("");
+
+  const handleStatusChange = async (newStatus: string, reason?: string) => {
+    setLoading(true);
     try {
-      const response = await modifyUser("2", "deactivate");
-    } catch (e) {}
+      await onStatusChange(newStatus, reason);
+      toast.success(
+        `User successfully ${
+          newStatus === "active" ? "activated" : "deactivated"
+        }`
+      );
+    } catch (error) {
+      toast.error(
+        `Failed to ${newStatus === "active" ? "activate" : "deactivate"} user`
+      );
+    }
+    setLoading(false);
   };
 
   return (
@@ -107,14 +140,130 @@ const ProfileCard = ({ data }: { data: ProfileData }) => {
         </div>
       </div>
       <div className="w-full space-x-3 flex justify-between mt-auto pt-8">
-        <button className="w-full px-6 py-2 bg-[#f69845] text-white rounded-full hover:bg-[#E9B384]/90 transition">
-          Deactivate account
-        </button>
+        {data.status === "active" ? (
+          <button
+            className="w-full px-6 py-2 bg-[#f69845] text-white rounded-full hover:bg-[#E9B384]/90 transition"
+            onClick={() => setOpenDeactivate(true)}
+            disabled={loading}
+          >
+            {loading ? (
+              <FaSpinner className="animate-spin" />
+            ) : (
+              "Deactivate account"
+            )}
+          </button>
+        ) : (
+          <button
+            className="w-full px-6 py-2 bg-[#bbefd09a] text-[#27AE60] rounded-full hover:bg-[#27AE60]/90 transition"
+            onClick={() => setOpenActivate(true)}
+            disabled={loading}
+          >
+            {loading ? (
+              <FaSpinner className="animate-spin" />
+            ) : (
+              "Activate account"
+            )}
+          </button>
+        )}
+
         <button className="w-full px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition flex items-center justify-center gap-2">
           <MessageIcon />
           Message
         </button>
       </div>
+
+      {/* Activate Dialog */}
+      <Dialog open={openActivate} onOpenChange={setOpenActivate}>
+        <DialogContent className="max-w-md p-0 gap-0">
+          <DialogHeader className="p-6 text-center space-y-6">
+            <div className="flex justify-center">
+              <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center">
+                <CheckCircle className="h-6 w-6 text-green-500" />
+              </div>
+            </div>
+
+            <div className="space-y-2 text-center">
+              <DialogTitle className="text-lg font-normal">
+                Activate Account
+              </DialogTitle>
+              <p className="text-gray-600 text-base">
+                Are you sure you want to activate
+                <br />
+                this account?
+              </p>
+            </div>
+          </DialogHeader>
+
+          <div className="flex p-4 gap-3">
+            <Button
+              variant="outline"
+              className="flex-1 text-base py-3 rounded-full border border-[#27AE60]"
+              onClick={() => setOpenActivate(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="flex-1 text-base py-3 font-normal rounded-full bg-[#27AE60] hover:bg-[#27AE60]/90"
+              onClick={() => {
+                handleStatusChange("active");
+                setOpenActivate(false);
+              }}
+            >
+              {loading ? (
+                <FaSpinner className="animate-spin" />
+              ) : (
+                "Activate account"
+              )}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Deactivate Dialog */}
+      <Dialog open={openDeactivate} onOpenChange={setOpenDeactivate}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <div className="flex items-center justify-between">
+              <DialogTitle className="text-xl font-semibold">
+                Deactivate Account
+              </DialogTitle>
+            </div>
+          </DialogHeader>
+
+          <div className="space-y-6 py-4">
+            <div className="text-center">
+              <p className="text-sm text-gray-600">
+                Please provide a reason for deactivating this account
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Reason</label>
+              <Textarea
+                placeholder="Explain the reason here"
+                className="min-h-[120px] resize-none"
+                value={deactivateReason}
+                onChange={(e) => setDeactivateReason(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <Button
+            className="w-full bg-red-500 hover:bg-red-600 text-white rounded-full"
+            onClick={() => {
+              handleStatusChange("inactive", deactivateReason);
+              setOpenDeactivate(false);
+              setDeactivateReason("");
+            }}
+          >
+            {loading ? (
+              <FaSpinner className="animate-spin" />
+            ) : (
+              "Deactivate account"
+            )}
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
@@ -177,7 +326,8 @@ export default function ProfilePage({ user, isLoading }: ProfilePageProps) {
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="flex gap-4 max-w-7xl mx-auto">
-        <ProfileCard data={profileData} />
+        {/* @ts-ignore */}
+        <ProfileCard data={profileData} onStatusChange={(x, y) => {}} />
         <ProfileSummary data={profileData} />
       </div>
     </div>
