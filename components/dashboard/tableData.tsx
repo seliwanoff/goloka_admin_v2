@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // import { Card } from "@/components/ui/card";
 import {
   Table,
@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 // import { usePathname, useRouter } from "next/navigation";
-import { Danger, More, Eye, Setting4 } from "iconsax-react";
+import { Danger, More, Eye, Setting4, BatteryEmpty1 } from "iconsax-react";
 import {
   Popover,
   PopoverContent,
@@ -29,18 +29,54 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Calendar, Search } from "lucide-react";
 import { Input } from "../ui/input";
 import { format } from "date-fns";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 import Pagination from "../lib/navigation/Pagination";
 import { ServerResponseOrNull } from "@/services/analytics";
+import { Skeleton } from "../ui/skeleton";
+import { EmptyPlaceholder } from "../lib/empty_states/table_empty";
 
 interface Tab {
   id: "campaigns" | "contributors" | "organizations" | "reports";
   label: string;
 }
+
+const TableRowSkeleton = () => (
+  <TableRow>
+    <TableCell>
+      <Skeleton className="h-6 w-[200px]" />
+    </TableCell>
+    <TableCell>
+      <Skeleton className="h-6 w-[150px]" />
+    </TableCell>
+    <TableCell>
+      <Skeleton className="h-6 w-[120px]" />
+    </TableCell>
+    <TableCell>
+      <Skeleton className="h-6 w-[100px]" />
+    </TableCell>
+    <TableCell>
+      <Skeleton className="h-6 w-[80px]" />
+    </TableCell>
+    <TableCell>
+      <Skeleton className="h-6 w-[40px]" />
+    </TableCell>
+  </TableRow>
+);
+
+// Empty state component
+const EmptyState = ({ message }: { message: string }) => (
+  <div className="flex flex-col items-center justify-center py-12">
+    <EmptyPlaceholder
+      icon={BatteryEmpty1}
+      title="No data available"
+      description={message}
+    />
+  </div>
+);
 
 interface Campaign {
   title: string;
@@ -241,11 +277,46 @@ export const CampaignTable: React.FC<{ campaigns: Campaign[] }> = ({
 };
 
 const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
-  console.log(data, "hyh");
+  const searchParams = useSearchParams();
+  const userType =
+    searchParams.get("userType") === "organization"
+      ? "organization"
+      : "contributor";
+  console.log(userType, "userType");
   const router = useRouter();
 
+  if (!data) {
+    return (
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Name</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Phone number</TableHead>
+            <TableHead>Date joined</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead></TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {Array(5)
+            .fill(null)
+            .map((_, index) => (
+              <TableRowSkeleton key={index} />
+            ))}
+        </TableBody>
+      </Table>
+    );
+  }
+
+  if (!data?.length) {
+    return (
+      <EmptyState message="No users found. Try adjusting your filters or search terms." />
+    );
+  }
+
   const reroute = (data: any) => {
-    router.push(`/dashboard/users/${data}`);
+    router.push(`/dashboard/users/${data}?userType=${userType}`);
   };
   return (
     <Table>
@@ -322,19 +393,17 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
   recentUsers,
   isTabHidden,
   onUserTabChange,
-  activeUsersTab = "contributors",
+  activeUsersTab,
 }) => {
-  const pathname = usePathname();
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(10);
-  //  const pages = chunkArray(filteredData, pageSize);
-  //  const currentPageData = pages[currentPage - 1] || [];
-  // Get the last segment of the URL path
-  const getActiveTabFromPath = () => {
-    const pathSegments = pathname?.split("/").filter(Boolean); // filter removes empty strings
+  const [date, setDate] = useState<Date>();
 
-    // If no segments (root path) or last segment is 'dashboard', return 'campaigns'
+  const getActiveTabFromPath = () => {
+    const pathSegments = pathname?.split("/").filter(Boolean);
     if (
       !pathSegments?.length ||
       pathSegments[pathSegments.length - 1] === "root"
@@ -349,9 +418,19 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
   const [activeTab, setActiveTab] = useState<any[]["id"]>(
     getActiveTabFromPath() as string
   );
-  //@ts-ignore
-  const [activeUserTab, setActiveUserTab] =useState<any[]["value"]>(activeUsersTab);
-  const [date, setDate] = useState<Date>();
+
+  const [activeUserTab, setActiveUserTab] = useState<string>(() => {
+    const userType = searchParams.get("userType");
+    return userType || activeUsersTab;
+  });
+  console.log(activeUserTab, "activeUserTab");
+
+  useEffect(() => {
+    const userType = searchParams.get("userType");
+    if (userType && userType !== activeUserTab) {
+      setActiveUserTab(userType);
+    }
+  }, [searchParams, activeUserTab]);
 
   const tabs: Tab[] = [
     { id: "campaigns", label: "Recent Campaigns" },
@@ -360,6 +439,11 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
     { id: "reports", label: "Recent Reports" },
   ];
   const handleUserTabChange = (value: string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("userType", value);
+
+    // Update URL without causing a full page reload
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
     setActiveUserTab(value);
     onUserTabChange?.(value);
   };
@@ -376,14 +460,23 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
     })) || [];
 
   const userData =
-    recentUsers?.data?.map((recentUser: { name: string; email: string; tel: string; created_at: string; status: string; id: number }) => ({
-      name: recentUser?.name,
-      email: recentUser?.email,
-      id: recentUser?.id,
-      phone: recentUser?.tel,
-      date: recentUser?.created_at,
-      status: recentUser?.status,
-    })) || [];
+    recentUsers?.data?.map(
+      (recentUser: {
+        name: string;
+        email: string;
+        tel: string;
+        created_at: string;
+        status: string;
+        id: number;
+      }) => ({
+        name: recentUser?.name,
+        email: recentUser?.email,
+        id: recentUser?.id,
+        phone: recentUser?.tel,
+        date: recentUser?.created_at,
+        status: recentUser?.status,
+      })
+    ) || [];
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -393,6 +486,36 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
     setPageSize(size);
     setCurrentPage(1); // Reset to first page when changing page size
   };
+
+  // if (isLoading) {
+  //   return (
+  //     <Table>
+  //       <TableHeader>
+  //         <TableRow>
+  //           <TableHead>Name</TableHead>
+  //           <TableHead>Email</TableHead>
+  //           <TableHead>Phone number</TableHead>
+  //           <TableHead>Date joined</TableHead>
+  //           <TableHead>Status</TableHead>
+  //           <TableHead></TableHead>
+  //         </TableRow>
+  //       </TableHeader>
+  //       <TableBody>
+  //         {Array(5)
+  //           .fill(null)
+  //           .map((_, index) => (
+  //             <TableRowSkeleton key={index} />
+  //           ))}
+  //       </TableBody>
+  //     </Table>
+  //   );
+  // }
+
+  // if (!data?.length) {
+  //   return (
+  //     <EmptyState message="No users found. Try adjusting your filters or search terms." />
+  //   );
+  // }
 
   return (
     <div className="w-full p-6 bg-white rounded-3xl">
@@ -522,7 +645,7 @@ export default TabbedDataDisplay;
 const userTabs = [
   {
     label: "Contributors",
-    value: "contributors",
+    value: "contributor",
   },
   {
     label: "Organization",
@@ -536,5 +659,5 @@ interface TabbedDataDisplayProps {
   isLoading?: boolean;
   recentUsers: ServerResponseOrNull<any> | undefined;
   onUserTabChange?: (tab: string) => void;
-  activeUsersTab?: string;
+  activeUsersTab: string;
 }

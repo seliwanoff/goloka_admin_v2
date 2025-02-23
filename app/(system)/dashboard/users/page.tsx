@@ -2,39 +2,62 @@
 import TabbedDataDisplay from "@/components/dashboard/tableData";
 import { DashboardWidget } from "@/components/lib/widgets/dashboard_card";
 import { getUsers, getUsersStats } from "@/services/analytics";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  People,
   Profile2User,
   ProfileDelete,
   ProfileRemove,
   ProfileTick,
 } from "iconsax-react";
-import React, { useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect } from "react";
 
 const UserPage = () => {
-  const [userType, setUserType] = useState<"contributor" | "organization">(
-    "contributor"
-  );
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const queryClient = useQueryClient();
+
+  // Get userType directly from URL params
+  const currentTab = searchParams.get("userType") || "contributor";
+
+  // Map the URL parameter to the API's expected user_type value
+  const user_type =
+    currentTab === "organization" ? "organization" : "contributor";
+
+  const currentPage = Number(searchParams.get("page")) || 1;
+
+  // Set default query params if none exist
+  useEffect(() => {
+    if (!searchParams.get("userType")) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("userType", "contributor");
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    }
+  }, [pathname, router, searchParams]);
+
+  // Users query with pagination support
   const {
     data: users,
-    error,
-    //    isLoading,
+    error: usersError,
+    isLoading: usersLoading,
   } = useQuery({
-    queryKey: ["USERS", userType],
+    queryKey: ["USERS", currentTab, currentPage],
     queryFn: () =>
       getUsers({
         per_page: 10,
-        user_type: userType,
+        page: currentPage,
+        user_type: user_type, // Use the mapped user_type value
       }),
     retry: 2,
     staleTime: 1000 * 60,
   });
 
+  // Stats query
   const {
     data: usersStats,
     error: userError,
-    isLoading,
+    isLoading: statsLoading,
   } = useQuery({
     queryKey: ["USERS_STATS"],
     queryFn: () => getUsersStats(),
@@ -42,16 +65,20 @@ const UserPage = () => {
     staleTime: 1000 * 60,
   });
 
-  console.log(users, "usersStats");
   const handleUserTabChange = (newTab: string) => {
-    const newUserType =
-      newTab === "contributors" ? "contributor" : "organization";
-    setUserType(newUserType);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("userType", newTab);
+    params.set("page", "1"); // Reset to first page on tab change
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
-  console.log(users, "usersxx");
+
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", page.toString());
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
   const renderWidgets = () => {
-
-
     const activeUsers = usersStats?.data?.active_users ?? 0;
     const deactivatedUser = usersStats?.data?.deactivated_accounts ?? 0;
     const deletedUser = usersStats?.data?.deleted_accounts ?? 0;
@@ -63,10 +90,9 @@ const UserPage = () => {
           title="Total Users"
           bg="bg-[#079455] bg-opacity-[12%]"
           fg="text-[#079455]"
-          // textColor="text-white"
           icon={Profile2User}
           value={activeUsers}
-          isLoading={isLoading}
+          isLoading={statsLoading}
         />
 
         <DashboardWidget
@@ -75,7 +101,7 @@ const UserPage = () => {
           fg="text-[#FEC53D]"
           icon={ProfileTick}
           value={deactivatedUser}
-          isLoading={isLoading}
+          isLoading={statsLoading}
         />
 
         <DashboardWidget
@@ -84,7 +110,7 @@ const UserPage = () => {
           fg="text-main-100"
           icon={ProfileDelete}
           value={deletedUser}
-          isLoading={isLoading}
+          isLoading={statsLoading}
         />
 
         <DashboardWidget
@@ -93,14 +119,14 @@ const UserPage = () => {
           fg="text-[#EB5757]"
           icon={ProfileRemove}
           value={total_user}
-          isLoading={isLoading}
+          isLoading={statsLoading}
         />
       </>
     );
   };
+
   return (
     <div>
-      {/* Stats section */}
       <div className="no-scrollbar col-span-5 mt-4 w-full overflow-x-auto">
         <div className="col-span-5 flex w-max gap-4 lg:grid lg:w-full lg:grid-cols-4 xl:w-full">
           {renderWidgets()}
@@ -110,12 +136,10 @@ const UserPage = () => {
         <TabbedDataDisplay
           isTabHidden={true}
           recentCampaigns={[]}
-          isLoading={isLoading}
+          isLoading={usersLoading}
           recentUsers={users}
           onUserTabChange={handleUserTabChange}
-          activeUsersTab={
-            userType === "contributor" ? "contributors" : "organization"
-          }
+          activeUsersTab={currentTab}
         />
       </div>
     </div>

@@ -330,7 +330,6 @@ interface ProfilePageProps {
   refetch: RefetchType;
 }
 type RefetchType = () => Promise<QueryObserverResult>;
-// pages/profile.tsx
 export default function ProfilePage({
   user,
   isLoading,
@@ -359,7 +358,7 @@ export default function ProfilePage({
       await updateUserStatus(
         user?.id,
         status,
-        user.user_type.toLowerCase(), // Pass the user type
+        user.user_type.toLowerCase(),
         reason
       );
       await refetch();
