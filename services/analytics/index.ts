@@ -383,7 +383,7 @@ export const updateCampaignStatus = async (
   data: FormData
 ): Promise<UseQueryResult<AxiosResponse<any>>> =>
   await queryClient.fetchQuery({
-    queryKey: ["ResetPassword"],
+    queryKey: ["campaign_status"],
     queryFn: async () => {
       try {
         return await postData<ServerResponse<any>>(
@@ -396,3 +396,25 @@ export const updateCampaignStatus = async (
       }
     },
   });
+export const updateUserStatus = async (
+  userId: string,
+  status: string,
+  userType: string,
+  reason?: string
+) => {
+  const formData = new FormData();
+  if (reason) {
+    formData.append("reason", reason);
+  }
+
+  try {
+    const response = await postData<ServerResponse<any>>(
+      `users/${userId}/${status}?user_type=${userType}`,
+      formData
+    );
+    return response;
+  } catch (error) {
+    console.error("Error updating user status:", error);
+    throw error;
+  }
+};

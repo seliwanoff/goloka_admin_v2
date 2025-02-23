@@ -1,5 +1,6 @@
 // types.ts
 type ProfileData = {
+  id: string;
   name: string;
   email: string;
   userType: string;
@@ -15,8 +16,8 @@ type ProfileData = {
 // components/ProfileAvatar.tsx
 import Image, { StaticImageData } from "next/image";
 import avatar from "../../public/assets/images/avatar.png";
-import { modifyUser } from "@/services/analytics";
-import { useQuery } from "@tanstack/react-query";
+import { modifyUser, updateUserStatus } from "@/services/analytics";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import {
@@ -298,6 +299,7 @@ const ProfileSummary = ({ data }: { data: ProfileData }) => {
 };
 interface ProfilePageProps {
   user: {
+    id: string;
     name: string;
     email: string;
     profile_photo: null;
@@ -315,10 +317,12 @@ interface ProfilePageProps {
 
 // pages/profile.tsx
 export default function ProfilePage({ user, isLoading }: ProfilePageProps) {
+  const queryClient = useQueryClient();
   if (isLoading) {
     return <ProfileSkeleton />;
   }
   const profileData: ProfileData = {
+    id: user?.id,
     name: user?.name,
     email: user?.email,
     userType: user?.user_type,
@@ -329,6 +333,25 @@ export default function ProfilePage({ user, isLoading }: ProfilePageProps) {
     location: user?.location,
     reports: user?.reports_count,
     imageUrl: user?.profile_photo || avatar,
+  };
+
+  const handleStatusChange = async (status: string, reason?: string) => {
+    try {
+      await updateUserStatus(
+        user?.id,
+        status,
+        user.user_type, // Pass the user type
+        reason
+      );
+
+      // Invalidate and refetch user data
+      await queryClient.invalidateQueries({ queryKey: ["user", user?.id] });
+
+      return true;
+    } catch (error) {
+      console.error("Failed to update status:", error);
+      throw error;
+    }
   };
 
   return (
