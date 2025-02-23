@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, XCircle } from "lucide-react";
 import { FaSpinner } from "react-icons/fa";
 import { Textarea } from "@/components/ui/textarea";
+import cover from "@/public/assets/cover.png";
 
 const ProfileAvatar = ({
   imageUrl,
@@ -270,7 +271,14 @@ const ProfileCard = ({
 
 const ProfileSummary = ({ data }: { data: ProfileData }) => {
   return (
-    <div className="bg-white p-8 rounded-xl shadow-sm w-[35%] space-y-3">
+    <div className="bg-white p-8 rounded-xl shadow-sm w-[35%] space-y-3 relative">
+      <div
+        className="absolute inset-0 bg-cover bg-center rounded-xl"
+        style={{
+          backgroundImage: `url(${cover}`,
+          // opacity: "0.1",
+        }}
+      />
       <h2 className=" font-semibold mb-6">Profile summary</h2>
       <div className="bg-gray-50 p-6 rounded-xl items-center flex justify-center">
         <div className="mb-2 text-center">
@@ -325,7 +333,7 @@ export default function ProfilePage({ user, isLoading }: ProfilePageProps) {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
-      <div className="flex gap-4 max-w-7xl mx-auto">
+      <div className="flex gap-4 ">
         {/* @ts-ignore */}
         <ProfileCard data={profileData} onStatusChange={(x, y) => {}} />
         <ProfileSummary data={profileData} />

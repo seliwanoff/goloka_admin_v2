@@ -4,16 +4,18 @@ import CustomBreadCrumbs from "@/components/lib/navigation/custom_breadcrumbs";
 import ProfilePage from "@/components/user/ProfileAvatar";
 import { getUserById, getUsers } from "@/services/analytics";
 import { useQuery } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
 import React from "react";
 
 const Users = () => {
+    const { id } = useParams();
   const {
     data: user,
     error: userError,
     isLoading,
   } = useQuery({
-    queryKey: ["user", "2"],
-    queryFn: () => getUserById("2"),
+    queryKey: ["user", id],
+    queryFn: () => getUserById(id as string),
     retry: 2,
     staleTime: 1000 * 60,
     refetchOnWindowFocus: false,
@@ -23,8 +25,7 @@ const Users = () => {
   return (
     <div>
       <div className="mt-6">
-
-      <CustomBreadCrumbs />
+        <CustomBreadCrumbs />
       </div>
       <ProfilePage user={user?.data} isLoading={isLoading} />
       {/* <TabbedDataDisplay
