@@ -17,7 +17,11 @@ type ProfileData = {
 import Image, { StaticImageData } from "next/image";
 import avatar from "../../public/assets/images/avatar.png";
 import { modifyUser, updateUserStatus } from "@/services/analytics";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  QueryObserverResult,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import {
@@ -90,15 +94,25 @@ const MessageIcon = () => (
   </svg>
 );
 
-// components/ProfileCard.tsx
+// interface ProfileData {
+//   name: string;
+//   email: string;
+//   userType: string;
+//   phoneNumber: string;
+//   status: string;
+//   amountEarned: number;
+//   contribution: number;
+//   location: string;
+//   reports: number;
+//   imageUrl: string;
+// }
 
-const ProfileCard = ({
-  data,
-  onStatusChange,
-}: {
+interface ProfileCardProps {
   data: ProfileData;
   onStatusChange: (status: string, reason?: string) => Promise<void>;
-}) => {
+}
+
+const ProfileCard = ({ data, onStatusChange }: ProfileCardProps) => {
   const [loading, setLoading] = useState(false);
   const [openActivate, setOpenActivate] = useState(false);
   const [openDeactivate, setOpenDeactivate] = useState(false);
@@ -207,7 +221,7 @@ const ProfileCard = ({
             <Button
               className="flex-1 text-base py-3 font-normal rounded-full bg-[#27AE60] hover:bg-[#27AE60]/90"
               onClick={() => {
-                handleStatusChange("active");
+                handleStatusChange("activate");
                 setOpenActivate(false);
               }}
             >
@@ -253,7 +267,7 @@ const ProfileCard = ({
           <Button
             className="w-full bg-red-500 hover:bg-red-600 text-white rounded-full"
             onClick={() => {
-              handleStatusChange("inactive", deactivateReason);
+              handleStatusChange("deactivate", deactivateReason);
               setOpenDeactivate(false);
               setDeactivateReason("");
             }}
@@ -313,10 +327,15 @@ interface ProfilePageProps {
     amount_earned: number;
   };
   isLoading?: boolean;
+  refetch: RefetchType;
 }
-
+type RefetchType = () => Promise<QueryObserverResult>;
 // pages/profile.tsx
-export default function ProfilePage({ user, isLoading }: ProfilePageProps) {
+export default function ProfilePage({
+  user,
+  isLoading,
+  refetch,
+}: ProfilePageProps) {
   const queryClient = useQueryClient();
   if (isLoading) {
     return <ProfileSkeleton />;
@@ -340,10 +359,10 @@ export default function ProfilePage({ user, isLoading }: ProfilePageProps) {
       await updateUserStatus(
         user?.id,
         status,
-        user.user_type, // Pass the user type
+        user.user_type.toLowerCase(), // Pass the user type
         reason
       );
-
+      await refetch();
       // Invalidate and refetch user data
       await queryClient.invalidateQueries({ queryKey: ["user", user?.id] });
 
@@ -358,7 +377,7 @@ export default function ProfilePage({ user, isLoading }: ProfilePageProps) {
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="flex gap-4 ">
         {/* @ts-ignore */}
-        <ProfileCard data={profileData} onStatusChange={(x, y) => {}} />
+        <ProfileCard data={profileData} onStatusChange={handleStatusChange} />
         <ProfileSummary data={profileData} />
       </div>
     </div>

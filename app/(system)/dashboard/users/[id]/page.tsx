@@ -13,6 +13,7 @@ const Users = () => {
     data: user,
     error: userError,
     isLoading,
+    refetch,
   } = useQuery({
     queryKey: ["user", id],
     queryFn: () => getUserById(id as string),
@@ -39,7 +40,7 @@ const Users = () => {
       <div className="mt-6">
         <CustomBreadCrumbs />
       </div>
-      <ProfilePage user={user?.data} isLoading={isLoading} />
+      <ProfilePage user={user?.data} isLoading={isLoading} refetch={refetch} />
       {/* <TabbedDataDisplay
         recentCampaigns={[]}
         isLoading={isLoading}
