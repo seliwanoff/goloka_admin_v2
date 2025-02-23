@@ -1,16 +1,22 @@
 // types.ts
 type ProfileData = {
-  id: string;
+  id: number;
   name: string;
   email: string;
   userType: string;
-  phoneNumber: string;
+  tel: string;
   status: string;
-  amountEarned: number;
-  contribution: number;
+  amount: number;
+  amount_spent: number;
+  contributionOrCampaign: number;
+  amount_earned: number;
+  campaigns_count: number;
+  contributions_count: number;
   location: string;
   reports: number;
-  imageUrl: StaticImageData;
+  reports_count: number;
+  imageUrl: string;
+  profile_photo: string;
 };
 
 // components/ProfileAvatar.tsx
@@ -135,6 +141,8 @@ const ProfileCard = ({ data, onStatusChange }: ProfileCardProps) => {
     setLoading(false);
   };
 
+  console.log(data, "data");
+
   return (
     <div className="bg-white p-8 rounded-xl shadow-sm flex-1 flex-col w-[65%] items-center justify-between h-full">
       <div className="flex items-center justify-between gap-8 w-full">
@@ -150,7 +158,7 @@ const ProfileCard = ({ data, onStatusChange }: ProfileCardProps) => {
           <div className="">
             <ProfileField label="Email" value={data.email} />
             <ProfileField label="User type" value={data.userType} />
-            <ProfileField label="Phone number" value={data.phoneNumber} />
+            <ProfileField label="Phone number" value={data.tel} />
             <ProfileField label="Status" value={data.status} />
           </div>
         </div>
@@ -285,6 +293,7 @@ const ProfileCard = ({ data, onStatusChange }: ProfileCardProps) => {
 };
 
 const ProfileSummary = ({ data }: { data: ProfileData }) => {
+  console.log(data, "datadatadata");
   return (
     <div className="bg-white p-8 rounded-xl shadow-sm w-[35%] space-y-3 relative">
       <div
@@ -296,16 +305,40 @@ const ProfileSummary = ({ data }: { data: ProfileData }) => {
       />
       <h2 className=" font-semibold mb-6">Profile summary</h2>
       <div className="bg-gray-50 p-6 rounded-xl items-center flex justify-center">
-        <div className="mb-2 text-center">
+        {/* <div className="mb-2 text-center">
           <div className="text-blue-600 text-2xl font-bold text-center">
             ₦ {data?.amountEarned?.toLocaleString()}
           </div>
           <div className="text-blue-600 text-center">Amount earned</div>
+        </div> */}
+
+        <div className="mb-2 text-center">
+          <div className="text-blue-600 text-2xl font-bold">
+            ₦ {data?.amount?.toLocaleString()}
+          </div>
+          <div className="text-blue-600">
+            {data?.userType === "Organization"
+              ? "Amount Spent"
+              : "Amount Earned"}
+          </div>
         </div>
       </div>
-      <div className="flex  gap-4 items-center justify-between w-full ">
+      {/* <div className="flex  gap-4 items-center justify-between w-full ">
         <StatItem label="Contribution" value={data?.contribution} />
         <StatItem label="Present location" value={data?.location} />
+        <StatItem label="Reports" value={data?.reports} />
+      </div> */}
+
+      <div className="flex gap-4 items-center justify-between w-full">
+        <StatItem
+          label={
+            data?.userType === "Organization" ? "Campaigns" : "Contributions"
+          }
+          value={data?.contributionOrCampaign}
+        />
+        {data?.userType !== "Organization" && (
+          <StatItem label="Present Location" value={data?.location || "N/A"} />
+        )}
         <StatItem label="Reports" value={data?.reports} />
       </div>
     </div>
@@ -313,18 +346,23 @@ const ProfileSummary = ({ data }: { data: ProfileData }) => {
 };
 interface ProfilePageProps {
   user: {
-    id: string;
+    id: number;
     name: string;
     email: string;
-    profile_photo: null;
-    tel: string;
     user_type: string;
-    created_at: Date;
+    tel: string;
     status: string;
-    contributions_count: number;
-    reports_count: number;
-    location: string;
+    amount: number;
+    amount_spent: number;
+    contributionOrCampaign: number;
     amount_earned: number;
+    campaigns_count: number;
+    contributions_count: number;
+    location: string;
+    reports: number;
+    reports_count: number;
+    imageUrl: string;
+    profile_photo: string;
   };
   isLoading?: boolean;
   refetch: RefetchType;
@@ -339,6 +377,19 @@ export default function ProfilePage({
   if (isLoading) {
     return <ProfileSkeleton />;
   }
+  // const profileData: ProfileData = {
+  //   id: user?.id,
+  //   name: user?.name,
+  //   email: user?.email,
+  //   userType: user?.user_type,
+  //   phoneNumber: user?.tel,
+  //   status: user?.status,
+  //   amountEarned: user?.amount_earned,
+  //   contribution: user?.contributions_count,
+  //   location: user?.location,
+  //   reports: user?.reports_count,
+  //   imageUrl: user?.profile_photo || avatar,
+  // };
   const profileData: ProfileData = {
     id: user?.id,
     name: user?.name,
@@ -346,10 +397,17 @@ export default function ProfilePage({
     userType: user?.user_type,
     phoneNumber: user?.tel,
     status: user?.status,
-    amountEarned: user?.amount_earned,
-    contribution: user?.contributions_count,
-    location: user?.location,
+    amount:
+      user?.user_type === "Organization"
+        ? user?.amount_spent
+        : user?.amount_earned,
+    contributionOrCampaign:
+      user?.user_type === "Organization"
+        ? user?.campaigns_count
+        : user?.contributions_count,
+    location: user?.user_type === "contributor" ? user?.location : "N/A",
     reports: user?.reports_count,
+    //@ts-ignore
     imageUrl: user?.profile_photo || avatar,
   };
 

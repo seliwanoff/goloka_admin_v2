@@ -510,7 +510,7 @@ export const updateCampaignStatus = async (
     },
   });
 export const updateUserStatus = async (
-  userId: string,
+  userId: number,
   status: string,
   userType: string,
   reason?: string
