@@ -279,6 +279,71 @@ export const getUserById = async (id: string): Promise<UseQueryResult<any>> => {
     staleTime: 5 * 60 * 1000,
   });
 };
+// export const getUserReports = async (id: string, params?: {
+//   per_page?: number;
+//   page?: number;
+//   search?: string;
+//   status?: string;
+// }): Promise<UseQueryResult<any>> => {
+//   return await queryClient.fetchQuery({
+//     queryKey: ["userReport", id],
+//     queryFn: async () => {
+//       try {
+//         const response = await fetchData<any>(
+//           `users/${id}/reports?user_type=contributor`
+//         );
+//         if (!response) {
+//           throw new Error("No data received from server");
+//         }
+
+//         return response;
+//       } catch (error) {
+//         if (error instanceof AxiosError) {
+//           throw new Error(
+//             error.response?.data?.message || "Failed to fetch campaign data"
+//           );
+//         }
+//         throw new Error(
+//           error instanceof Error
+//             ? error.message
+//             : "An unexpected error occurred"
+//         );
+//       }
+//     },
+//     staleTime: 5 * 60 * 1000,
+//   });
+// };
+
+export const getUserReports = async (
+  id: string,
+  params?: {
+    per_page?: number;
+    page?: number;
+    search?: string;
+    status?: string;
+  }
+) => {
+  // Remove the UseQueryResult return type
+  try {
+    const response = await fetchData<any>(
+      `users/${id}/reports?user_type=contributor&per_page=5&page=1`
+    );
+    if (!response) {
+      throw new Error("No data received from server");
+    }
+
+    return response;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        error.response?.data?.message || "Failed to fetch campaign data"
+      );
+    }
+    throw new Error(
+      error instanceof Error ? error.message : "An unexpected error occurred"
+    );
+  }
+};
 export const modifyUser = async (
   id: string,
   type: string
