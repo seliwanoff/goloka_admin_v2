@@ -42,7 +42,7 @@ const UserPage = () => {
     staleTime: 1000 * 60,
   });
 
-  console.log(usersStats, "usersStats");
+  console.log(users, "usersStats");
   const handleUserTabChange = (newTab: string) => {
     const newUserType =
       newTab === "contributors" ? "contributor" : "organization";
@@ -50,7 +50,7 @@ const UserPage = () => {
   };
   console.log(users, "usersxx");
   const renderWidgets = () => {
-    
+
 
     const activeUsers = usersStats?.data?.active_users ?? 0;
     const deactivatedUser = usersStats?.data?.deactivated_accounts ?? 0;
@@ -111,7 +111,7 @@ const UserPage = () => {
           isTabHidden={true}
           recentCampaigns={[]}
           isLoading={isLoading}
-          recentUsers={users?.data}
+          recentUsers={users}
           onUserTabChange={handleUserTabChange}
           activeUsersTab={
             userType === "contributor" ? "contributors" : "organization"

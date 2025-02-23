@@ -56,7 +56,7 @@ import { Toaster } from "sonner";
 import { userLogout } from "@/services/auth";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/stores/currentUserStore";
-import {  generateColor, getInitials } from "@/helper";
+import { generateColor, getInitials } from "@/helper";
 import {
   Dialog,
   DialogContent,
@@ -83,7 +83,7 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
   const [open, setOpen] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const { user } = useRemoteUserStore();
-   const currentUser = useUserStore((state) => state.user);
+  const currentUser = useUserStore((state) => state.user);
 
   console.log(user, "user");
   console.log(currentUser, "currentUser");
@@ -104,12 +104,12 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
   // const currentUser = useUserStore((state) => state.user);
   const logoutUser = useUserStore((state) => state.logoutUser);
   const Name = currentUser?.name;
-  const FirstName =  "";
+  const FirstName = "";
   const isMobile = useMediaQuery("(max-width: 640px)");
   // const backgroundColor = useMemo(() => generateColor(FirstName), [FirstName]);
   const backgroundColor = useMemo(
     () => generateColor(FirstName.trim().toLowerCase()),
-    [FirstName],
+    [FirstName]
   );
   // const initials = useMemo(() => getInitials(Name as string), [Name]);
   const initiateLogout = () => {
@@ -123,7 +123,6 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
       console.log(error, "error");
     }
   };
-
 
   const notificationData: string | any[] = [];
   // const notificationData = formatNotifications(notification);
@@ -255,7 +254,7 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
                   </div>
                   <div className="flex flex-col justify-center">
                     <p className="text-base font-semibold">
-                      <p className="text-base font-semibold">{Name}</p>
+                      <span className="text-base font-semibold">{Name}</span>
                     </p>
                     {
                       {
@@ -355,5 +354,3 @@ const UserBubbleLinks: { icon: LucideIcon; title: string; href: string }[] = [
     href: "/dashboard/settings",
   },
 ];
-
-

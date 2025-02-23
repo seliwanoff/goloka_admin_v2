@@ -20,7 +20,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn, myReports } from "@/lib/utils";
+import { chunkArray, cn, myReports } from "@/lib/utils";
 import ReportCardGrid from "../report/reportCard";
 import { Calendar as CalenderDate } from "@/components/ui/calendar";
 import {
@@ -34,6 +34,8 @@ import { Calendar, Search } from "lucide-react";
 import { Input } from "../ui/input";
 import { format } from "date-fns";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
+import Pagination from "../lib/navigation/Pagination";
+import { ServerResponseOrNull } from "@/services/analytics";
 
 interface Tab {
   id: "campaigns" | "contributors" | "organizations" | "reports";
@@ -240,12 +242,11 @@ export const CampaignTable: React.FC<{ campaigns: Campaign[] }> = ({
 
 const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
   console.log(data, "hyh");
-   const router = useRouter();
-
+  const router = useRouter();
 
   const reroute = (data: any) => {
     router.push(`/dashboard/users/${data}`);
-  }
+  };
   return (
     <Table>
       <TableHeader>
@@ -261,7 +262,7 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
       <TableBody>
         {data.map((item, i) => (
           <TableRow key={item.name + i}>
-            <TableCell>{item.name}</TableCell>
+            <TableCell className="text-main-100 hover:underline cursor-pointer">{item.name}</TableCell>
             <TableCell>{item.email}</TableCell>
             <TableCell>{item.phone}</TableCell>
             <TableCell>{item.date}</TableCell>
@@ -289,7 +290,7 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
                 <PopoverContent className="w-40 p-0">
                   <div className="flex flex-col text-sm">
                     <button
-                      onClick={() => reroute(item?.email)}
+                      onClick={() => reroute(item?.id)}
                       className="flex items-center gap-2 w-full px-4 py-2.5 hover:bg-gray-50 transition-colors text-left"
                     >
                       <Eye size="20" color="#000" /> View Profile
@@ -320,7 +321,10 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
 }) => {
   const pathname = usePathname();
   const router = useRouter();
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+  //  const pages = chunkArray(filteredData, pageSize);
+  //  const currentPageData = pages[currentPage - 1] || [];
   // Get the last segment of the URL path
   const getActiveTabFromPath = () => {
     const pathSegments = pathname?.split("/").filter(Boolean); // filter removes empty strings
@@ -367,13 +371,22 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
     })) || [];
 
   const userData =
-    recentUsers?.map((recentUser) => ({
+    recentUsers?.data?.map((recentUser: { name: any; email: any; tel: any; created_at: any; status: any; }) => ({
       name: recentUser?.name,
       email: recentUser?.email,
       phone: recentUser?.tel,
       date: recentUser?.created_at,
       status: recentUser?.status,
     })) || [];
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleRowSizeChange = (size: number) => {
+    setPageSize(size);
+    setCurrentPage(1); // Reset to first page when changing page size
+  };
 
   return (
     <div className="w-full p-6 bg-white rounded-3xl">
@@ -482,7 +495,19 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
         <DataTable data={userData} />
       )}
 
-      <div className="mt-6">{/* Pagination component can be added here */}</div>
+      {/* Pagination */}
+      <div className="mt-6">
+        {/* @ts-ignore */}
+        {recentUsers?.pagination && (
+          <Pagination
+            //@ts-ignore
+
+            pagination={recentUsers.pagination}
+            onPageChange={handlePageChange}
+            onRowSizeChange={handleRowSizeChange}
+          />
+        )}
+      </div>
     </div>
   );
 };
@@ -503,7 +528,7 @@ interface TabbedDataDisplayProps {
   isTabHidden?: boolean;
   recentCampaigns?: any[];
   isLoading?: boolean;
-  recentUsers: any[];
+  recentUsers: ServerResponseOrNull<any> | undefined;
   onUserTabChange?: (tab: string) => void;
   activeUsersTab?: string;
 }
