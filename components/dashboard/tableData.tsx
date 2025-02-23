@@ -262,7 +262,12 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
       <TableBody>
         {data.map((item, i) => (
           <TableRow key={item.name + i}>
-            <TableCell className="text-main-100 hover:underline cursor-pointer">{item.name}</TableCell>
+            <TableCell
+              onClick={() => reroute(item?.id)}
+              className="text-main-100 hover:underline cursor-pointer"
+            >
+              {item.name}
+            </TableCell>
             <TableCell>{item.email}</TableCell>
             <TableCell>{item.phone}</TableCell>
             <TableCell>{item.date}</TableCell>
@@ -371,9 +376,10 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
     })) || [];
 
   const userData =
-    recentUsers?.data?.map((recentUser: { name: any; email: any; tel: any; created_at: any; status: any; }) => ({
+    recentUsers?.data?.map((recentUser: { name: string; email: string; tel: string; created_at: string; status: string; id: number }) => ({
       name: recentUser?.name,
       email: recentUser?.email,
+      id: recentUser?.id,
       phone: recentUser?.tel,
       date: recentUser?.created_at,
       status: recentUser?.status,
