@@ -352,11 +352,15 @@ const ContributionsTable: React.FC<TableProps> = ({ data, isLoading }) => {
               <span
                 className={cn(
                   "px-3 py-1 rounded-full text-sm",
-                  item.status === "Active" || item.status === "running"
+                  item.status === "completed"
                     ? "bg-green-100 text-green-700"
-                    : item.status === "Deactivate" || item.status === "pending"
-                    ? "bg-orange-100 text-orange-700"
-                    : "bg-red-100 text-red-700"
+                    : item.status === "running"
+                    ? "bg-yellow-100 text-yellow-700"
+                    : item.status === "pending"
+                    ? "bg-gray-100 text-gray-700"
+                    : item.status === "failed"
+                    ? "bg-red-100 text-red-700"
+                    : "bg-gray-100 text-gray-700" // Default fallback
                 )}
               >
                 {item.status}
