@@ -154,7 +154,8 @@ const MessagingInterface: React.FC = () => {
     : [];
 
   return (
-    <div className="flex items-center justify-center bg-gray-50 w-full h-[750px] pt-11">
+    <div className="flex items-center justify-center bg-gray-50 w-full h-[750px] ">
+
       <div className=" bg-white p-8 rounded-2xl h-full w-full">
         <div className="flex w-full h-full border rounded-lg overflow-hidden">
           {/* Sidebar */}

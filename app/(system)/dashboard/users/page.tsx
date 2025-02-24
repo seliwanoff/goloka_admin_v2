@@ -127,7 +127,8 @@ const UserPage = () => {
 
   return (
     <div>
-      <div className="no-scrollbar col-span-5 mt-4 w-full overflow-x-auto">
+      <div className="no-scrollbar col-span-5 w-full overflow-x-auto">
+        <h2 className="text-xl font-semibold text-main-100 my-6">Users</h2>
         <div className="col-span-5 flex w-max gap-4 lg:grid lg:w-full lg:grid-cols-4 xl:w-full">
           {renderWidgets()}
         </div>
