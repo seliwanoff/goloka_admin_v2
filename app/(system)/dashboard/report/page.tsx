@@ -124,14 +124,12 @@ const Report = () => {
         <div>
           {" "}
           <div className="mt-6">
-            <Pagination
-              // @ts-ignore
-              totalPages={pages?.length}
-              currentPage={currentPage}
+            {/* <Pagination
+
               onPageChange={setCurrentPage}
-              RowSize={pageSize}
+pagination={}
               onRowSizeChange={setPageSize}
-            />
+            /> */}
           </div>
         </div>
 
