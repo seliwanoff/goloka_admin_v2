@@ -44,7 +44,7 @@ interface Tab {
   label: string;
 }
 
-const TableRowSkeleton = () => (
+ const TableRowSkeleton = () => (
   <TableRow>
     <TableCell>
       <Skeleton className="h-6 w-[200px]" />
@@ -68,7 +68,7 @@ const TableRowSkeleton = () => (
 );
 
 // Empty state component
-const EmptyState = ({ message }: { message: string }) => (
+ const EmptyState = ({ message }: { message: string }) => (
   <div className="flex flex-col items-center justify-center py-12">
     <EmptyPlaceholder
       icon={BatteryEmpty1}
@@ -78,7 +78,7 @@ const EmptyState = ({ message }: { message: string }) => (
   </div>
 );
 
-interface Campaign {
+export interface Campaign {
   title: string;
   id: string;
   organizer: string;
@@ -388,6 +388,7 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
   );
 };
 
+
 const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
   recentCampaigns,
   recentUsers,
@@ -487,35 +488,7 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
     setCurrentPage(1); // Reset to first page when changing page size
   };
 
-  // if (isLoading) {
-  //   return (
-  //     <Table>
-  //       <TableHeader>
-  //         <TableRow>
-  //           <TableHead>Name</TableHead>
-  //           <TableHead>Email</TableHead>
-  //           <TableHead>Phone number</TableHead>
-  //           <TableHead>Date joined</TableHead>
-  //           <TableHead>Status</TableHead>
-  //           <TableHead></TableHead>
-  //         </TableRow>
-  //       </TableHeader>
-  //       <TableBody>
-  //         {Array(5)
-  //           .fill(null)
-  //           .map((_, index) => (
-  //             <TableRowSkeleton key={index} />
-  //           ))}
-  //       </TableBody>
-  //     </Table>
-  //   );
-  // }
 
-  // if (!data?.length) {
-  //   return (
-  //     <EmptyState message="No users found. Try adjusting your filters or search terms." />
-  //   );
-  // }
 
   return (
     <div className="w-full p-6 bg-white rounded-3xl">
@@ -622,6 +595,7 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
         <CampaignTable campaigns={transformedCampaigns} />
       ) : (
         <DataTable data={userData} />
+
       )}
 
       {/* Pagination */}

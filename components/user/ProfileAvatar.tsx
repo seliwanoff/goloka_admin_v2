@@ -4,7 +4,7 @@ type ProfileData = {
   name: string;
   email: string;
   userType: string;
-  tel: string;
+  phoneNumber: string;
   status: string;
   amount: number;
   amount_spent: number;
@@ -63,8 +63,8 @@ const ProfileAvatar = ({
 
 // components/ProfileField.tsx
 const ProfileField = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex justify-between">
-    <span className="text-gray-600 text-sm">{label}</span>
+  <div className="flex justify-between mt-2">
+    <span className="text-gray-600 text-sm">{label}:</span>
     <span className="text-gray-900 font-medium">{value}</span>
   </div>
 );
@@ -99,19 +99,6 @@ const MessageIcon = () => (
     />
   </svg>
 );
-
-// interface ProfileData {
-//   name: string;
-//   email: string;
-//   userType: string;
-//   phoneNumber: string;
-//   status: string;
-//   amountEarned: number;
-//   contribution: number;
-//   location: string;
-//   reports: number;
-//   imageUrl: string;
-// }
 
 interface ProfileCardProps {
   data: ProfileData;
@@ -158,7 +145,7 @@ const ProfileCard = ({ data, onStatusChange }: ProfileCardProps) => {
           <div className="">
             <ProfileField label="Email" value={data.email} />
             <ProfileField label="User type" value={data.userType} />
-            <ProfileField label="Phone number" value={data.tel} />
+            <ProfileField label="Phone number" value={data.phoneNumber} />
             <ProfileField label="Status" value={data.status} />
           </div>
         </div>
@@ -373,23 +360,13 @@ export default function ProfilePage({
   isLoading,
   refetch,
 }: ProfilePageProps) {
+  console.log(user, "nnrew users");
+
   const queryClient = useQueryClient();
   if (isLoading) {
     return <ProfileSkeleton />;
   }
-  // const profileData: ProfileData = {
-  //   id: user?.id,
-  //   name: user?.name,
-  //   email: user?.email,
-  //   userType: user?.user_type,
-  //   phoneNumber: user?.tel,
-  //   status: user?.status,
-  //   amountEarned: user?.amount_earned,
-  //   contribution: user?.contributions_count,
-  //   location: user?.location,
-  //   reports: user?.reports_count,
-  //   imageUrl: user?.profile_photo || avatar,
-  // };
+
   const profileData: ProfileData = {
     id: user?.id,
     name: user?.name,
@@ -405,7 +382,7 @@ export default function ProfilePage({
       user?.user_type === "Organization"
         ? user?.campaigns_count
         : user?.contributions_count,
-    location: user?.user_type === "contributor" ? user?.location : "N/A",
+    location: user?.user_type === "Contributor" ? user?.location : "N/A",
     reports: user?.reports_count,
     //@ts-ignore
     imageUrl: user?.profile_photo || avatar,

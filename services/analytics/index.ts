@@ -451,6 +451,36 @@ export const getUserReports = async (id: string, params: UserParams) => {
     );
   }
 };
+export const getUserContributions = async (id: string, params: UserParams) => {
+  try {
+    const queryString = new URLSearchParams({
+      ...(params.user_type && { user_type: params.user_type }),
+      ...(params.per_page && { per_page: params.per_page.toString() }),
+      ...(params.page && { page: params.page.toString() }),
+      ...(params.search && { search: params.search }),
+      ...(params.status && { status: params.status }),
+    }).toString();
+
+    const response = await fetchData<any>(
+      `users/${id}/contributions?${queryString}`
+    );
+
+    if (!response) {
+      throw new Error("No data received from server");
+    }
+
+    return response;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        error.response?.data?.message || "Failed to fetch user contributions"
+      );
+    }
+    throw new Error(
+      error instanceof Error ? error.message : "An unexpected error occurred"
+    );
+  }
+};
 
 export const modifyUser = async (
   id: string,
