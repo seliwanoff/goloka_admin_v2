@@ -10,18 +10,22 @@ import {
   getUsers,
 } from "@/services/analytics";
 import { useQuery } from "@tanstack/react-query";
-import { useParams, useSearchParams } from "next/navigation";
-import React from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import React, { useState, useEffect } from "react";
 
 const Users = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const { id } = useParams();
-    const currentTab = searchParams.get("userType") || "contributor";
+  const [currentTab, setCurrentTab] = useState( "contributions"
+  );
+
   const userType =
     searchParams.get("userType") === "organization"
       ? "organization"
       : "contributor";
 
+  // Fetch user data
   const {
     data: user,
     error: userError,
@@ -34,42 +38,69 @@ const Users = () => {
     staleTime: 1000 * 60,
   });
 
-  const { data: userReport } = useQuery({
-    queryKey: ["userReport", id, userType],
+  // Fetch user reports
+  const { data: userReports, isLoading: isReportsLoading } = useQuery({
+    queryKey: ["userReport", id, userType, currentTab],
     queryFn: () => getUserReports(id as string, { user_type: userType }),
     retry: 2,
     staleTime: 1000 * 60,
+    enabled: currentTab === "reports", // Only fetch when reports tab is active
   });
-  const { data: userCampaign } = useQuery({
-    queryKey: ["userContribution", id, userType],
+
+  // Fetch user contributions
+  const { data: userCampaign, isLoading: isCampaignLoading } = useQuery({
+    queryKey: ["userContribution", id, userType, currentTab],
     queryFn: () => getUserContributions(id as string, { user_type: userType }),
     retry: 2,
     staleTime: 1000 * 60,
+    enabled: currentTab === "contributions" || !currentTab, // Fetch on contributions tab or default
   });
-  // const { data: userReport } = useQuery({
-  //   queryKey: ["userReport", id, userType],
-  //   queryFn: () => getUserReports(id as string, { user_type: userType }),
-  //   retry: 2,
-  //   staleTime: 1000 * 60,
-  // });
-  console.log(userReport, "USERREPORT");
-  console.log(user, "USER");
-  console.log(userCampaign, "userCampaign");
+
+  // Handle tab change
+  const handleTabChange = (tab: string) => {
+    setCurrentTab(tab);
+
+    // Update URL with new tab
+    // const params = new URLSearchParams(searchParams.toString());
+    // params.set("userType", tab);
+    // router.push(`/dashboard/users/${id}?${params.toString()}`, {
+    //   scroll: false,
+    // });
+  };
+
+  // Sync state with URL params
+  // useEffect(() => {
+  //   const tabFromParams = searchParams.get("userType");
+  //   if (
+  //     tabFromParams &&
+  //     (tabFromParams === "contributions" || tabFromParams === "reports")
+  //   ) {
+  //     setCurrentTab(tabFromParams);
+  //   }
+  // }, [searchParams]);
+
   return (
     <div>
-      <div className="mt-6">
-        <CustomBreadCrumbs />
-      </div>
-      <ProfilePage user={user?.data} isLoading={isLoading} refetch={refetch} />
-      <div className="mt-4">
-        <UserTabbedDataDisplay
-          isTabHidden={true}
-          recentCampaigns={[]}
-          isLoading={false}
-          recentUsers={userCampaign}
-          onUserTabChange={()=>{}}
-          activeUsersTab={currentTab}
+      <div className=" bg-gray-100 p-4">
+        <div className="my-4">
+          <CustomBreadCrumbs />
+        </div>
+        <ProfilePage
+          user={user?.data}
+          isLoading={isLoading}
+          refetch={refetch}
         />
+        <div className="mt-4">
+          <UserTabbedDataDisplay
+            isTabHidden={true}
+            recentCampaigns={[]}
+            isLoading={isCampaignLoading || isReportsLoading}
+            recentUsers={userCampaign}
+            userReports={userReports}
+            onUserTabChange={handleTabChange}
+            activeUsersTab={currentTab}
+          />
+        </div>
       </div>
     </div>
   );

@@ -408,7 +408,7 @@ export default function ProfilePage({
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+    <div className=" bg-gray-100">
       <div className="flex gap-4 ">
         {/* @ts-ignore */}
         <ProfileCard data={profileData} onStatusChange={handleStatusChange} />
@@ -420,7 +420,7 @@ export default function ProfilePage({
 
 const ProfileSkeleton = () => {
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+
       <div className="flex gap-4 max-w-7xl mx-auto">
         {/* Profile Card Skeleton */}
         <div className="bg-white p-8 rounded-xl shadow-sm flex-1 flex-col w-[65%] items-center justify-between h-full animate-pulse">
@@ -469,6 +469,6 @@ const ProfileSkeleton = () => {
           </div>
         </div>
       </div>
-    </div>
+    // </div>
   );
 };
