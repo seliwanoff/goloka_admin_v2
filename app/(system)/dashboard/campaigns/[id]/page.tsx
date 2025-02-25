@@ -113,14 +113,14 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
     queryKey: ["Get task"],
     queryFn: async () => await getCampaignById(campaignId as string),
   });
-  console.log(task, "task");
+  // console.log(task, "task");
 
   //@ts-ignore
   const locations = useMemo(() => task?.data?.locations, [task]);
   //@ts-ignore
   const responses = useMemo(() => task?.data?.responses, [task]);
 
-  console.log(responses, "response");
+  // console.log(responses, "response");
 
   useEffect(() => {
     const stepperParam = searchParams.get("stepper");
@@ -152,7 +152,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
     }
   };
 
-  console.log(task, "task");
+  // console.log(task, "task");
   //@ts-ignore
   const locationData = task?.data?.locations;
 
@@ -186,7 +186,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
     try {
       // await console.log(formData, "formData");
       const res = await updateCampaignStatus(campaignId as string, formData);
-      console.log(res, "rer");
+      //console.log(res, "rer");
       if (res) {
         refetch();
         setIsAcceptLoading(false);
@@ -195,7 +195,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
         // console.log(res?.message);
       }
     } catch (error) {
-      console.log(error);
+      //   console.log(error);
       setIsAcceptLoading(false);
       toast.warning(
         //@ts-ignore
@@ -212,11 +212,11 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
     const formData = new FormData();
     formData.append("status", "rejected");
     formData.append("message", `${data.title}: ${data.description}`);
-    console.log(data, "tht");
+    // console.log(data, "tht");
     try {
       // await console.log(formData, "formData");
       const res = await updateCampaignStatus(campaignId as string, formData);
-      console.log(res, "rer");
+      //   console.log(res, "rer");
       if (res) {
         refetch();
         setIsRejectLoading(false);
@@ -225,7 +225,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
         // console.log(res?.message);
       }
     } catch (error) {
-      console.log(error);
+      //   console.log(error);
       setIsRejectLoading(false);
       toast.warning(
         //@ts-ignore

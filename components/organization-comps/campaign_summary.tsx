@@ -44,6 +44,7 @@ const TotalRevenueCard = ({ widgetStats }: any) => {
 };
 
 const CampaignSummary = ({ widgetStats }: any) => {
+  console.log(widgetStats);
   return (
     <div className="flex flex-col items-center gap-6">
       <TotalRevenueCard widgetStats={widgetStats} />

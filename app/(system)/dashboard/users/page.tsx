@@ -26,6 +26,10 @@ const UserPage = () => {
     currentTab === "organization" ? "organization" : "contributor";
 
   const currentPage = Number(searchParams.get("page")) || 1;
+  const pageSize = Number(searchParams.get("per_page")) || 10;
+  const search = searchParams.get("search") || "";
+
+  // const pageSize = Number(searchParams.get("pageSize")) || 10;
 
   // Set default query params if none exist
   useEffect(() => {
@@ -42,12 +46,15 @@ const UserPage = () => {
     error: usersError,
     isLoading: usersLoading,
   } = useQuery({
-    queryKey: ["USERS", currentTab, currentPage],
+    queryKey: ["USERS", currentTab, currentPage, pageSize, search],
     queryFn: () =>
       getUsers({
-        per_page: 10,
+        per_page: pageSize,
         page: currentPage,
-        user_type: user_type, // Use the mapped user_type value
+        user_type: user_type,
+        search: search,
+
+        // Use the mapped user_type value
       }),
     retry: 2,
     staleTime: 1000 * 60,
@@ -69,12 +76,8 @@ const UserPage = () => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("userType", newTab);
     params.set("page", "1"); // Reset to first page on tab change
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
-  };
-
-  const handlePageChange = (page: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", page.toString());
+    params.set("per_page", "10");
+    params.set("search", "");
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
