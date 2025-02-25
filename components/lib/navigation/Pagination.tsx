@@ -34,7 +34,6 @@ const Pagination: React.FC<PaginationProps> = ({
     let startPage = Math.max(1, current_page - Math.floor(pageGroupSize / 2));
     const endPage = Math.min(total_pages, startPage + pageGroupSize - 1);
 
-    // Adjust start page if we're near the end
     if (endPage === total_pages) {
       startPage = Math.max(1, total_pages - pageGroupSize + 1);
     }
@@ -51,10 +50,13 @@ const Pagination: React.FC<PaginationProps> = ({
     <div className="flex items-center justify-between gap-2">
       <div className="inline-flex items-center gap-5">
         <div className="hidden items-center gap-3 sm:inline-flex">
-          <p>Rows per page</p>
+          <p>Rows per page </p>
           <Select
-            value={per_page?.toString()}
-            onValueChange={(value) => onRowSizeChange(Number(value))}
+            value={per_page.toString()}
+            onValueChange={(value) => {
+              onRowSizeChange(Number(value));
+              onPageChange(1);
+            }}
           >
             <SelectTrigger className="h-7 w-auto gap-2 px-2 focus:border-main-100 focus-visible:ring-0 focus-visible:ring-offset-0">
               <SelectValue placeholder="Select rows per page" />
@@ -62,7 +64,7 @@ const Pagination: React.FC<PaginationProps> = ({
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Rows per page</SelectLabel>
-                {[9, 18, 27, 36, 45].map((size) => (
+                {[10, 20, 30, 40, 50].map((size) => (
                   <SelectItem key={size} value={size.toString()}>
                     {size}
                   </SelectItem>

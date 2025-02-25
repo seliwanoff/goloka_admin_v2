@@ -101,6 +101,7 @@ const Dashboard = () => {
     retry: 2,
   });
 
+  //console.log(widgetStats);
   const {
     data: adminReports,
     error: reportsError,
@@ -184,6 +185,7 @@ const Dashboard = () => {
           footer={
             <span className="font-medium">{activeUsers} Presently active</span>
           }
+          link={"/dashboard/users"}
           isAnalytics={false}
           percentIncrease={null}
           isLoading={isLoading}
@@ -195,6 +197,7 @@ const Dashboard = () => {
           fg="text-[#FEC53D]"
           icon={People}
           value={totalOrgs}
+          link={"/dashboard/users?userType=organization&page=1"}
           footer="vs last month"
           isAnalytics={true}
           increase={orgPercentIncrease > 0}
@@ -207,6 +210,7 @@ const Dashboard = () => {
           bg="bg-main-100 bg-opacity-[12%]"
           fg="text-main-100"
           icon={UserSquare}
+          link={"/dashboard/users?userType=contributor&page=1"}
           value={totalContributors}
           footer="vs last month"
           isAnalytics={true}
@@ -222,6 +226,7 @@ const Dashboard = () => {
           icon={ClipboardExport}
           value={totalCampaigns}
           footer="vs last month"
+          link={"/dashboard/campaigns"}
           isAnalytics={true}
           increase={campaignsPercentIncrease > 0}
           percentIncrease={Math.abs(campaignsPercentIncrease)}
@@ -252,12 +257,14 @@ const Dashboard = () => {
             Invite staff
           </Button>
         </div>
+        {/****
         <div className="col-span-5 flex justify-end">
           <Calendar
             onDateChange={handleDateChange}
             initialFilter={filters.date || ""}
           />
         </div>
+        */}
         {/* Stats section */}
         <div className="no-scrollbar col-span-5 mt-4 w-full overflow-x-auto">
           <div className="col-span-5 flex w-max gap-4 lg:grid lg:w-full lg:grid-cols-4 xl:w-full">
@@ -287,15 +294,7 @@ const Dashboard = () => {
                         Total Revenue
                       </span>
                       <p className="font-semibold text-[#333333]">
-                        {chartStats?.data
-                          ? Number(
-                              chartStats.data.reduce(
-                                (sum: number, item: { admin_fee: number }) =>
-                                  sum + (item.admin_fee || 0),
-                                0
-                              )
-                            ).toFixed(2)
-                          : "0.00"}
+                        {chartStats?.data.total_revenue || 0}
                       </p>
                     </div>
                   </div>
@@ -306,15 +305,7 @@ const Dashboard = () => {
                         Total Campaign
                       </span>
                       <p className="font-semibold text-[#333333]">
-                        {chartStats?.data
-                          ? Number(
-                              chartStats.data.reduce(
-                                (sum: number, item: { campaign_fee: number }) =>
-                                  sum + (item.campaign_fee || 0),
-                                0
-                              )
-                            ).toFixed(2)
-                          : "0.00"}
+                        {chartStats?.data.total_campaigns?.count || 0}
                       </p>
                     </div>
                   </div>
@@ -333,11 +324,11 @@ const Dashboard = () => {
       <TabbedDataDisplay
         recentCampaigns={recentCampaigns?.data}
         isLoading={isCampaignsLoading}
-        recentUsers={recentUsers?.data} activeUsersTab={""}      />
+        recentUsers={recentUsers?.data}
+        activeUsersTab={""}
+      />
     </div>
   );
 };
 
 export default Dashboard;
-
-

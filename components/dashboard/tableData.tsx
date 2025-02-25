@@ -44,7 +44,7 @@ interface Tab {
   label: string;
 }
 
- const TableRowSkeleton = () => (
+const TableRowSkeleton = () => (
   <TableRow>
     <TableCell>
       <Skeleton className="h-6 w-[200px]" />
@@ -68,7 +68,7 @@ interface Tab {
 );
 
 // Empty state component
- const EmptyState = ({ message }: { message: string }) => (
+const EmptyState = ({ message }: { message: string }) => (
   <div className="flex flex-col items-center justify-center py-12">
     <EmptyPlaceholder
       icon={BatteryEmpty1}
@@ -117,10 +117,10 @@ export const CampaignTable: React.FC<{ campaigns: Campaign[] }> = ({
 
   const navigateToCampaign = (id: string) => {
     let targetPath = "";
-    if (currentPath?.includes("/dashboard/campaign")) {
+    if (currentPath?.includes("/dashboard/campaigns")) {
       targetPath = `${currentPath}/${id}`;
     } else {
-      targetPath = `/dashboard/campaign/${id}`;
+      targetPath = `/dashboard/campaigns/${id}`;
     }
 
     router.push(targetPath);
@@ -282,7 +282,7 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
     searchParams.get("userType") === "organization"
       ? "organization"
       : "contributor";
-  console.log(userType, "userType");
+  //  console.log(userType, "userType");
   const router = useRouter();
 
   if (!data) {
@@ -388,7 +388,6 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
   );
 };
 
-
 const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
   recentCampaigns,
   recentUsers,
@@ -402,6 +401,8 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [date, setDate] = useState<Date>();
+
+  // console.log(pageSize, "pageSize");
 
   const getActiveTabFromPath = () => {
     const pathSegments = pathname?.split("/").filter(Boolean);
@@ -419,12 +420,12 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
   const [activeTab, setActiveTab] = useState<any[]["id"]>(
     getActiveTabFromPath() as string
   );
-
+  const [searchTerm, setSearchTerm] = useState("");
   const [activeUserTab, setActiveUserTab] = useState<string>(() => {
     const userType = searchParams.get("userType");
     return userType || activeUsersTab;
   });
-  console.log(activeUserTab, "activeUserTab");
+  // console.log(activeUserTab, "activeUserTab");
 
   useEffect(() => {
     const userType = searchParams.get("userType");
@@ -483,13 +484,27 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
     setCurrentPage(page);
   };
 
+  //console.log(searchParams);
+
   const handleRowSizeChange = (size: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+
     setPageSize(size);
-    setCurrentPage(1); // Reset to first page when changing page size
+    setCurrentPage(1);
+    params.set("per_page", size.toString());
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+
+    // Reset to first page when changing page size
   };
 
+  //console.log(pageSize, "pageSize");
+  const handleSearchTerm = (search: string) => {
+    setSearchTerm(search);
+    const params = new URLSearchParams(searchParams.toString());
 
-
+    params.set("search", searchTerm.toString());
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
   return (
     <div className="w-full p-6 bg-white rounded-3xl">
       {!isTabHidden ? (
@@ -512,6 +527,8 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
               <Input
                 placeholder="Search task, organization"
                 type="text"
+                value={searchTerm}
+                onChange={(e) => handleSearchTerm(e.target.value)}
                 className="w-full rounded-full bg-gray-50 pl-10"
               />
             </div>
@@ -595,7 +612,6 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
         <CampaignTable campaigns={transformedCampaigns} />
       ) : (
         <DataTable data={userData} />
-
       )}
 
       {/* Pagination */}

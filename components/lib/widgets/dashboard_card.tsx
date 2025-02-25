@@ -1,6 +1,7 @@
 import React from "react";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { cn, classMerge } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 // Loading Skeleton Component
 const WidgetSkeleton = () => {
@@ -21,6 +22,7 @@ const WidgetSkeleton = () => {
 interface DashboardWidgetProps {
   bg: string;
   fg: string;
+  link?: string;
   footer?: string | React.ReactNode;
   containerBg?: string;
   icon: React.ElementType;
@@ -43,9 +45,15 @@ const DashboardWidget: React.FC<DashboardWidgetProps> = ({
   if (isLoading) {
     return <WidgetSkeleton />;
   }
-
+  const router = useRouter();
   return (
-    <div className={cn("rounded-lg bg-white p-4", props.containerBg)}>
+    <div
+      className={cn(
+        "rounded-lg bg-white p-4 cursor-pointer",
+        props.containerBg
+      )}
+      onClick={() => router.push(props.link || "")}
+    >
       <div className="flex justify-between">
         <div>
           <span className={cn("text-sm text-[#828282]", props.textColor)}>

@@ -41,6 +41,7 @@ const SignIn: React.FC<PageProps> = ({}) => {
   const handleToggle1 = () => {
     setEye1((prev: boolean) => !prev);
   };
+
   const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
@@ -50,7 +51,7 @@ const SignIn: React.FC<PageProps> = ({}) => {
       const { email, password } = data;
       const response = await userSignIn(email, password);
 
-      console.log("Full response:", response); // Log the entire response
+      //   console.log("Full response:", response); // Log the entire response
 
       // Check if response exists and has the expected structure
       if (!response) {

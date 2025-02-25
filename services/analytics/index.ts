@@ -109,6 +109,7 @@ export const getUsers = async (params?: {
   status?: string;
   per_page?: number;
   page?: number;
+  search?: string;
 }): Promise<ServerResponseOrNull<any>> => {
   try {
     const queryParams = new URLSearchParams();
@@ -119,6 +120,8 @@ export const getUsers = async (params?: {
     if (params?.user_type)
       queryParams.set("user_type", params.user_type.toString());
     if (params?.status) queryParams.set("status", params.status.toString());
+
+    if (params?.search) queryParams.set("search", params.search.toString());
 
     const queryString = queryParams.toString()
       ? `?${queryParams.toString()}`
