@@ -79,11 +79,12 @@ const Page = () => {
     error: campaignsError,
     isLoading: isCampaignsLoading,
   } = useQuery({
-    queryKey: ["recent-campaigns", currentPage, pageSize],
+    queryKey: ["recent-campaigns", currentPage, pageSize, activeStatus],
     queryFn: () =>
       getAllCampaigns({
         per_page: pageSize,
         page: currentPage,
+        status: activeStatus === "all" ? undefined : activeStatus.toLowerCase(),
       }),
     retry: 2,
   });
@@ -217,7 +218,10 @@ const Page = () => {
             <div>
               <Tabs
                 value={activeTab}
-                onValueChange={(val) => setActiveTab(val)}
+                onValueChange={(val) => {
+                  setActiveTab(val);
+                  setActiveStatus(val);
+                }}
                 className="w-full md:w-max"
               >
                 <TabsList
@@ -318,12 +322,12 @@ const tabs = [
     value: "pending",
   },
   {
-    label: "Review",
-    value: "review",
+    label: "Reviewed",
+    value: "reviewed",
   },
   {
     label: "Accepted",
-    value: "accepted",
+    value: "approved",
   },
   {
     label: "Rejected",

@@ -482,6 +482,9 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", currentPage.toString());
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   //console.log(searchParams);
