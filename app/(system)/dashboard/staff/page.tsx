@@ -1,12 +1,19 @@
-"use client"
+"use client";
+import StaffInviteModal from "@/components/dashboard/staffInvitationModal";
 import StaffDataDisplay from "@/components/dashboard/staffTable";
 import { Button } from "@/components/ui/button";
 import { getStaff } from "@/services/analytics";
 import { useQuery } from "@tanstack/react-query";
 import { Cog, ShieldPlus } from "lucide-react";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
 const Staffs = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const router = useRouter();
+  const reroute = () => {
+    router.push(`/dashboard/staff/permissions`);
+  };
   const {
     data: staff,
     error: staffError,
@@ -29,7 +36,10 @@ const Staffs = () => {
           <h2 className="text-xl font-semibold text-main-100 my-6">Staffs</h2>
         </div>
         <div className="flex items-center gap-4">
-          <Button className="h-auto rounded-full bg-white px-8 py-3 text-main-100 hover:bg-blue-50 border border-main-100">
+          <Button
+            onClick={() => reroute()}
+            className="h-auto rounded-full bg-white px-8 py-3 text-main-100 hover:bg-blue-50 border border-main-100"
+          >
             <span className="mr-3">
               <Cog size="22" color="#144ee2" />{" "}
             </span>
@@ -43,16 +53,9 @@ const Staffs = () => {
           </Button>
         </div>
       </div>
+      <StaffInviteModal open={isOpen} setOpen={setIsOpen} />
       <div className="mt-6">
-        <StaffDataDisplay
-          // isTabHidden={true}
-          // recentCampaigns={[]}
-          isLoading={staffLoading}
-          recentUsers={staff}
-          // userReports={[]}
-          // onUserTabChange={handleTabChange}
-          // activeUsersTab={currentTab}
-        />
+        <StaffDataDisplay isLoading={staffLoading} recentUsers={staff} />
       </div>
     </div>
   );

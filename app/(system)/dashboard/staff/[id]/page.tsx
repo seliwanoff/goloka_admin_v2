@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { FaSpinner } from "react-icons/fa";
 import { CheckCircle, Trash2 } from "lucide-react";
+import CustomBreadCrumbs from "@/components/lib/navigation/custom_breadcrumbs";
 interface StaffInfoProps {
   name: string;
   email: string;
@@ -161,262 +162,225 @@ const StaffInformationPanel: React.FC<StaffInfoProps> = ({
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-6 max-w-6xl ">
-      {/* Toast notification */}
-      {/* <Toast message="Permission updated successfully!" isVisible={showToast} /> */}
-
-      {/* Staff Information Card */}
-      <div className="w-full md:w-2/4 bg-white p-8 rounded-xl shadow-sm">
-        <h2 className="text-lg text-[#333333] mb-6">Staff information</h2>
-
-        <div className="flex flex-col items-center mb-6">
-          <div className="relative w-24 h-24 mb-4">
-            <Image
-              src={profileImage}
-              alt={`${name}'s profile`}
-              className="rounded-full object-cover"
-              fill
-              priority
-            />
-          </div>
-          <h3 className="text-2xl font-medium text-main-100">{name}</h3>
-        </div>
-
-        <div className="space-y-4">
-          <div className="flex justify-between">
-            <span className="text-gray-600">Email:</span>
-            <span className="text-gray-900">{email}</span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="text-gray-600">User type:</span>
-            <span className="text-gray-900">{userType}</span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="text-gray-600">Phone number:</span>
-            <span className="text-gray-900">{phoneNumber}</span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="text-gray-600">Status:</span>
-            <span className="text-gray-900">{status}</span>
-          </div>
-        </div>
-
-        <div className="mt-8 space-y-3">
-          <button
-            onClick={toggleEditMode}
-            className="w-full py-2 rounded-full bg-[#F2EEFB] text-main-100 hover:bg-blue-100 transition-colors"
-          >
-            {isEditMode ? "Cancel edit" : "Edit account"}
-          </button>
-          {false ? (
-            <button
-              className="w-full px-6 py-2 bg-[#f69845] text-white rounded-full hover:bg-[#E9B384]/90 transition"
-              onClick={() => setOpenDeactivate(true)}
-              disabled={loading}
-            >
-              {loading ? (
-                <FaSpinner className="animate-spin" />
-              ) : (
-                "Deactivate account"
-              )}
-            </button>
-          ) : (
-            <button
-              className="w-full px-6 py-2 bg-[#bbefd09a] text-[#27AE60] border border-[#27ae60] rounded-full hover:bg-[#27AE60]/90 hover:border-[#27AE60]/90 hover:text-[#fff] transition"
-              onClick={() => setOpenActivate(true)}
-              disabled={loading}
-            >
-              {loading ? (
-                <FaSpinner className="animate-spin" />
-              ) : (
-                "Activate account"
-              )}
-            </button>
-          )}
-          <button
-            onClick={() => setOpenDeactivate(true)}
-            className="w-full py-2 rounded-full border border-red-300 text-red-500 hover:bg-red-50 transition-colors"
-          >
-            Delete account
-          </button>
-        </div>
+    <div>
+      <div className="my-4">
+        <CustomBreadCrumbs />
       </div>
+      <div className="flex flex-col md:flex-row gap-6 max-w-7xl ">
+        {/* Staff Information Card */}
+        <div className="w-full md:w-2/4 bg-white p-8 rounded-xl shadow-sm">
+          <h2 className="text-lg text-[#333333] mb-6">Staff information</h2>
 
-      {/* Permissions Card */}
-      <div className="w-full md:w-3/2 bg-white p-6 rounded-xl shadow-sm">
-        <div className="flex justify-between items-center mb-2">
-          <h2 className="text-lg text-[#333333]">Permissions</h2>
-          {isEditMode && (
-            <button
-              onClick={savePermissions}
-              className="px-4 py-2 bg-green-700 text-white rounded-full text-sm hover:bg-green-700 transition-colors"
-            >
-              Save Changes
-            </button>
-          )}
-        </div>
-        <p className="text-gray-500 text-sm mb-6">
-          {isEditMode
-            ? "Click on permissions to select or deselect them"
-            : "Select or deselect a permission to make changes"}{" "}
-          <br />
-          to what certain role have access to
-        </p>
-
-        <div className="flex flex-wrap gap-3">
-          {allPermissions.map((permission) => (
-            <PermissionButton
-              key={permission}
-              label={permission}
-              active={
-                isEditMode
-                  ? selectedPermissions.includes(permission)
-                  : permissions.includes(permission)
-              }
-              isEditMode={isEditMode}
-              onClick={() => togglePermission(permission)}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Activate Dialog */}
-      <Dialog open={openActivate} onOpenChange={setOpenActivate}>
-        <DialogContent className="max-w-md p-0 gap-0">
-          <DialogHeader className="p-6 text-center space-y-6">
-            <div className="flex justify-center">
-              <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center">
-                <CheckCircle className="h-6 w-6 text-green-500" />
-              </div>
-            </div>
-
-            <div className="space-y-2 text-center">
-              <DialogTitle className="text-lg font-normal">
-                Activate Account
-              </DialogTitle>
-              <p className="text-gray-600 text-base">
-                Are you sure you want to activate
-                <br />
-                this account?
-              </p>
-            </div>
-          </DialogHeader>
-
-          <div className="flex p-4 gap-3">
-            <Button
-              variant="outline"
-              className="flex-1 text-base py-3 rounded-full border border-[#27AE60]"
-              onClick={() => setOpenActivate(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              className="flex-1 text-base py-3 font-normal rounded-full bg-[#27AE60] hover:bg-[#27AE60]/90"
-              onClick={() => {
-                handleStatusChange("activate");
-                setOpenActivate(false);
-              }}
-            >
-              {loading ? (
-                <FaSpinner className="animate-spin" />
-              ) : (
-                "Activate account"
-              )}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Deactivate Dialog */}
-      <Dialog open={openDeactivate} onOpenChange={setOpenDeactivate}>
-        <DialogContent className="max-w-md">
-          {/* <DialogHeader>
-            <div className="flex items-center justify-between">
-              <DialogTitle className="text-xl font-semibold">
-                Deactivate Account
-              </DialogTitle>
-            </div>
-          </DialogHeader>
-
-          <div className="space-y-6 py-4">
-            <div className="text-center">
-              <p className="text-sm text-gray-600">
-                Please provide a reason for deactivating this account
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Reason</label>
-              <Textarea
-                placeholder="Explain the reason here"
-                className="min-h-[120px] resize-none"
-                value={deactivateReason}
-                onChange={(e) => setDeactivateReason(e.target.value)}
+          <div className="flex flex-col items-center mb-6">
+            <div className="relative w-24 h-24 mb-4">
+              <Image
+                src={profileImage}
+                alt={`${name}'s profile`}
+                className="rounded-full object-cover"
+                fill
+                priority
               />
             </div>
+            <h3 className="text-2xl font-medium text-main-100">{name}</h3>
           </div>
 
-          <Button
-            className="w-full bg-red-500 hover:bg-red-600 text-white rounded-full"
-            onClick={() => {
-              handleStatusChange("deactivate", deactivateReason);
-              setOpenDeactivate(false);
-              setDeactivateReason("");
-            }}
-          >
-            {loading ? (
-              <FaSpinner className="animate-spin" />
+          <div className="space-y-4">
+            <div className="flex justify-between">
+              <span className="text-gray-600">Email:</span>
+              <span className="text-gray-900">{email}</span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="text-gray-600">User type:</span>
+              <span className="text-gray-900">{userType}</span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="text-gray-600">Phone number:</span>
+              <span className="text-gray-900">{phoneNumber}</span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="text-gray-600">Status:</span>
+              <span className="text-gray-900">{status}</span>
+            </div>
+          </div>
+
+          <div className="mt-8 space-y-3">
+            <button
+              onClick={toggleEditMode}
+              className="w-full py-2 rounded-full bg-[#F2EEFB] text-main-100 hover:bg-blue-100 transition-colors"
+            >
+              {isEditMode ? "Cancel edit" : "Edit account"}
+            </button>
+            {false ? (
+              <button
+                className="w-full px-6 py-2 bg-[#f69845] text-white rounded-full hover:bg-[#E9B384]/90 transition"
+                onClick={() => setOpenDeactivate(true)}
+                disabled={loading}
+              >
+                {loading ? (
+                  <FaSpinner className="animate-spin" />
+                ) : (
+                  "Deactivate account"
+                )}
+              </button>
             ) : (
-              "Deactivate account"
+              <button
+                className="w-full px-6 py-2 bg-[#bbefd09a] text-[#27AE60] border border-[#27ae60] rounded-full hover:bg-[#27AE60]/90 hover:border-[#27AE60]/90 hover:text-[#fff] transition"
+                onClick={() => setOpenActivate(true)}
+                disabled={loading}
+              >
+                {loading ? (
+                  <FaSpinner className="animate-spin" />
+                ) : (
+                  "Activate account"
+                )}
+              </button>
             )}
-          </Button> */}
-
-          <DialogHeader className="p-6 text-center space-y-6">
-            <div className="flex justify-center">
-              <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
-                <Trash2 className="h-6 w-6 text-red-700" />
-              </div>
-            </div>
-
-            <div className="space-y-2 text-center">
-              <DialogTitle className="text-lg font-normal">
-                Delete account
-              </DialogTitle>
-              <p className="text-gray-600 text-base">
-                Are you sure you want to Delete
-                <br />
-                this account? this account information will be erased
-              </p>
-            </div>
-          </DialogHeader>
-
-          <div className="flex p-4 gap-3">
-            <Button
-              variant="outline"
-              className="flex-1 text-base py-3 rounded-full border border-[#eb1717]"
-              onClick={() => setOpenDeactivate(false)}
+            <button
+              onClick={() => setOpenDeactivate(true)}
+              className="w-full py-2 rounded-full border border-red-300 text-red-500 hover:bg-red-50 transition-colors"
             >
-              Cancel
-            </Button>
-            <Button
-              className="flex-1 text-base py-3 font-normal rounded-full bg-[#eb1717] hover:bg-[#eb1717]/90"
-              onClick={() => {
-                // handleStatusChange("activate");
-                setOpenDeactivate(false);
-              }}
-            >
-              {loading ? (
-                <FaSpinner className="animate-spin" />
-              ) : (
-                "Delete account"
-              )}
-            </Button>
+              Delete account
+            </button>
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+
+        {/* Permissions Card */}
+        <div className="w-full md:w-3/2 bg-white p-6 rounded-xl shadow-sm">
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-lg text-[#333333]">Permissions</h2>
+            {isEditMode && (
+              <button
+                onClick={savePermissions}
+                className="px-4 py-2 bg-green-700 text-white rounded-full text-sm hover:bg-green-700 transition-colors"
+              >
+                Save Changes
+              </button>
+            )}
+          </div>
+          <p className="text-gray-500 text-sm mb-6">
+            {isEditMode
+              ? "Click on permissions to select or deselect them"
+              : "Select or deselect a permission to make changes"}{" "}
+            <br />
+            to what certain role have access to
+          </p>
+
+          <div className="flex flex-wrap gap-3">
+            {allPermissions.map((permission) => (
+              <PermissionButton
+                key={permission}
+                label={permission}
+                active={
+                  isEditMode
+                    ? selectedPermissions.includes(permission)
+                    : permissions.includes(permission)
+                }
+                isEditMode={isEditMode}
+                onClick={() => togglePermission(permission)}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Activate Dialog */}
+        <Dialog open={openActivate} onOpenChange={setOpenActivate}>
+          <DialogContent className="max-w-md p-0 gap-0">
+            <DialogHeader className="p-6 text-center space-y-6">
+              <div className="flex justify-center">
+                <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center">
+                  <CheckCircle className="h-6 w-6 text-green-500" />
+                </div>
+              </div>
+
+              <div className="space-y-2 text-center">
+                <DialogTitle className="text-lg font-normal">
+                  Activate Account
+                </DialogTitle>
+                <p className="text-gray-600 text-base">
+                  Are you sure you want to activate
+                  <br />
+                  this account?
+                </p>
+              </div>
+            </DialogHeader>
+
+            <div className="flex p-4 gap-3">
+              <Button
+                variant="outline"
+                className="flex-1 text-base py-3 rounded-full border border-[#27AE60]"
+                onClick={() => setOpenActivate(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="flex-1 text-base py-3 font-normal rounded-full bg-[#27AE60] hover:bg-[#27AE60]/90"
+                onClick={() => {
+                  handleStatusChange("activate");
+                  setOpenActivate(false);
+                }}
+              >
+                {loading ? (
+                  <FaSpinner className="animate-spin" />
+                ) : (
+                  "Activate account"
+                )}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Deactivate Dialog */}
+        <Dialog open={openDeactivate} onOpenChange={setOpenDeactivate}>
+          <DialogContent className="max-w-md">
+            
+
+            <DialogHeader className="p-6 text-center space-y-6">
+              <div className="flex justify-center">
+                <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
+                  <Trash2 className="h-6 w-6 text-red-700" />
+                </div>
+              </div>
+
+              <div className="space-y-2 text-center">
+                <DialogTitle className="text-lg font-normal">
+                  Delete account
+                </DialogTitle>
+                <p className="text-gray-600 text-base">
+                  Are you sure you want to Delete
+                  <br />
+                  this account? this account information will be erased
+                </p>
+              </div>
+            </DialogHeader>
+
+            <div className="flex p-4 gap-3">
+              <Button
+                variant="outline"
+                className="flex-1 text-base py-3 rounded-full border border-[#eb1717]"
+                onClick={() => setOpenDeactivate(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="flex-1 text-base py-3 font-normal rounded-full bg-[#eb1717] hover:bg-[#eb1717]/90"
+                onClick={() => {
+                  // handleStatusChange("activate");
+                  setOpenDeactivate(false);
+                }}
+              >
+                {loading ? (
+                  <FaSpinner className="animate-spin" />
+                ) : (
+                  "Delete account"
+                )}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   );
 };
