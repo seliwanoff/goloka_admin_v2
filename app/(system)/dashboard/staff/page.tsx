@@ -43,7 +43,7 @@ const Staffs = () => {
           </Button>
         </div>
       </div>
-      <div>
+      <div className="mt-6">
         <StaffDataDisplay
           // isTabHidden={true}
           // recentCampaigns={[]}

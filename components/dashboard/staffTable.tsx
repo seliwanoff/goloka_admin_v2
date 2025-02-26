@@ -205,7 +205,7 @@ const StaffTable: React.FC<TableProps> = ({ data, isLoading }) => {
   }
 
   const reroute = (id: any) => {
-    router.push(`/dashboard/campaigns/${id}`);
+    router.push(`/dashboard/staff/${id}`);
   };
 
   return (
@@ -223,9 +223,9 @@ const StaffTable: React.FC<TableProps> = ({ data, isLoading }) => {
       </TableHeader>
       <TableBody>
         {data.map((item, i) => (
-          <TableRow key={`${item.title}-${i}`}>
+          <TableRow key={`${item.email}-${i}`}>
             <TableCell
-              onClick={() => reroute(item?.id)}
+              onClick={() => reroute(item?.email)}
               className="text-main-100 hover:underline cursor-pointer"
             >
               {item.name}
@@ -263,7 +263,7 @@ const StaffTable: React.FC<TableProps> = ({ data, isLoading }) => {
                 <PopoverContent className="w-40 p-0">
                   <div className="flex flex-col text-sm">
                     <button
-                      onClick={() => reroute(item?.id)}
+                      onClick={() => reroute(item?.email)}
                       className="flex items-center gap-2 w-full px-4 py-2.5 hover:bg-gray-50 transition-colors text-left"
                     >
                       <Eye size="20" color="#000" />
