@@ -145,12 +145,12 @@ const StaffInviteModal: React.FC<StaffInviteModalProps> = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="h-auto rounded-full bg-main-100 px-8 py-3 text-white hover:bg-blue-700 space-x-3">
+        {/* <Button className="h-auto rounded-full bg-main-100 px-8 py-3 text-white hover:bg-blue-700 space-x-3">
           <span className="mr-3">
             <ShieldPlus size="16" color="#fff" />
           </span>
           Add new staff
-        </Button>
+        </Button> */}
       </DialogTrigger>
       <DialogContent className="sm:max-w-md md:max-w-lg">
         <DialogHeader>
