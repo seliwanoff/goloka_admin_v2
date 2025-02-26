@@ -451,6 +451,36 @@ export const getUserReports = async (id: string, params: UserParams) => {
     );
   }
 };
+export const getStaff = async ( params: any) => {
+  try {
+    const queryString = new URLSearchParams({
+
+      ...(params.per_page && { per_page: params.per_page.toString() }),
+      ...(params.page && { page: params.page.toString() }),
+      ...(params.search && { search: params.search }),
+      ...(params.status && { status: params.status }),
+    }).toString();
+
+    const response = await fetchData<any>(
+      `staffs?${queryString}`
+    );
+
+    if (!response) {
+      throw new Error("No data received from server");
+    }
+
+    return response;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        error.response?.data?.message || "Failed to fetch staff information"
+      );
+    }
+    throw new Error(
+      error instanceof Error ? error.message : "An unexpected error occurred"
+    );
+  }
+};
 export const getUserContributions = async (id: string, params: UserParams) => {
   try {
     const queryString = new URLSearchParams({
