@@ -394,6 +394,7 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
   isTabHidden,
   onUserTabChange,
   activeUsersTab,
+  count,
 }) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -482,6 +483,9 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", currentPage.toString());
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   //console.log(searchParams);
@@ -573,6 +577,22 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
           </div>
 
           <div>
+            <span className="font-medium">Total count</span>
+
+            {activeUserTab !== "organization" ? (
+              <h3>
+                {(count && count?.data?.total_contributors?.count) || 0}{" "}
+                Contributor
+              </h3>
+            ) : (
+              <h3>
+                {(count && count?.data?.total_organizations?.count) || 0}{" "}
+                Organizations
+              </h3>
+            )}
+          </div>
+
+          <div>
             <Tabs
               value={activeUserTab}
               onValueChange={handleUserTabChange}
@@ -650,4 +670,5 @@ interface TabbedDataDisplayProps {
   recentUsers: ServerResponseOrNull<any> | undefined;
   onUserTabChange?: (tab: string) => void;
   activeUsersTab: string;
+  count?: any;
 }

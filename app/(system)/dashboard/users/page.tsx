@@ -1,7 +1,7 @@
 "use client";
 import TabbedDataDisplay from "@/components/dashboard/tableData";
 import { DashboardWidget } from "@/components/lib/widgets/dashboard_card";
-import { getUsers, getUsersStats } from "@/services/analytics";
+import { getUsers, getUsersCount, getUsersStats } from "@/services/analytics";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Profile2User,
@@ -60,6 +60,26 @@ const UserPage = () => {
     staleTime: 1000 * 60,
   });
 
+  const {
+    data: usersCount,
+    error: usersErrorCount,
+    isLoading: usersCountLoading,
+  } = useQuery({
+    queryKey: ["USERS_COUNT", currentTab, currentPage, pageSize, search],
+    queryFn: () =>
+      getUsersCount({
+        per_page: pageSize,
+        page: currentPage,
+        user_type: user_type,
+        search: search,
+
+        // Use the mapped user_type value
+      }),
+    retry: 2,
+    staleTime: 1000 * 60,
+  });
+
+  // console.log(usersCount, "Users count");
   // Stats query
   const {
     data: usersStats,
@@ -144,6 +164,7 @@ const UserPage = () => {
           recentUsers={users}
           onUserTabChange={handleUserTabChange}
           activeUsersTab={currentTab}
+          count={usersCount}
         />
       </div>
     </div>

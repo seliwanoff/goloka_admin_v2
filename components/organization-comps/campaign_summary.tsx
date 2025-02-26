@@ -3,15 +3,18 @@ import { cn, classMerge } from "@/lib/utils";
 import { Pie, PieChart, Sector } from "recharts";
 import { ClipboardExport } from "iconsax-react";
 import { DynamicChart } from "../dashboard/dynamicWrapper";
-
+import { numberWithCommas } from "@/helper";
+/***
 const chartDataSummary = [
   { type: "Pending", summary: 3857, fill: "#F2994A" },
   { type: "Ongoing", summary: 236, fill: "#3365E3" },
   { type: "Completed", summary: 1678, fill: "#079455" },
 ];
+ */
 
 const TotalRevenueCard = ({ widgetStats }: any) => {
-  const totalRev = widgetStats?.data?.total_revenue;
+  ///console.log(widgetStats.data);
+  //const totalRev = widgetStats?.data?.total_revenue;
   return (
     <div
       className={classMerge(
@@ -23,7 +26,9 @@ const TotalRevenueCard = ({ widgetStats }: any) => {
         <div>
           <span className="text-sm text-white">Total Revenue</span>
           <h3 className="mt-3 text-2xl font-semibold text-white">
-            ₦{totalRev}
+            ₦
+            {numberWithCommas(widgetStats && widgetStats.data.revenue.total) ||
+              0}
           </h3>
         </div>
         <div>
@@ -38,18 +43,39 @@ const TotalRevenueCard = ({ widgetStats }: any) => {
           </span>
         </div>
       </div>
-      <p className="mt-3 text-white">40% vs last month</p>
+      <p className="mt-3 text-white">
+        {(widgetStats && widgetStats?.data?.revenue.percentage_increase) || 0}%
+        vs last month
+      </p>
     </div>
   );
 };
 
 const CampaignSummary = ({ widgetStats }: any) => {
-  console.log(widgetStats);
+  //  console.log(widgetStats);
+
+  const getColorForKey = (key: string) => {
+    const colors: Record<string, string> = {
+      pending: "#F2994A", // Yellow
+      running: "#3365E3", // Green
+      completed: "#079455", // Blue
+      rejected: "#EF4444", // Red
+    };
+    return colors[key] || "#D1D5DB"; // Default Gray
+  };
+  const chartDataSummary = Object.entries(
+    widgetStats?.data?.campaigns || []
+  ).map(([key, value]) => ({
+    type: key,
+    summary: value as number,
+    fill: getColorForKey(key),
+  }));
+
   return (
     <div className="flex flex-col items-center gap-6">
       <TotalRevenueCard widgetStats={widgetStats} />
       <DynamicChart>
-        <PieChart width={220} height={220}>
+        <PieChart width={300} height={220}>
           <Pie
             data={chartDataSummary}
             dataKey="summary"
