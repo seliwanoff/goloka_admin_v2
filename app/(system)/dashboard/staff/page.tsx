@@ -29,6 +29,9 @@ const Staffs = () => {
     retry: 2,
     staleTime: 1000 * 60,
   });
+  const toggleModal = () => {
+    setIsOpen((prev) => !prev);
+  };
   return (
     <div>
       <div className="col-span-5 flex items-center justify-between">
@@ -45,7 +48,10 @@ const Staffs = () => {
             </span>
             Edit permission settings
           </Button>
-          <Button className="h-auto rounded-full bg-main-100 px-8 py-3 text-white hover:bg-blue-700 space-x-3">
+          <Button
+            onClick={toggleModal}
+            className="h-auto rounded-full bg-main-100 px-8 py-3 text-white hover:bg-blue-700 space-x-3"
+          >
             <span className="mr-3">
               <ShieldPlus size="16" color="#fff" />{" "}
             </span>
