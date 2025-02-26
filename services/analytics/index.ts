@@ -34,6 +34,34 @@ export const getDashboardChartStats = async (params?: {
     return null;
   }
 };
+
+export const getDonotStart = async (params?: {
+  year?: string;
+  time_filter?: string;
+  start_date?: string;
+  end_date?: string;
+}): Promise<ServerResponseOrNull<any>> => {
+  try {
+    const queryParams = new URLSearchParams();
+
+    if (params?.year) queryParams.set("year", params.year);
+    if (params?.time_filter) queryParams.set("time_filter", params.time_filter);
+    if (params?.start_date) queryParams.set("start_date", params.start_date);
+    if (params?.end_date) queryParams.set("end_date", params.end_date);
+
+    const queryString = queryParams.toString()
+      ? `?${queryParams.toString()}`
+      : "";
+
+    return await fetchData<ServerResponse<any>>(
+      `/dashboard/donut${queryString}`
+    );
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
 export const getWidgetData = async (params?: {
   year?: string;
   time_filter?: string;
@@ -128,6 +156,36 @@ export const getUsers = async (params?: {
       : "";
 
     return await fetchData<ServerResponse<any>>(`users${queryString}`);
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export const getUsersCount = async (params?: {
+  user_type: string;
+  status?: string;
+  per_page?: number;
+  page?: number;
+  search?: string;
+}): Promise<ServerResponseOrNull<any>> => {
+  try {
+    const queryParams = new URLSearchParams();
+
+    if (params?.per_page)
+      queryParams.set("per_page", params.per_page.toString());
+    if (params?.page) queryParams.set("page", params.page.toString());
+    if (params?.user_type)
+      queryParams.set("user_type", params.user_type.toString());
+    if (params?.status) queryParams.set("status", params.status.toString());
+
+    if (params?.search) queryParams.set("search", params.search.toString());
+
+    const queryString = queryParams.toString()
+      ? `?${queryParams.toString()}`
+      : "";
+
+    return await fetchData<ServerResponse<any>>(`transactions/analytics/get`);
   } catch (error) {
     console.error(error);
     return null;

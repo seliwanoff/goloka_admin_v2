@@ -23,6 +23,7 @@ import { useSearchParams } from "next/navigation";
 import {
   getAdminReports,
   getDashboardChartStats,
+  getDonotStart,
   getRecentCampaigns,
   getRecentUsers,
   getWidgetData,
@@ -82,6 +83,22 @@ const Dashboard = () => {
   });
 
   const {
+    data: donotStat,
+    error: donotError,
+    isLoading: isDonotLoading,
+  } = useQuery({
+    queryKey: ["donot-stat", filters.time_filter, filters.year],
+    queryFn: () =>
+      getDonotStart({
+        time_filter: filters.time_filter,
+        year: filters.year,
+        start_date: filters.start_date,
+        end_date: filters.end_date,
+      }),
+    retry: 2,
+  });
+
+  const {
     data: recentCampaigns,
     error: campaignsError,
     isLoading: isCampaignsLoading,
@@ -101,7 +118,6 @@ const Dashboard = () => {
     retry: 2,
   });
 
-  //console.log(widgetStats);
   const {
     data: adminReports,
     error: reportsError,
@@ -111,11 +127,8 @@ const Dashboard = () => {
     queryFn: () => getAdminReports({ per_page: 10 }),
     retry: 2,
   });
-  // console.log("Recent Campaigns:", recentCampaigns);
-  // console.log("Recent Users:", recentUsers);
-  // console.log("Admin Reports:", adminReports);
-  // console.log(widgetStats, "widgetStats");
-  // console.log(chartStats, "chartStats");
+
+  console.log(donotStat, "donotStat");
   const [timeOfDay, setTimeOfDay] = useState<string>("day");
 
   useEffect(() => {
@@ -314,7 +327,7 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="rounded-2xl bg-white ">
-            <CampaignSummary widgetStats={widgetStats} />
+            <CampaignSummary widgetStats={donotStat} />
           </div>
         </div>
         {/* RECENT RESPONSES */}
@@ -326,6 +339,7 @@ const Dashboard = () => {
         isLoading={isCampaignsLoading}
         recentUsers={recentUsers?.data}
         activeUsersTab={""}
+        count={[]}
       />
     </div>
   );
