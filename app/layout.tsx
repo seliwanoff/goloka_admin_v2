@@ -6,7 +6,7 @@ import TanstackProvider from "@/components/layout/tanstackProvider";
 // import Footer from "@/components/landing-comps/footer";
 
 export const metadata: Metadata = {
-  title: "Goloka | Write with ease",
+  title: "Goloka | Real Time Market Intelligence",
   description: "Goloka is your personal writer",
 };
 

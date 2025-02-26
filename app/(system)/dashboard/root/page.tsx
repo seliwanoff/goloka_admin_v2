@@ -23,6 +23,7 @@ import { useSearchParams } from "next/navigation";
 import {
   getAdminReports,
   getDashboardChartStats,
+  getDonotStart,
   getRecentCampaigns,
   getRecentUsers,
   getWidgetData,
@@ -82,6 +83,22 @@ const Dashboard = () => {
   });
 
   const {
+    data: donotStat,
+    error: donotError,
+    isLoading: isDonotLoading,
+  } = useQuery({
+    queryKey: ["donot-stat", filters.time_filter, filters.year],
+    queryFn: () =>
+      getDonotStart({
+        time_filter: filters.time_filter,
+        year: filters.year,
+        start_date: filters.start_date,
+        end_date: filters.end_date,
+      }),
+    retry: 2,
+  });
+
+  const {
     data: recentCampaigns,
     error: campaignsError,
     isLoading: isCampaignsLoading,
@@ -110,11 +127,8 @@ const Dashboard = () => {
     queryFn: () => getAdminReports({ per_page: 10 }),
     retry: 2,
   });
-  // console.log("Recent Campaigns:", recentCampaigns);
-  // console.log("Recent Users:", recentUsers);
-  // console.log("Admin Reports:", adminReports);
-  // console.log(widgetStats, "widgetStats");
-  // console.log(chartStats, "chartStats");
+
+  console.log(donotStat, "donotStat");
   const [timeOfDay, setTimeOfDay] = useState<string>("day");
 
   useEffect(() => {
@@ -184,6 +198,7 @@ const Dashboard = () => {
           footer={
             <span className="font-medium">{activeUsers} Presently active</span>
           }
+          link={"/dashboard/users"}
           isAnalytics={false}
           percentIncrease={null}
           isLoading={isLoading}
@@ -195,6 +210,7 @@ const Dashboard = () => {
           fg="text-[#FEC53D]"
           icon={People}
           value={totalOrgs}
+          link={"/dashboard/users?userType=organization&page=1"}
           footer="vs last month"
           isAnalytics={true}
           increase={orgPercentIncrease > 0}
@@ -207,6 +223,7 @@ const Dashboard = () => {
           bg="bg-main-100 bg-opacity-[12%]"
           fg="text-main-100"
           icon={UserSquare}
+          link={"/dashboard/users?userType=contributor&page=1"}
           value={totalContributors}
           footer="vs last month"
           isAnalytics={true}
@@ -222,6 +239,7 @@ const Dashboard = () => {
           icon={ClipboardExport}
           value={totalCampaigns}
           footer="vs last month"
+          link={"/dashboard/campaigns"}
           isAnalytics={true}
           increase={campaignsPercentIncrease > 0}
           percentIncrease={Math.abs(campaignsPercentIncrease)}
@@ -252,12 +270,14 @@ const Dashboard = () => {
             Invite staff
           </Button>
         </div>
+        {/****
         <div className="col-span-5 flex justify-end">
           <Calendar
             onDateChange={handleDateChange}
             initialFilter={filters.date || ""}
           />
         </div>
+        */}
         {/* Stats section */}
         <div className="no-scrollbar col-span-5 mt-4 w-full overflow-x-auto">
           <div className="col-span-5 flex w-max gap-4 lg:grid lg:w-full lg:grid-cols-4 xl:w-full">
@@ -287,15 +307,7 @@ const Dashboard = () => {
                         Total Revenue
                       </span>
                       <p className="font-semibold text-[#333333]">
-                        {chartStats?.data
-                          ? Number(
-                              chartStats.data.reduce(
-                                (sum: number, item: { admin_fee: number }) =>
-                                  sum + (item.admin_fee || 0),
-                                0
-                              )
-                            ).toFixed(2)
-                          : "0.00"}
+                        {chartStats?.data.total_revenue || 0}
                       </p>
                     </div>
                   </div>
@@ -306,15 +318,7 @@ const Dashboard = () => {
                         Total Campaign
                       </span>
                       <p className="font-semibold text-[#333333]">
-                        {chartStats?.data
-                          ? Number(
-                              chartStats.data.reduce(
-                                (sum: number, item: { campaign_fee: number }) =>
-                                  sum + (item.campaign_fee || 0),
-                                0
-                              )
-                            ).toFixed(2)
-                          : "0.00"}
+                        {chartStats?.data.total_campaigns?.count || 0}
                       </p>
                     </div>
                   </div>
@@ -323,7 +327,7 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="rounded-2xl bg-white ">
-            <CampaignSummary widgetStats={widgetStats} />
+            <CampaignSummary widgetStats={donotStat} />
           </div>
         </div>
         {/* RECENT RESPONSES */}
@@ -333,11 +337,12 @@ const Dashboard = () => {
       <TabbedDataDisplay
         recentCampaigns={recentCampaigns?.data}
         isLoading={isCampaignsLoading}
-        recentUsers={recentUsers?.data} activeUsersTab={""}      />
+        recentUsers={recentUsers?.data}
+        activeUsersTab={""}
+        count={[]}
+      />
     </div>
   );
 };
 
 export default Dashboard;
-
-

@@ -17,8 +17,7 @@ const Users = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { id } = useParams();
-  const [currentTab, setCurrentTab] = useState( "contributions"
-  );
+  const [currentTab, setCurrentTab] = useState("contributions");
 
   const userType =
     searchParams.get("userType") === "organization"
