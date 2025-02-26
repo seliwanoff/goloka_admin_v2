@@ -670,5 +670,5 @@ interface TabbedDataDisplayProps {
   recentUsers: ServerResponseOrNull<any> | undefined;
   onUserTabChange?: (tab: string) => void;
   activeUsersTab: string;
-  count: any;
+  count?: any;
 }
