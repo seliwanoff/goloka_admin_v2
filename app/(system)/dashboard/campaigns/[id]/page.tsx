@@ -16,7 +16,7 @@ import { ClipboardText, Message, Note } from "iconsax-react";
 import Link from "next/link";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import moment from "moment";
 
 import { toast } from "sonner";
@@ -178,6 +178,8 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
     return <SkeletonLoader />;
   }
 
+  const queryClient = useQueryClient();
+
   const handleAcceptCampaign = async () => {
     setIsAcceptLoading(true);
     const formData = new FormData();
@@ -187,8 +189,12 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
       // await console.log(formData, "formData");
       const res = await updateCampaignStatus(campaignId as string, formData);
       //console.log(res, "rer");
+      //@ts-ignore
+      queryClient.invalidateQueries(["Get task"]);
       if (res) {
         refetch();
+        //@ts-ignore
+
         setIsAcceptLoading(false);
         //@ts-ignore
         toast.success(res?.message);
@@ -222,6 +228,8 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
         setIsRejectLoading(false);
         //@ts-ignore
         toast.success(res?.message);
+        //@ts-ignore
+        queryClient.invalidateQueries(["Get task"]);
         // console.log(res?.message);
       }
     } catch (error) {

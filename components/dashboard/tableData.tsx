@@ -582,7 +582,7 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
             {activeUserTab !== "organization" ? (
               <h3>
                 {(count && count?.data?.total_contributors?.count) || 0}{" "}
-                Contributor
+                Contributors
               </h3>
             ) : (
               <h3>
