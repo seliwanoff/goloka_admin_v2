@@ -9,7 +9,7 @@ import {
 import { chunkArray, cn, myReports } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar, CloseCircle, Message, Sms } from "iconsax-react";
-import { Search } from "lucide-react";
+import { EllipsisVertical, MoveLeft, OctagonAlert, Search } from "lucide-react";
 import React, { useState } from "react";
 import { Calendar as CalenderDate } from "@/components/ui/calendar";
 
@@ -21,25 +21,56 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
+  SheetTrigger,
   // SheetTrigger,
 } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { BsThreeDots } from "react-icons/bs";
 import ReportCardGrid from "@/components/report/reportCard";
+import { useQuery } from "@tanstack/react-query";
+import { getAllResports } from "@/services/report";
+import ChatWidget from "@/lib/widgets/response-chat-widget";
+import { useUserStore } from "@/stores/currentUserStore";
 
 const Report = () => {
   const [date, setDate] = useState<Date>();
+  // const [reports, setReports] = useState<IReport[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(10);
-  const pages = chunkArray(myReports, pageSize);
+  const currentUser = useUserStore((state) => state.user);
+
+  console.log(currentUser);
+  const {
+    data: reports,
+    error: userError,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["report", currentPage, pageSize],
+    queryFn: () => getAllResports(),
+    retry: 2,
+    staleTime: 1000 * 60,
+  });
+
+  //@ts-ignore
+  const pages = chunkArray(reports?.data, pageSize);
+  //console.log(pages);
   const currentPageData = pages[currentPage - 1] || [];
   const [open, setOpen] = useState<boolean>(false);
-  const [selected, setSelected] = useState<IReport | any>();
+  const [openMessage, setOpenMessage] = useState<boolean>(false);
 
-  const handleOpenReport = (index: number) => {
-    setSelected(currentPageData[index]);
+  const [selected, setSelected] = useState<IReport | any>();
+  //  console.log(reports);
+  const handleOpenReport = (data: any) => {
+    //  console.log(index);
+    setSelected(data);
     setOpen(true);
   };
+  const formatDate = (dateString: string) => {
+    return format(new Date(dateString), "EEE, d, yyyy - HH:mm"); // Adjust format as needed
+  };
+
+  // console.log(selected);
 
   return (
     <>
@@ -81,37 +112,6 @@ const Report = () => {
         </div>
 
         {/* REPORT LISTS */}
-        {/* <div className="mt-8 grid grid-cols-3 gap-6">
-          {currentPageData.map((report, index) => {
-            return (
-              <div
-                key={index}
-                className="space-y-3 rounded-[8px] border border-[#f2f2f2] bg-[#FCFCFC] p-3.5"
-              >
-                <h3
-                  onClick={() => handleOpenReport(index)}
-                  className="cursor-pointer text-sm font-medium text-black"
-                >
-                  {report.title}
-                </h3>
-                <p className="text-sm text-[#333333]">{report.description}</p>
-                <div className="flex items-center gap-2">
-                  <Image
-                    src={report.photo}
-                    alt={report.name}
-                    className="h-8 w-8 rounded-full"
-                  />
-                  <div>
-                    <h4 className="text-sm font-medium text-[#4F4F4F]">
-                      {report.name}
-                    </h4>
-                    <p className="text-xs text-[#4F4F4F]">{report.date}</p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div> */}
 
         <ReportCardGrid
           reports={currentPageData}
@@ -165,7 +165,7 @@ pagination={}
 
             <div className="mt-8">
               <h3 className="mb-5 text-base text-[#4F4F4F]">
-                Reported contributor
+                Reported {selected?.reported?.type}
               </h3>
 
               <div className="flex items-center justify-between rounded-[50px] bg-[#F8F8F8] p-3.5">
@@ -177,9 +177,9 @@ pagination={}
                   />
                   <div>
                     <h4 className="text-sm font-medium text-[#4F4F4F]">
-                      {selected?.name}
+                      {selected?.reported?.name}
                     </h4>
-                    <p className="text-xs text-[#4F4F4F]">{selected?.date}</p>
+                    <p className="text-xs text-[#4F4F4F]"></p>
                   </div>
                 </div>
 
@@ -227,15 +227,87 @@ pagination={}
                   />
                   <div>
                     <h4 className="text-sm font-medium text-[#4F4F4F]">
-                      {selected?.name}
+                      {selected?.reporter?.name}
                     </h4>
                     <p className="text-xs text-[#4F4F4F]">{selected?.date}</p>
                   </div>
                 </div>
+                <Sheet open={openMessage} onOpenChange={setOpenMessage}>
+                  <SheetTrigger asChild className="flex gap-2">
+                    <Button className="h-auto rounded-[50px] bg-[#EBF0FC] text-[#3365E3] hover:bg-[#EBF0FC] focus:ring-0">
+                      Message
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent className="border-0 p-0 md:max-w-md lg:max-w-xl">
+                    <SheetHeader className="absolute right-0 top-0 z-10 w-full bg-main-100 p-5">
+                      <div className="flex items-center gap-5">
+                        <div
+                          onClick={() => setOpen(false)}
+                          className="cursor-pointer text-[#fff]"
+                        >
+                          <MoveLeft />
+                        </div>
+                        {/* <Image
+                            src={profileImg}
+                            alt="chat-user"
+                            className="h-12 w-12 rounded-full object-cover object-center"
+                          /> */}
+                        <SheetTitle className="font-normal text-white">
+                          Messages
+                        </SheetTitle>
+                        {/* <SheetDescription className="text-white">
+                            24
+                          </SheetDescription> */}
+                      </div>
+                      {/* CUSTOM CLOSE */}
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <span className="absolute right-4 mt-0 flex h-8 w-8 -translate-y-[calc(50%_-_20px)] cursor-pointer items-center justify-center rounded-full bg-white text-main-100">
+                            <EllipsisVertical size={20} />
+                          </span>
+                        </PopoverTrigger>
+                        <PopoverContent className="max-w-fit cursor-pointer rounded-md text-[#EB5757] shadow-lg hover:bg-slate-200">
+                          <div className="item-center flex gap-3 text-[#EB5757]">
+                            <OctagonAlert />
+                            <p className="text-[#EB5757]">Report user</p>
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+                    </SheetHeader>
 
-                <Button className="h-auto rounded-[50px] bg-[#EBF0FC] text-[#3365E3] hover:bg-[#EBF0FC] focus:ring-0">
-                  Message
-                </Button>
+                    {/* CHAT WIDGET */}
+                    <div className="mt-24">
+                      <ChatWidget
+                        modelType="reports"
+                        status={""}
+                        modelId={+selected?.id}
+                        currentUserId={1}
+                      />
+                    </div>
+
+                    {/* CHAT MESSAGE INPUT */}
+                    {/* <SheetFooter className="absolute bottom-0 left-0 w-full border-t md:flex-row md:justify-start md:p-4">
+                        <form id="chat-box" className="block w-full">
+                          <div className="flex w-full items-center gap-6">
+                            <Input
+                              type="text"
+                              name="message"
+                              id="message"
+                              aria-label="Message"
+                              placeholder="Input your message"
+                              className="form-input h-[50px] rounded-full border border-[#DAD8DF] bg-[#F5F5F5] focus:ring-main-100 focus:ring-offset-0 focus-visible:outline-none"
+                            />
+                            <Button className="h-[50px] items-center gap-2 rounded-full bg-main-100 px-5 font-medium text-white">
+                              <span className="">
+                                <Send2 size="24" />
+                              </span>
+                              Send
+                            </Button>
+                          </div>
+                        </form>
+                      </SheetFooter> */}
+                  </SheetContent>
+                </Sheet>
               </div>
             </div>
           </SheetContent>
@@ -254,5 +326,3 @@ interface IReport {
   name: string;
   date: string;
 }
-
-

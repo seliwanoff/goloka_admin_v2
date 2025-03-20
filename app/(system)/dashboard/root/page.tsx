@@ -214,7 +214,8 @@ const Dashboard = () => {
           footer="vs last month"
           isAnalytics={true}
           increase={orgPercentIncrease > 0}
-          percentIncrease={Math.abs(orgPercentIncrease)}
+          //@ts-ignore
+          percentIncrease={Math.abs(orgPercentIncrease).toFixed(2)}
           isLoading={isLoading}
         />
 
@@ -228,7 +229,8 @@ const Dashboard = () => {
           footer="vs last month"
           isAnalytics={true}
           increase={contributorsPercentIncrease > 0}
-          percentIncrease={Math.abs(contributorsPercentIncrease)}
+          //@ts-ignore
+          percentIncrease={Math.abs(contributorsPercentIncrease).toFixed(2)}
           isLoading={isLoading}
         />
 
@@ -242,7 +244,8 @@ const Dashboard = () => {
           link={"/dashboard/campaigns"}
           isAnalytics={true}
           increase={campaignsPercentIncrease > 0}
-          percentIncrease={Math.abs(campaignsPercentIncrease)}
+          //@ts-ignore
+          percentIncrease={Math.abs(campaignsPercentIncrease).toFixed(2)}
           isLoading={isLoading}
         />
       </>
