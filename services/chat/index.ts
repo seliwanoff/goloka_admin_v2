@@ -1,6 +1,9 @@
 import { ServerResponse } from "http";
 import { Chat, ChatParams, CreateChatParams } from "./types";
 import { fetchData, postDataWithFormData } from "@/lib/api";
+import { tokenExtractor } from "@/lib/utils";
+
+const token = tokenExtractor();
 
 export const getChatMessages = async (
   params: ChatParams
@@ -13,8 +16,14 @@ export const getChatMessages = async (
 
     const apiUrl = `https://staging.goloka.io/api/chats?${query.toString()}`;
 
+    // console.log(token?.authHeader);
+
     const response = await fetch(apiUrl, {
       method: "GET",
+      headers: {
+        Authorization: `${token?.authHeader}`, // Assuming token is passed in params
+        "Content-Type": "application/json",
+      },
     });
 
     if (!response.ok) {
@@ -27,7 +36,6 @@ export const getChatMessages = async (
     throw new Error("Failed to fetch chat messages. Please try again later.");
   }
 };
-
 export const createChatMessage = async (
   data: CreateChatParams
 ): Promise<ServerResponse> => {
@@ -53,6 +61,9 @@ export const createChatMessage = async (
     const response = await fetch(apiUrl, {
       method: "POST",
       body: formData,
+      headers: {
+        Authorization: `${token?.authHeader}`, // Assuming token is passed in params
+      },
     });
 
     if (!response.ok) {

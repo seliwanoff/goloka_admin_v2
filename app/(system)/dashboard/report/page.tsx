@@ -9,8 +9,17 @@ import {
 import { chunkArray, cn, myReports } from "@/lib/utils";
 import { format } from "date-fns";
 import { Calendar, CloseCircle, Message, Sms } from "iconsax-react";
-import { EllipsisVertical, MoveLeft, OctagonAlert, Search } from "lucide-react";
-import React, { useState } from "react";
+import {
+  EllipsisVertical,
+  Eye,
+  LocateFixedIcon,
+  LocateIcon,
+  MapPin,
+  MoveLeft,
+  OctagonAlert,
+  Search,
+} from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { Calendar as CalenderDate } from "@/components/ui/calendar";
 
 import Image, { StaticImageData } from "next/image";
@@ -28,9 +37,10 @@ import { Badge } from "@/components/ui/badge";
 import { BsThreeDots } from "react-icons/bs";
 import ReportCardGrid from "@/components/report/reportCard";
 import { useQuery } from "@tanstack/react-query";
-import { getAllResports } from "@/services/report";
+import { getAllResports, getAResportByID } from "@/services/report";
 import ChatWidget from "@/lib/widgets/response-chat-widget";
 import { useUserStore } from "@/stores/currentUserStore";
+import { useRouter } from "next/navigation";
 
 const Report = () => {
   const [date, setDate] = useState<Date>();
@@ -39,7 +49,9 @@ const Report = () => {
   const [pageSize, setPageSize] = useState<number>(10);
   const currentUser = useUserStore((state) => state.user);
 
-  console.log(currentUser);
+  const router = useRouter();
+
+  // console.log(currentUser);
   const {
     data: reports,
     error: userError,
@@ -70,7 +82,15 @@ const Report = () => {
     return format(new Date(dateString), "EEE, d, yyyy - HH:mm"); // Adjust format as needed
   };
 
-  // console.log(selected);
+  useEffect(() => {
+    const getAReport = async () => {
+      const res = await getAResportByID(selected?.id);
+      console.log(res);
+    };
+    getAReport();
+  }, [selected?.id]);
+
+  console.log(selected);
 
   return (
     <>
@@ -162,6 +182,43 @@ pagination={}
                 {selected?.description}
               </SheetDescription>
             </SheetHeader>
+
+            <div className="mt-8">
+              <h3 className="mb-5 text-base text-[#4F4F4F]">Campaign</h3>
+
+              <div className="flex items-center justify-between  p-4 border  border-[#F2F2F2] rounded-[16px]">
+                <div className="flex items-center gap-2">
+                  <div className="flex flex-col gap-4">
+                    <h4 className="text-sm font-medium text-[#4F4F4F]">
+                      {selected?.campaign?.title}
+                    </h4>
+                    <p className="text-xs text-[#4F4F4F]">
+                      {selected?.campaign?.description}
+                    </p>
+
+                    <div className="flex items-center gap-2">
+                      <MapPin size={20} />
+                      <span>location</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="mt-8">
+              <h3 className="mb-5 text-base text-[#4F4F4F]">Response</h3>
+
+              <div className="flex items-center justify-between  p-4 border  border-[#F2F2F2] rounded-[16px]">
+                <div
+                  className="flex items-center gap-2 bg-[#3365E30F] p-2 justify-center text-[#3365E3] text-[14px] font-medium cursor-pointer w-full"
+                  onClick={() =>
+                    router.push(`report/response/${selected?.response_id}`)
+                  }
+                >
+                  <Eye size={20} />
+                  <span className="text-[#3365E3]">View all response</span>
+                </div>
+              </div>
+            </div>
 
             <div className="mt-8">
               <h3 className="mb-5 text-base text-[#4F4F4F]">
@@ -278,10 +335,11 @@ pagination={}
                     {/* CHAT WIDGET */}
                     <div className="mt-24">
                       <ChatWidget
-                        modelType="reports"
+                        modelType="report"
                         status={""}
                         modelId={+selected?.id}
-                        currentUserId={1}
+                        //@ts-ignore
+                        currentUserId={currentUser?.id}
                       />
                     </div>
 
