@@ -22,7 +22,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { Calendar as CalenderDate } from "@/components/ui/calendar";
 
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import Pagination from "@/components/lib/navigation/Pagination";
 import {
   Sheet,
@@ -83,14 +83,16 @@ const Report = () => {
   };
 
   useEffect(() => {
-    const getAReport = async () => {
-      const res = await getAResportByID(selected?.id);
-      console.log(res);
-    };
-    getAReport();
-  }, [selected?.id]);
+    if (selected !== undefined) {
+      const getAReport = async () => {
+        const res = await getAResportByID(selected?.id);
+        console.log(res);
+      };
+      getAReport();
+    }
+  }, [selected]);
 
-  console.log(selected);
+  // console.log(selected);
 
   return (
     <>
@@ -228,9 +230,10 @@ pagination={}
               <div className="flex items-center justify-between rounded-[50px] bg-[#F8F8F8] p-3.5">
                 <div className="flex items-center gap-2">
                   <Image
-                    src={selected?.photo}
+                    src={selected?.profile_photo}
                     alt={selected?.name}
                     className="h-8 w-8 rounded-full"
+                    width={100}
                   />
                   <div>
                     <h4 className="text-sm font-medium text-[#4F4F4F]">
@@ -278,9 +281,10 @@ pagination={}
               <div className="flex items-center justify-between rounded-[50px] bg-[#F8F8F8] p-3.5">
                 <div className="flex items-center gap-2">
                   <Image
-                    src={selected?.photo}
+                    src={selected?.profile_photo}
                     alt={selected?.name}
                     className="h-8 w-8 rounded-full"
+                    width={100}
                   />
                   <div>
                     <h4 className="text-sm font-medium text-[#4F4F4F]">
@@ -380,7 +384,7 @@ export default Report;
 interface IReport {
   title: string;
   description: string;
-  photo: StaticImageData;
+  photo: any;
   name: string;
   date: string;
 }
