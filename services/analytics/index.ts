@@ -192,6 +192,17 @@ export const getUsersCount = async (params?: {
   }
 };
 
+export const getWithdrawalRequestCount = async (): Promise<
+  ServerResponseOrNull<any>
+> => {
+  try {
+    return await fetchData<ServerResponse<any>>(`transactions/analytics/get`);
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
 export const getRecentUsers = async (params?: {
   user_type?: string;
   per_page?: number;
@@ -261,6 +272,37 @@ export const getAllCampaigns = async (params?: {
       : "";
 
     return await fetchData<ServerResponse<any>>(`campaigns${queryString}`);
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export const getAllWithdrawalRequests = async (params?: {
+  per_page?: number;
+  page?: number;
+  status?: string;
+  search?: string;
+  submitted_at?: Date;
+}): Promise<ServerResponseOrNull<any>> => {
+  try {
+    const queryParams = new URLSearchParams();
+
+    if (params?.per_page)
+      queryParams.set("per_page", params.per_page.toString());
+    if (params?.page) queryParams.set("page", params.page.toString());
+    if (params?.status) queryParams.set("status", params.status);
+    if (params?.search) queryParams.set("search", params.search);
+    if (params?.submitted_at)
+      queryParams.set("date", params.submitted_at.toISOString());
+
+    const queryString = queryParams.toString()
+      ? `?${queryParams.toString()}`
+      : "";
+
+    return await fetchData<ServerResponse<any>>(
+      `transactions/manual${queryString}`
+    );
   } catch (error) {
     console.error(error);
     return null;

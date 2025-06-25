@@ -276,6 +276,172 @@ export const CampaignTable: React.FC<{ campaigns: Campaign[] }> = ({
   );
 };
 
+export const WithdrawalTable: React.FC<{ campaigns: Campaign[] }> = ({
+  campaigns,
+}) => {
+  const router = useRouter();
+  const currentPath = usePathname();
+
+  const navigateToCampaign = (id: string) => {
+    let targetPath = "";
+    if (currentPath?.includes("/dashboard/campaigns")) {
+      targetPath = `${currentPath}/${id}`;
+    } else {
+      targetPath = `/dashboard/campaigns/${id}`;
+    }
+
+    router.push(targetPath);
+  };
+
+  const getStatusStyle = (status: Campaign["status"]): string => {
+    const styles = {
+      Pending: "text-orange-500 bg-orange-50 border-orange-200",
+      Accepted: "text-green-500 bg-green-50 border-green-200",
+      Rejected: "text-red-500 bg-red-50 border-red-200",
+      Reviewed: "text-purple-500 bg-purple-50 border-purple-200",
+      Running: "text-blue-500 bg-purple-50 border-blue-200",
+    };
+    return styles[status];
+  };
+
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Account Name</TableHead>
+          <TableHead>Amount</TableHead>
+          <TableHead>Bank Name</TableHead>
+          <TableHead>Account Name</TableHead>
+          <TableHead>Timestamp</TableHead>
+          <TableHead></TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {campaigns.map((campaign, index) => (
+          <TableRow key={index}>
+            {/* Campaign Title with Routing */}
+            <TableCell>
+              <button
+                onClick={() => navigateToCampaign(campaign.id)}
+                className="text-blue-600 hover:underline"
+              >
+                {campaign.title}
+              </button>
+            </TableCell>
+
+            {/* Organizer Information */}
+            <TableCell>
+              <div className="flex items-center gap-2">
+                <Avatar className="w-8 h-8">
+                  <AvatarImage
+                    src={campaign?.imageUrl}
+                    alt={campaign.organizer}
+                  />
+                  <AvatarFallback>
+                    {(() => {
+                      if (!campaign?.organizer) return null;
+
+                      const nameParts = campaign.organizer.trim().split(" ");
+                      if (nameParts.length === 1) {
+                        return nameParts[0][0]?.toUpperCase();
+                      } else {
+                        return `${nameParts[0][0]}${
+                          nameParts[nameParts.length - 1][0]
+                        }`.toUpperCase();
+                      }
+                    })()}
+                  </AvatarFallback>
+                </Avatar>
+                <span>{campaign.organizer}</span>
+              </div>
+            </TableCell>
+
+            {/* Locations */}
+            <TableCell>
+              <div className="flex gap-2 flex-wrap">
+                {campaign.locations?.flatMap((locationGroup, idx) =>
+                  locationGroup.map(
+                    (
+                      location: {
+                        label:
+                          | string
+                          | number
+                          | bigint
+                          | boolean
+                          | React.ReactElement<
+                              unknown,
+                              string | React.JSXElementConstructor<any>
+                            >
+                          | Iterable<React.ReactNode>
+                          | React.ReactPortal
+                          | Promise<
+                              | string
+                              | number
+                              | bigint
+                              | boolean
+                              | React.ReactPortal
+                              | React.ReactElement<
+                                  unknown,
+                                  string | React.JSXElementConstructor<any>
+                                >
+                              | Iterable<React.ReactNode>
+                              | null
+                              | undefined
+                            >
+                          | null
+                          | undefined;
+                      },
+                      locIdx: any
+                    ) => (
+                      <span
+                        key={`${idx}-${locIdx}`}
+                        className="px-2 py-1 bg-gray-100 rounded-lg text-sm"
+                      >
+                        {location.label}
+                      </span>
+                    )
+                  )
+                )}
+              </div>
+            </TableCell>
+
+            {/* Date Submitted */}
+            <TableCell>{campaign.date}</TableCell>
+
+            {/* Status */}
+            <TableCell>
+              <span
+                className={`px-4 py-1 rounded-full text-sm border ${getStatusStyle(
+                  campaign.status
+                )}`}
+              >
+                {campaign.status}
+              </span>
+            </TableCell>
+
+            {/* Eye Icon with Tooltip and Routing */}
+            <TableCell>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => navigateToCampaign(campaign.id)}
+                      // variant="outline"
+                    >
+                      {" "}
+                      <Eye size="20" color="#000" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>view more</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+};
 const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
   const searchParams = useSearchParams();
   const userType =
