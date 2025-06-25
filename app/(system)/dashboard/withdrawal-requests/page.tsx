@@ -45,7 +45,7 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 
 const renderTable = (tdata: any[]) => {
-  return <WithdrawalTable campaigns={tdata} />;
+  return <WithdrawalTable withdrawals={tdata} />;
 };
 
 const WithdrawalRequestsPage = () => {
@@ -313,7 +313,7 @@ const WithdrawalRequestsPage = () => {
         </div>
 
         {/* TABLE DATA */}
-        <div className="">{renderTable([])}</div>
+        <div className="">{renderTable(datas)}</div>
 
         {/* Pagination
         <div className="mt-6">
@@ -344,5 +344,78 @@ const tabs = [
   {
     label: "Paid",
     value: "paid",
+  },
+];
+
+const datas = [
+  {
+    accountNumber: "1234567890",
+    accountName: "John Doe",
+    amount: 1500.75,
+    bankName: "Chase Bank",
+    timestamp: "2023-05-15T09:30:45Z",
+  },
+  {
+    accountNumber: "9876543210",
+    accountName: "Jane Smith",
+    amount: 2450.2,
+    bankName: "Bank of America",
+    timestamp: "2023-05-15T10:15:22Z",
+  },
+  {
+    accountNumber: "4567891230",
+    accountName: "Robert Johnson",
+    amount: 500.0,
+    bankName: "Wells Fargo",
+    timestamp: "2023-05-15T11:45:10Z",
+  },
+  {
+    accountNumber: "7890123456",
+    accountName: "Emily Davis",
+    amount: 3200.5,
+    bankName: "Citibank",
+    timestamp: "2023-05-15T13:20:33Z",
+  },
+  {
+    accountNumber: "2345678901",
+    accountName: "Michael Brown",
+    amount: 125.99,
+    bankName: "US Bank",
+    timestamp: "2023-05-15T14:55:18Z",
+  },
+  {
+    accountNumber: "8901234567",
+    accountName: "Sarah Wilson",
+    amount: 750.25,
+    bankName: "TD Bank",
+    timestamp: "2023-05-15T16:30:42Z",
+  },
+  {
+    accountNumber: "3456789012",
+    accountName: "David Taylor",
+    amount: 1800.0,
+    bankName: "Capital One",
+    timestamp: "2023-05-15T18:05:27Z",
+  },
+  {
+    accountNumber: "9012345678",
+    accountName: "Jessica Martinez",
+    amount: 950.6,
+    bankName: "PNC Bank",
+    timestamp: "2023-05-15T19:40:15Z",
+  },
+  {
+    accountNumber: "5678901234",
+    accountName: "Daniel Anderson",
+    amount: 2750.3,
+    bankName: "HSBC",
+    timestamp: "2023-05-15T21:15:08Z",
+  },
+  {
+    accountNumber: "6789012345",
+    accountName: "Lisa Thomas",
+    amount: 420.75,
+    bankName: "Barclays",
+    timestamp: "2023-05-15T22:50:39Z",
   },
 ];

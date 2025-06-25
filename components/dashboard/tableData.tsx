@@ -15,6 +15,15 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 // import { usePathname, useRouter } from "next/navigation";
 import { Danger, More, Eye, Setting4, BatteryEmpty1 } from "iconsax-react";
+import { MoreVertical } from "lucide-react";
+
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@radix-ui/react-dropdown-menu";
+
 import {
   Popover,
   PopoverContent,
@@ -276,30 +285,38 @@ export const CampaignTable: React.FC<{ campaigns: Campaign[] }> = ({
   );
 };
 
-export const WithdrawalTable: React.FC<{ campaigns: Campaign[] }> = ({
-  campaigns,
+interface Withdrawal {
+  id: string;
+  accountNumber: string;
+  accountName: string;
+  amount: number;
+  bankName: string;
+  timestamp: string;
+  status: "Pending" | "Completed" | "Failed" | "Processing";
+}
+
+export const WithdrawalTable: React.FC<{ withdrawals: Withdrawal[] }> = ({
+  withdrawals,
 }) => {
   const router = useRouter();
   const currentPath = usePathname();
 
-  const navigateToCampaign = (id: string) => {
+  const navigateToWithdrawal = (id: string) => {
     let targetPath = "";
-    if (currentPath?.includes("/dashboard/campaigns")) {
+    if (currentPath?.includes("/dashboard/withdrawals")) {
       targetPath = `${currentPath}/${id}`;
     } else {
-      targetPath = `/dashboard/campaigns/${id}`;
+      targetPath = `/dashboard/withdrawals/${id}`;
     }
-
     router.push(targetPath);
   };
 
-  const getStatusStyle = (status: Campaign["status"]): string => {
+  const getStatusStyle = (status: Withdrawal["status"]): string => {
     const styles = {
       Pending: "text-orange-500 bg-orange-50 border-orange-200",
-      Accepted: "text-green-500 bg-green-50 border-green-200",
-      Rejected: "text-red-500 bg-red-50 border-red-200",
-      Reviewed: "text-purple-500 bg-purple-50 border-purple-200",
-      Running: "text-blue-500 bg-purple-50 border-blue-200",
+      Completed: "text-green-500 bg-green-50 border-green-200",
+      Failed: "text-red-500 bg-red-50 border-red-200",
+      Processing: "text-blue-500 bg-blue-50 border-blue-200",
     };
     return styles[status];
   };
@@ -308,133 +325,75 @@ export const WithdrawalTable: React.FC<{ campaigns: Campaign[] }> = ({
     <Table>
       <TableHeader>
         <TableRow>
+          <TableHead>Account Number</TableHead>
           <TableHead>Account Name</TableHead>
           <TableHead>Amount</TableHead>
           <TableHead>Bank Name</TableHead>
-          <TableHead>Account Name</TableHead>
           <TableHead>Timestamp</TableHead>
+
           <TableHead></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {campaigns.map((campaign, index) => (
+        {withdrawals.map((withdrawal, index) => (
           <TableRow key={index}>
-            {/* Campaign Title with Routing */}
-            <TableCell>
-              <button
-                onClick={() => navigateToCampaign(campaign.id)}
-                className="text-blue-600 hover:underline"
-              >
-                {campaign.title}
-              </button>
-            </TableCell>
-
-            {/* Organizer Information */}
-            <TableCell>
-              <div className="flex items-center gap-2">
-                <Avatar className="w-8 h-8">
-                  <AvatarImage
-                    src={campaign?.imageUrl}
-                    alt={campaign.organizer}
-                  />
-                  <AvatarFallback>
-                    {(() => {
-                      if (!campaign?.organizer) return null;
-
-                      const nameParts = campaign.organizer.trim().split(" ");
-                      if (nameParts.length === 1) {
-                        return nameParts[0][0]?.toUpperCase();
-                      } else {
-                        return `${nameParts[0][0]}${
-                          nameParts[nameParts.length - 1][0]
-                        }`.toUpperCase();
-                      }
-                    })()}
-                  </AvatarFallback>
-                </Avatar>
-                <span>{campaign.organizer}</span>
+            {/* Account Number with ellipsis */}
+            <TableCell className="max-w-[120px]">
+              <div className="text-ellipsis overflow-hidden">
+                {withdrawal.accountNumber}
               </div>
             </TableCell>
 
-            {/* Locations */}
-            <TableCell>
-              <div className="flex gap-2 flex-wrap">
-                {campaign.locations?.flatMap((locationGroup, idx) =>
-                  locationGroup.map(
-                    (
-                      location: {
-                        label:
-                          | string
-                          | number
-                          | bigint
-                          | boolean
-                          | React.ReactElement<
-                              unknown,
-                              string | React.JSXElementConstructor<any>
-                            >
-                          | Iterable<React.ReactNode>
-                          | React.ReactPortal
-                          | Promise<
-                              | string
-                              | number
-                              | bigint
-                              | boolean
-                              | React.ReactPortal
-                              | React.ReactElement<
-                                  unknown,
-                                  string | React.JSXElementConstructor<any>
-                                >
-                              | Iterable<React.ReactNode>
-                              | null
-                              | undefined
-                            >
-                          | null
-                          | undefined;
-                      },
-                      locIdx: any
-                    ) => (
-                      <span
-                        key={`${idx}-${locIdx}`}
-                        className="px-2 py-1 bg-gray-100 rounded-lg text-sm"
-                      >
-                        {location.label}
-                      </span>
-                    )
-                  )
-                )}
+            {/* Account Name with ellipsis */}
+            <TableCell className="max-w-[150px]">
+              <div className="text-ellipsis overflow-hidden">
+                {withdrawal.accountName}
               </div>
             </TableCell>
 
-            {/* Date Submitted */}
-            <TableCell>{campaign.date}</TableCell>
+            {/* Amount */}
+            <TableCell>
+              $
+              {withdrawal.amount.toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </TableCell>
+
+            {/* Bank Name with ellipsis */}
+            <TableCell className="max-w-[120px]">
+              <div className="text-ellipsis overflow-hidden">
+                {withdrawal.bankName}
+              </div>
+            </TableCell>
+
+            {/* Timestamp */}
+            <TableCell>
+              {new Date(withdrawal.timestamp).toLocaleString()}
+            </TableCell>
 
             {/* Status */}
-            <TableCell>
-              <span
-                className={`px-4 py-1 rounded-full text-sm border ${getStatusStyle(
-                  campaign.status
-                )}`}
-              >
-                {campaign.status}
-              </span>
-            </TableCell>
 
-            {/* Eye Icon with Tooltip and Routing */}
+            {/* Actions - Eye Icon and Dropdown */}
             <TableCell>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={() => navigateToCampaign(campaign.id)}
-                      // variant="outline"
-                    >
-                      {" "}
-                      <Eye size="20" color="#000" />
+              <div className="flex items-center gap-2">
+                <Eye color="#000" size={20} />
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="p-1 rounded-md hover:bg-gray-100">
+                      <MoreVertical size={18} />
                     </button>
-                  </TooltipTrigger>
-                  <TooltipContent>view more</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="end"
+                    className="bg-white p-2 rounded-lg flex flex-col gap-2 shadow"
+                  >
+                    <DropdownMenuItem>Approve</DropdownMenuItem>
+                    <DropdownMenuItem>Reject</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </TableCell>
           </TableRow>
         ))}
