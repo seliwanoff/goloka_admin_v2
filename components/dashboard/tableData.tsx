@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 // import { usePathname, useRouter } from "next/navigation";
 import { Danger, More, Eye, Setting4, BatteryEmpty1 } from "iconsax-react";
-import { MoreVertical } from "lucide-react";
+import { CircleCheck, EyeIcon, MoreVertical } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -47,6 +47,7 @@ import Pagination from "../lib/navigation/Pagination";
 import { ServerResponseOrNull } from "@/services/analytics";
 import { Skeleton } from "../ui/skeleton";
 import { EmptyPlaceholder } from "../lib/empty_states/table_empty";
+import { useInvoiceOverlay, useShowPayoutModal } from "@/stores/overlay";
 
 interface Tab {
   id: "campaigns" | "contributors" | "organizations" | "reports";
@@ -301,6 +302,10 @@ export const WithdrawalTable: React.FC<{ withdrawals: Withdrawal[] }> = ({
   const router = useRouter();
   const currentPath = usePathname();
 
+  const { setId, setOpen } = useInvoiceOverlay();
+
+  const { setOpenFilter, setId: setPayoutId } = useShowPayoutModal();
+
   const navigateToWithdrawal = (id: string) => {
     let targetPath = "";
     if (currentPath?.includes("/dashboard/withdrawals")) {
@@ -331,12 +336,19 @@ export const WithdrawalTable: React.FC<{ withdrawals: Withdrawal[] }> = ({
           <TableHead>Bank Name</TableHead>
           <TableHead>Timestamp</TableHead>
 
+          <TableHead>Status</TableHead>
           <TableHead></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {withdrawals.map((withdrawal, index) => (
-          <TableRow key={index}>
+          <TableRow
+            key={index}
+            onClick={() => {
+              setId && setId(withdrawal.id);
+              setOpen(true);
+            }}
+          >
             {/* Account Number with ellipsis */}
             <TableCell className="max-w-[120px]">
               <div className="text-ellipsis overflow-hidden">
@@ -374,23 +386,54 @@ export const WithdrawalTable: React.FC<{ withdrawals: Withdrawal[] }> = ({
 
             {/* Status */}
 
+            <TableCell>
+              <span
+                className={cn(
+                  "flex w-[84px] items-center justify-center rounded-full px-2 py-1.5 text-xs font-medium capitalize",
+                  getStatusStyle(withdrawal?.status)
+                )}
+              >
+                {withdrawal.status}
+              </span>
+            </TableCell>
+
             {/* Actions - Eye Icon and Dropdown */}
             <TableCell>
               <div className="flex items-center gap-2">
-                <Eye color="#000" size={20} />
-
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="p-1 rounded-md hover:bg-gray-100">
-                      <MoreVertical size={18} />
+                      <MoreVertical size={18} className="rotate-90" />
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="end"
-                    className="bg-white p-2 rounded-lg flex flex-col gap-2 shadow"
+                    className="bg-white p-4 rounded-lg flex flex-col gap-3 shadow z-10"
                   >
-                    <DropdownMenuItem>Approve</DropdownMenuItem>
-                    <DropdownMenuItem>Reject</DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <div className="flex items-center gap-2">
+                        <EyeIcon size={24} className="text-[#828282]" />
+
+                        <span className="text-[#101828] text-sm font-medium">
+                          View Details
+                        </span>
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        e.stopPropagation(); // This prevents the event from bubbling up
+                        setOpenFilter(true);
+                        setPayoutId(withdrawal.id);
+                      }}
+                    >
+                      <div className="flex items-center gap-2 cursor-pointer">
+                        <CircleCheck size={24} className="text-[#21B55A]" />
+
+                        <span className="text-[#21B55A] text-sm font-medium">
+                          Paid
+                        </span>
+                      </div>
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>

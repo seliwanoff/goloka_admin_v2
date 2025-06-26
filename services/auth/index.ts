@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import  { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 // import { serverRoute } from "@/lib/utils";
 import { queryClient } from "@/components/layout/tanstackProvider";
 import { postData, ServerResponse } from "@/lib/api";
@@ -98,6 +98,23 @@ export const resetPassword = async (
         );
       } catch (error) {
         console.error("Error resetting password:", error);
+        throw error;
+      }
+    },
+  });
+
+export const markTransactionAsPaid = async (
+  id: string
+): Promise<UseQueryResult<AxiosResponse<any>>> =>
+  await queryClient.fetchQuery({
+    queryKey: ["MarkAsPaid"],
+    queryFn: async () => {
+      try {
+        return await postData<ServerResponse<any>>(
+          `/transactions/${id}/mark-successful`
+        );
+      } catch (error) {
+        console.error("Error marking transaction as paid:", error);
         throw error;
       }
     },

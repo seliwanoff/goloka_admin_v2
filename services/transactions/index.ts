@@ -59,7 +59,7 @@ export const getTrxId = async (
     queryKey: ["Trx by TrxId"],
     queryFn: async () => {
       try {
-        return await fetchData(`/contributor/transactions/${Id}`);
+        return await fetchData(`/transactions/${Id}`);
       } catch (error) {
         return null;
       }

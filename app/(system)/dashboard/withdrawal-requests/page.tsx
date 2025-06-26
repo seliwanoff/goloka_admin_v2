@@ -43,6 +43,12 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import InvoiceModal from "@/components/lib/modals/invoice-modal";
+import { useInvoiceOverlay } from "@/stores/overlay2";
+import ConfirmPayoutModal from "@/components/lib/modals/confirm_payout_modal";
+import { markTransactionAsPaid } from "@/services/auth";
+import { toast } from "sonner";
+import { useShowPayoutModal } from "@/stores/overlay";
 
 const renderTable = (tdata: any[]) => {
   return <WithdrawalTable withdrawals={tdata} />;
@@ -65,6 +71,8 @@ const WithdrawalRequestsPage = () => {
 
   const search = searchParams.get("search") || "";
 
+  const { setOpenFilter, id } = useShowPayoutModal();
+
   useEffect(() => {
     if (!searchParams.get("type")) {
       const params = new URLSearchParams(searchParams.toString());
@@ -74,48 +82,19 @@ const WithdrawalRequestsPage = () => {
   }, [pathname, router, searchParams]);
 
   // Users query with pagination support
-  const {
-    data: users,
-    error: usersError,
-    isLoading: usersLoading,
-  } = useQuery({
-    queryKey: ["USERS", currentTab, currentPage, pageSize, search],
-    queryFn: () =>
-      getUsers({
-        per_page: pageSize,
-        page: currentPage,
-        user_type: user_type,
-        search: search,
-
-        // Use the mapped user_type value
-      }),
-    retry: 2,
-    staleTime: 1000 * 60,
-  });
 
   const {
     data: withdrawalCount,
     error: withdrawalErrorCount,
     isLoading: withdrawalCountLoading,
   } = useQuery({
-    queryKey: ["USERS_COUNT", currentTab, currentPage, pageSize, search],
+    queryKey: ["WITHDRAWAL_COUNT", currentTab, currentPage, pageSize, search],
     queryFn: () => getWithdrawalRequestCount(),
     retry: 2,
     staleTime: 1000 * 60,
   });
 
-  console.log(withdrawalCount, "Withdrawal count");
   // Stats query
-  const {
-    data: usersStats,
-    error: userError,
-    isLoading: statsLoading,
-  } = useQuery({
-    queryKey: ["USERS_STATS"],
-    queryFn: () => getUsersStats(),
-    retry: 2,
-    staleTime: 1000 * 60,
-  });
 
   const {
     data: WithdrawalRequests,
@@ -127,11 +106,13 @@ const WithdrawalRequestsPage = () => {
       getAllWithdrawalRequests({
         per_page: pageSize,
         page: currentPage,
-        status: activeTab,
+        status: activeTab === "paid" ? "successful" : "pending",
         search: search,
       }),
     retry: 2,
   });
+
+  //  console.log(WithdrawalRequests);
 
   const handleSearch = (searchTerm: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -140,14 +121,6 @@ const WithdrawalRequestsPage = () => {
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  const handleUserTabChange = (newTab: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("userType", newTab);
-    params.set("page", "1"); // Reset to first page on tab change
-    params.set("per_page", "10");
-    params.set("search", "");
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
-  };
   const handlePageChange = (page: number) => {
     //setCurrentPage(page);
   };
@@ -157,10 +130,10 @@ const WithdrawalRequestsPage = () => {
     //setCurrentPage(1); // Reset to first page when changing page size
   };
   const renderWidgets = () => {
-    const activeUsers = usersStats?.data?.active_users ?? 0;
-    const deactivatedUser = usersStats?.data?.deactivated_accounts ?? 0;
-    const deletedUser = usersStats?.data?.deleted_accounts ?? 0;
-    const total_user = usersStats?.data?.total_users ?? 0;
+    const activeUsers = withdrawalCount?.data?.active_users ?? 0;
+    const deactivatedUser = withdrawalCount?.data?.deactivated_accounts ?? 0;
+    const deletedUser = withdrawalCount?.data?.deleted_accounts ?? 0;
+    const total_user = withdrawalCount?.data?.total_users ?? 0;
 
     return (
       <>
@@ -170,7 +143,7 @@ const WithdrawalRequestsPage = () => {
           fg="text-[#3365E3]"
           icon={CardReceive}
           value={activeUsers}
-          isLoading={statsLoading}
+          isLoading={withdrawalCountLoading}
         />
 
         <DashboardWidget
@@ -179,7 +152,7 @@ const WithdrawalRequestsPage = () => {
           fg="text-[#FEC53D]"
           icon={MoneyTime}
           value={deactivatedUser}
-          isLoading={statsLoading}
+          isLoading={withdrawalCountLoading}
         />
 
         <DashboardWidget
@@ -188,7 +161,7 @@ const WithdrawalRequestsPage = () => {
           fg="text-[#079455]"
           icon={Receipt21}
           value={deletedUser}
-          isLoading={statsLoading}
+          isLoading={withdrawalCountLoading}
         />
 
         <DashboardWidget
@@ -197,12 +170,27 @@ const WithdrawalRequestsPage = () => {
           fg="text-[#674AE8]"
           icon={CardTick1}
           value={total_user}
-          isLoading={statsLoading}
+          isLoading={withdrawalCountLoading}
         />
       </>
     );
   };
 
+  const [isLoading, setIsLoading] = useState(false);
+  const handleProceed = async () => {
+    if (isLoading) return;
+    try {
+      setIsLoading(true);
+      await markTransactionAsPaid(id);
+      toast.success("Transaction marked as paid successfully");
+      setOpenFilter(false);
+    } catch (error) {
+      console.error("Error marking transaction as paid:", error);
+      toast.error("Failed to mark transaction as paid. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
   // Update URL when date changes
   const handleDateSelect = (selectedDate: Date | undefined) => {
     setDate(selectedDate);
@@ -330,6 +318,8 @@ const WithdrawalRequestsPage = () => {
         </div>
          */}
       </div>
+      <InvoiceModal />
+      <ConfirmPayoutModal action={handleProceed} isLoading={isLoading} />
     </section>
   );
 };
@@ -349,73 +339,96 @@ const tabs = [
 
 const datas = [
   {
+    id: "1",
     accountNumber: "1234567890",
     accountName: "John Doe",
     amount: 1500.75,
     bankName: "Chase Bank",
     timestamp: "2023-05-15T09:30:45Z",
+    status: "Pending",
   },
   {
+    id: "2",
+
     accountNumber: "9876543210",
     accountName: "Jane Smith",
     amount: 2450.2,
     bankName: "Bank of America",
     timestamp: "2023-05-15T10:15:22Z",
+    status: "Pending",
   },
   {
+    id: "3",
+
     accountNumber: "4567891230",
     accountName: "Robert Johnson",
     amount: 500.0,
     bankName: "Wells Fargo",
     timestamp: "2023-05-15T11:45:10Z",
+    status: "Pending",
   },
   {
+    id: "4",
+
     accountNumber: "7890123456",
     accountName: "Emily Davis",
     amount: 3200.5,
     bankName: "Citibank",
     timestamp: "2023-05-15T13:20:33Z",
+    status: "Pending",
   },
   {
+    id: "5",
     accountNumber: "2345678901",
     accountName: "Michael Brown",
     amount: 125.99,
     bankName: "US Bank",
     timestamp: "2023-05-15T14:55:18Z",
+    status: "Pending",
   },
   {
+    id: "6",
     accountNumber: "8901234567",
     accountName: "Sarah Wilson",
     amount: 750.25,
     bankName: "TD Bank",
     timestamp: "2023-05-15T16:30:42Z",
+    status: "Pending",
   },
   {
+    id: "7",
     accountNumber: "3456789012",
     accountName: "David Taylor",
     amount: 1800.0,
     bankName: "Capital One",
     timestamp: "2023-05-15T18:05:27Z",
+    status: "Pending",
   },
   {
+    id: "8",
     accountNumber: "9012345678",
     accountName: "Jessica Martinez",
     amount: 950.6,
     bankName: "PNC Bank",
     timestamp: "2023-05-15T19:40:15Z",
+    status: "Pending",
   },
   {
+    id: "9",
     accountNumber: "5678901234",
     accountName: "Daniel Anderson",
     amount: 2750.3,
     bankName: "HSBC",
     timestamp: "2023-05-15T21:15:08Z",
+    status: "Pending",
   },
   {
+    id: "10",
     accountNumber: "6789012345",
     accountName: "Lisa Thomas",
     amount: 420.75,
     bankName: "Barclays",
     timestamp: "2023-05-15T22:50:39Z",
+    status: "Pending",
   },
 ];
