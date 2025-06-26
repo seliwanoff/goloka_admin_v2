@@ -85,8 +85,6 @@ const DashTopNav: React.FC<ComponentProps> = ({}) => {
   const { user } = useRemoteUserStore();
   const currentUser = useUserStore((state) => state.user);
 
-  console.log(user, "user");
-  console.log(currentUser, "currentUser");
   const router = useRouter();
   // const params = { per_page: 10, page: 1 };
 

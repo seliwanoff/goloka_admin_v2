@@ -288,12 +288,19 @@ export const CampaignTable: React.FC<{ campaigns: Campaign[] }> = ({
 
 interface Withdrawal {
   id: string;
-  accountNumber: string;
-  accountName: string;
+  reference: string;
+  meta: {
+    beneficiary: {
+      bank_name: string;
+      account_name: string;
+      account_number: string;
+    };
+  };
+
   amount: number;
-  bankName: string;
-  timestamp: string;
-  status: "Pending" | "Completed" | "Failed" | "Processing";
+
+  created_at: string;
+  status: "pending" | "successful" | "failed" | "processing";
 }
 
 export const WithdrawalTable: React.FC<{ withdrawals: Withdrawal[] }> = ({
@@ -318,10 +325,10 @@ export const WithdrawalTable: React.FC<{ withdrawals: Withdrawal[] }> = ({
 
   const getStatusStyle = (status: Withdrawal["status"]): string => {
     const styles = {
-      Pending: "text-orange-500 bg-orange-50 border-orange-200",
-      Completed: "text-green-500 bg-green-50 border-green-200",
-      Failed: "text-red-500 bg-red-50 border-red-200",
-      Processing: "text-blue-500 bg-blue-50 border-blue-200",
+      pending: "text-orange-500 bg-orange-50 border-orange-200",
+      successful: "text-green-500 bg-green-50 border-green-200",
+      failed: "text-red-500 bg-red-50 border-red-200",
+      processing: "text-blue-500 bg-blue-50 border-blue-200",
     };
     return styles[status];
   };
@@ -330,6 +337,7 @@ export const WithdrawalTable: React.FC<{ withdrawals: Withdrawal[] }> = ({
     <Table>
       <TableHeader>
         <TableRow>
+          <TableHead>Reference</TableHead>
           <TableHead>Account Number</TableHead>
           <TableHead>Account Name</TableHead>
           <TableHead>Amount</TableHead>
@@ -345,28 +353,33 @@ export const WithdrawalTable: React.FC<{ withdrawals: Withdrawal[] }> = ({
           <TableRow
             key={index}
             onClick={() => {
-              setId && setId(withdrawal.id);
+              setId && setId(withdrawal.reference);
               setOpen(true);
             }}
           >
             {/* Account Number with ellipsis */}
+
             <TableCell className="max-w-[120px]">
               <div className="text-ellipsis overflow-hidden">
-                {withdrawal.accountNumber}
+                {withdrawal.reference}
+              </div>
+            </TableCell>
+            <TableCell className="max-w-[120px]">
+              <div className="text-ellipsis overflow-hidden">
+                {withdrawal.meta.beneficiary.account_number}
               </div>
             </TableCell>
 
             {/* Account Name with ellipsis */}
             <TableCell className="max-w-[150px]">
               <div className="text-ellipsis overflow-hidden">
-                {withdrawal.accountName}
+                {withdrawal.meta.beneficiary.account_name}
               </div>
             </TableCell>
 
             {/* Amount */}
             <TableCell>
-              $
-              {withdrawal.amount.toLocaleString("en-US", {
+              {Math.abs(withdrawal.amount).toLocaleString("en-US", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
               })}
@@ -375,13 +388,13 @@ export const WithdrawalTable: React.FC<{ withdrawals: Withdrawal[] }> = ({
             {/* Bank Name with ellipsis */}
             <TableCell className="max-w-[120px]">
               <div className="text-ellipsis overflow-hidden">
-                {withdrawal.bankName}
+                {withdrawal.meta.beneficiary.bank_name}
               </div>
             </TableCell>
 
             {/* Timestamp */}
             <TableCell>
-              {new Date(withdrawal.timestamp).toLocaleString()}
+              {new Date(withdrawal.created_at).toLocaleString()}
             </TableCell>
 
             {/* Status */}
@@ -419,21 +432,24 @@ export const WithdrawalTable: React.FC<{ withdrawals: Withdrawal[] }> = ({
                         </span>
                       </div>
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={(e) => {
-                        e.stopPropagation(); // This prevents the event from bubbling up
-                        setOpenFilter(true);
-                        setPayoutId(withdrawal.id);
-                      }}
-                    >
-                      <div className="flex items-center gap-2 cursor-pointer">
-                        <CircleCheck size={24} className="text-[#21B55A]" />
 
-                        <span className="text-[#21B55A] text-sm font-medium">
-                          Paid
-                        </span>
-                      </div>
-                    </DropdownMenuItem>
+                    {withdrawal.status === "pending" && (
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation(); // This prevents the event from bubbling up
+                          setOpenFilter(true);
+                          setPayoutId(withdrawal.reference);
+                        }}
+                      >
+                        <div className="flex items-center gap-2 cursor-pointer">
+                          <CircleCheck size={24} className="text-[#21B55A]" />
+
+                          <span className="text-[#21B55A] text-sm font-medium">
+                            Paid
+                          </span>
+                        </div>
+                      </DropdownMenuItem>
+                    )}
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>

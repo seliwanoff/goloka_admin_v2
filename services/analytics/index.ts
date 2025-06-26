@@ -196,7 +196,7 @@ export const getWithdrawalRequestCount = async (): Promise<
   ServerResponseOrNull<any>
 > => {
   try {
-    return await fetchData<ServerResponse<any>>(`transactions/analytics/get`);
+    return await fetchData<ServerResponse<any>>(`transactions/manual/stats`);
   } catch (error) {
     console.error(error);
     return null;
@@ -283,7 +283,7 @@ export const getAllWithdrawalRequests = async (params?: {
   page?: number;
   status?: string;
   search?: string;
-  submitted_at?: Date;
+  submitted_at?: any;
 }): Promise<ServerResponseOrNull<any>> => {
   try {
     const queryParams = new URLSearchParams();
@@ -293,8 +293,7 @@ export const getAllWithdrawalRequests = async (params?: {
     if (params?.page) queryParams.set("page", params.page.toString());
     if (params?.status) queryParams.set("status", params.status);
     if (params?.search) queryParams.set("search", params.search);
-    if (params?.submitted_at)
-      queryParams.set("date", params.submitted_at.toISOString());
+    if (params?.submitted_at) queryParams.set("date", params.submitted_at);
 
     const queryString = queryParams.toString()
       ? `?${queryParams.toString()}`
