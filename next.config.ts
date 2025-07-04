@@ -12,6 +12,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "goloka.s3.eu-north-1.amazonaws.com",
       },
+      {
+        protocol: "https",
+        hostname: "pub-762e0b61c1b24a5dbd75d4c89096ee93.r2.dev",
+      },
     ],
   },
   webpack: (config: { resolve: { alias: { [x: string]: string } } }) => {

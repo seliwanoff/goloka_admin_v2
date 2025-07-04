@@ -166,7 +166,7 @@ export const CampaignTable: React.FC<{ campaigns: Campaign[] }> = ({
             <TableCell>
               <button
                 onClick={() => navigateToCampaign(campaign.id)}
-                className="text-blue-600 hover:underline"
+                className="text-blue-600 hover:underline text-start"
               >
                 {campaign.title}
               </button>

@@ -96,15 +96,17 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
   const [isAcceptDialogOpen, setIsAcceptDialogOpen] = useState(false);
   const [isAcceptLoading, setIsAcceptLoading] = useState(false);
   const [isRejectLoading, setIsRejectLoading] = useState(false);
-  const router = useRouter();
-  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [isBookmarkLoading, setIsBookmarkLoading] = useState(false);
-  const { id: campaignId } = useParams();
+
   const [responseId, setResponseId] = useState<string | null>(null);
 
   const { user } = useRemoteUserStore();
   const USER_CURRENCY_SYMBOL = user?.country?.["currency-symbol"];
+  const searchParams = useSearchParams();
+  const { id: campaignId } = useParams();
+  const queryClient = useQueryClient();
+
   const {
     data: task,
     isLoading,
@@ -115,13 +117,6 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
   });
   // console.log(task, "task");
 
-  //@ts-ignore
-  const locations = useMemo(() => task?.data?.locations, [task]);
-  //@ts-ignore
-  const responses = useMemo(() => task?.data?.responses, [task]);
-
-  // console.log(responses, "response");
-
   useEffect(() => {
     const stepperParam = searchParams.get("stepper");
     const stepParam = searchParams.get("step");
@@ -131,28 +126,6 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
     }
   }, [searchParams]);
 
-  const isContributeDisabled = () => {
-    return (
-      //@ts-ignore
-      task?.data?.responses?.length > 0 &&
-      //@ts-ignore
-      task?.data?.allows_multiple_responses === 0 &&
-      //@ts-ignore
-      !task?.data?.responses.some((response) => response.status === "draft")
-    );
-  };
-
-  const onViewResponse = () => {
-    //@ts-ignore
-    if (task?.data?.responses && task.data.responses.length > 0) {
-      const latestResponse =
-        //@ts-ignore
-        task.data.responses[task.data.responses.length - 1];
-      router.push(`/dashboard/responses/${latestResponse.id}`);
-    }
-  };
-
-  // console.log(task, "task");
   //@ts-ignore
   const locationData = task?.data?.locations;
 
@@ -178,17 +151,14 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
     return <SkeletonLoader />;
   }
 
-  const queryClient = useQueryClient();
-
   const handleAcceptCampaign = async () => {
     setIsAcceptLoading(true);
     const formData = new FormData();
     formData.append("status", "approved");
 
     try {
-      // await console.log(formData, "formData");
       const res = await updateCampaignStatus(campaignId as string, formData);
-      //console.log(res, "rer");
+
       //@ts-ignore
       queryClient.invalidateQueries(["Get task"]);
       if (res) {

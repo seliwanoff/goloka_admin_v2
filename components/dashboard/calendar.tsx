@@ -203,7 +203,7 @@ const Calendar: React.FC<CalendarProps> = ({
         <span className="text-gray-700">
           {selectedFilter === "custom" && fromDate && toDate
             ? `${fromDate.toLocaleDateString()} - ${toDate.toLocaleDateString()}`
-            : filters.find((f) => f.id === selectedFilter)?.label}
+            : filters.find((f) => f.id === selectedFilter)?.label || "Select"}
         </span>
         <ChevronDown className="h-4 w-4 text-gray-500" />
       </button>

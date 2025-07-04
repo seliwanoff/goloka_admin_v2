@@ -128,7 +128,7 @@ const Dashboard = () => {
     retry: 2,
   });
 
-  console.log(donotStat, "donotStat");
+  // console.log(donotStat, "donotStat");
   const [timeOfDay, setTimeOfDay] = useState<string>("day");
 
   useEffect(() => {
@@ -273,14 +273,14 @@ const Dashboard = () => {
             Invite staff
           </Button>
         </div>
-        {/****
+
         <div className="col-span-5 flex justify-end">
           <Calendar
             onDateChange={handleDateChange}
             initialFilter={filters.date || ""}
           />
         </div>
-        */}
+
         {/* Stats section */}
         <div className="no-scrollbar col-span-5 mt-4 w-full overflow-x-auto">
           <div className="col-span-5 flex w-max gap-4 lg:grid lg:w-full lg:grid-cols-4 xl:w-full">
