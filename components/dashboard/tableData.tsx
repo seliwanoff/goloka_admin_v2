@@ -578,6 +578,8 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
   isTabHidden,
   onUserTabChange,
   activeUsersTab,
+
+  recentReports,
   count,
 }) => {
   const router = useRouter();
@@ -587,7 +589,7 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
   const [pageSize, setPageSize] = useState<number>(10);
   const [date, setDate] = useState<Date>();
 
-  // console.log(pageSize, "pageSize");
+  console.log(recentReports, "pageSize");
 
   const getActiveTabFromPath = () => {
     const pathSegments = pathname?.split("/").filter(Boolean);
@@ -807,7 +809,7 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
       {activeTab === "reports" ? (
         <ReportCardGrid
           //@ts-ignore
-          reports={myReports}
+          reports={recentReports}
           isLoading={false}
           onReportClick={() => {}}
           columns={1}
@@ -855,4 +857,5 @@ interface TabbedDataDisplayProps {
   onUserTabChange?: (tab: string) => void;
   activeUsersTab: string;
   count?: any;
+  recentReports?: any;
 }

@@ -129,7 +129,7 @@ const ReportCardGrid: React.FC<ReportCardGridProps> = ({
                     {report.reporter?.name}
                   </h4>
                   <p className="text-xs text-gray-500">
-                    {formatDate(report.created_at)}
+                    {formatDate(report?.created_at)}
                   </p>
                 </div>
               </div>
