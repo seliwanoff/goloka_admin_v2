@@ -460,13 +460,13 @@ export const WithdrawalTable: React.FC<{ withdrawals: Withdrawal[] }> = ({
     </Table>
   );
 };
-const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
+const DataTable: React.FC<{ data: any }> = ({ data }) => {
   const searchParams = useSearchParams();
   const userType =
     searchParams.get("userType") === "organization"
       ? "organization"
       : "contributor";
-  //  console.log(userType, "userType");
+  console.log(userType, "userType");
   const router = useRouter();
 
   if (!data) {
@@ -508,14 +508,14 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
         <TableRow>
           <TableHead>Name</TableHead>
           <TableHead>Email</TableHead>
-          <TableHead>Phone number</TableHead>
+
           <TableHead>Date joined</TableHead>
           <TableHead>Status</TableHead>
           <TableHead></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.map((item, i) => (
+        {data.map((item: any, i: any) => (
           <TableRow key={item.name + i}>
             <TableCell
               onClick={() => reroute(item?.id)}
@@ -524,8 +524,8 @@ const DataTable: React.FC<{ data: any[] }> = ({ data }) => {
               {item.name}
             </TableCell>
             <TableCell>{item.email}</TableCell>
-            <TableCell>{item.phone}</TableCell>
-            <TableCell>{item.date}</TableCell>
+
+            <TableCell>{item.created_at}</TableCell>
             <TableCell>
               <span
                 className={cn(
@@ -589,7 +589,7 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
   const [pageSize, setPageSize] = useState<number>(10);
   const [date, setDate] = useState<Date>();
 
-  console.log(recentReports, "pageSize");
+  console.log(recentUsers, "pageSize");
 
   const getActiveTabFromPath = () => {
     const pathSegments = pathname?.split("/").filter(Boolean);
@@ -674,7 +674,7 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  //console.log(searchParams);
+  console.log(userData);
 
   const handleRowSizeChange = (size: number) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -817,7 +817,7 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
       ) : activeTab === "campaigns" ? (
         <CampaignTable campaigns={transformedCampaigns} />
       ) : (
-        <DataTable data={userData} />
+        <DataTable data={recentUsers} />
       )}
 
       {/* Pagination */}
