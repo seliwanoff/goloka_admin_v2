@@ -42,7 +42,7 @@ const Dashboard = () => {
     currencyType: searchParams?.get("currencyType") || "fiat",
     search: searchParams?.get("search") || undefined,
     date: searchParams?.get("date") || undefined,
-    time_filter: searchParams?.get("time_filter") || "7_days",
+    time_filter: searchParams?.get("time_filter") || undefined,
     start_date: searchParams?.get("start_date") || undefined,
     end_date: searchParams?.get("end_date") || undefined,
     year: searchParams?.get("year") || undefined,

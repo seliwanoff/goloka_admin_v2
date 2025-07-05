@@ -29,7 +29,7 @@
     "@react-google-maps/api": "^2.20.6",
     "@react-hook/media-query": "^1.1.1",
     "@tailwindcss/forms": "^0.5.10",
-    "@tanstack/react-query": "^5.64.1",
+    "@tanstack/react-query": "^5.81.5",
     "@tanstack/react-query-devtools": "^5.64.1",
     "@tanstack/react-table": "^8.20.6",
     "axios": "^1.7.9",
