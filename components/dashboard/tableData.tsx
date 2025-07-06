@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { act, useEffect, useState } from "react";
 // import { Card } from "@/components/ui/card";
 import {
   Table,
@@ -415,7 +415,12 @@ export const WithdrawalTable: React.FC<{ withdrawals: Withdrawal[] }> = ({
               <div className="flex items-center gap-2">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="p-1 rounded-md hover:bg-gray-100">
+                    <button
+                      type="button"
+                      className="p-1 rounded-md hover:bg-gray-100"
+                      aria-label="More options"
+                      title="More options"
+                    >
                       <MoreVertical size={18} className="rotate-90" />
                     </button>
                   </DropdownMenuTrigger>
@@ -460,16 +465,38 @@ export const WithdrawalTable: React.FC<{ withdrawals: Withdrawal[] }> = ({
     </Table>
   );
 };
-const DataTable: React.FC<{ data: any }> = ({ data }) => {
+
+const formatUserType = (activeTab: string) => {
+  if (!activeTab) return activeTab;
+
+  return (
+    activeTab.charAt(0).toUpperCase() + activeTab.slice(1).replace(/s$/, "")
+  );
+};
+const DataTable: React.FC<{ data: any; active: string }> = ({
+  data,
+  active,
+}) => {
   const searchParams = useSearchParams();
   const userType =
     searchParams.get("userType") === "organization"
-      ? "organization"
-      : "contributor";
-  console.log(userType, "userType");
+      ? "Organization"
+      : "Contributor";
+
+  const formattedUserType = formatUserType(active || userType);
+
+  const dataArray = Array.isArray(data) ? data : [];
+
+  // console.log(active);
+
+  const filteredData =
+    active === "users"
+      ? dataArray
+      : dataArray.filter((item) => item.user_type === formattedUserType);
+
   const router = useRouter();
 
-  if (!data) {
+  if (!filteredData) {
     return (
       <Table>
         <TableHeader>
@@ -493,7 +520,7 @@ const DataTable: React.FC<{ data: any }> = ({ data }) => {
     );
   }
 
-  if (!data?.length) {
+  if (!filteredData?.length) {
     return (
       <EmptyState message="No users found. Try adjusting your filters or search terms." />
     );
@@ -515,7 +542,7 @@ const DataTable: React.FC<{ data: any }> = ({ data }) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.map((item: any, i: any) => (
+        {filteredData.map((item: any, i: any) => (
           <TableRow key={item.name + i}>
             <TableCell
               onClick={() => reroute(item?.id)}
@@ -543,8 +570,13 @@ const DataTable: React.FC<{ data: any }> = ({ data }) => {
             <TableCell>
               <Popover>
                 <PopoverTrigger asChild>
-                  <button className="focus:outline-none">
-                    <More size="20" color="#000" />
+                  <button
+                    type="button"
+                    className="p-1 rounded-md hover:bg-gray-100"
+                    aria-label="More options"
+                    title="More options"
+                  >
+                    <MoreVertical size={18} className="rotate-90" />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="w-40 p-0">
@@ -589,8 +621,6 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
   const [pageSize, setPageSize] = useState<number>(10);
   const [date, setDate] = useState<Date>();
 
-  console.log(recentUsers, "pageSize");
-
   const getActiveTabFromPath = () => {
     const pathSegments = pathname?.split("/").filter(Boolean);
     if (
@@ -612,7 +642,6 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
     const userType = searchParams.get("userType");
     return userType || activeUsersTab;
   });
-  // console.log(activeUserTab, "activeUserTab");
 
   useEffect(() => {
     const userType = searchParams.get("userType");
@@ -636,6 +665,7 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
     setActiveUserTab(value);
     onUserTabChange?.(value);
   };
+
   const transformedCampaigns =
     recentCampaigns?.map((campaign) => ({
       title: campaign.title,
@@ -674,8 +704,6 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  console.log(userData);
-
   const handleRowSizeChange = (size: number) => {
     const params = new URLSearchParams(searchParams.toString());
 
@@ -683,11 +711,21 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
     setCurrentPage(1);
     params.set("per_page", size.toString());
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-
-    // Reset to first page when changing page size
   };
+  const handleRedirect = () => {
+    const basePath = "/dashboard";
+    const tabRoutes: Record<string, string> = {
+      campaigns: `${basePath}/campaigns`,
+      report: `${basePath}/report`,
+      contributors: `${basePath}/users?userType=contributor`,
+      organizations: `${basePath}/users?userType=organization`,
+    };
 
-  //console.log(pageSize, "pageSize");
+    const route = tabRoutes[activeTab];
+    if (route) {
+      router.push(route);
+    }
+  };
   const handleSearchTerm = (search: string) => {
     setSearchTerm(search);
     const params = new URLSearchParams(searchParams.toString());
@@ -704,7 +742,11 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
             activeTab={activeTab}
             onTabChange={setActiveTab}
           />
-          <Button variant="link" className="text-blue-600">
+          <Button
+            className="text-main-100 bg-white hover:bg-white"
+            aria-label="See all items"
+            onClick={handleRedirect}
+          >
             See all
           </Button>
         </div>
@@ -728,7 +770,6 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
-                    variant={"outline"}
                     className={cn(
                       "w-min justify-start gap-3 rounded-full px-3 pr-1 text-center text-sm font-normal"
                     )}
@@ -817,7 +858,7 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
       ) : activeTab === "campaigns" ? (
         <CampaignTable campaigns={transformedCampaigns} />
       ) : (
-        <DataTable data={recentUsers} />
+        <DataTable data={recentUsers} active={activeTab} />
       )}
 
       {/* Pagination */}

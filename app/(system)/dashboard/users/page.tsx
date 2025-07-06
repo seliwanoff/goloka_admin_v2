@@ -161,7 +161,7 @@ const UserPage = () => {
           isTabHidden={true}
           recentCampaigns={[]}
           isLoading={usersLoading}
-          recentUsers={users}
+          recentUsers={users?.data}
           onUserTabChange={handleUserTabChange}
           activeUsersTab={currentTab}
           count={usersCount}
