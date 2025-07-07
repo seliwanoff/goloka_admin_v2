@@ -326,6 +326,15 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
                   </h4>
                   <p className="text-sm text-gray-400">Expected response</p>
                 </div>
+
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F]">
+                  <h4 className="text-[#101828]">
+                    {/* @ts-ignore */}
+                    {task?.data?.campaign?.payment_rate_for_response}
+                  </h4>
+                  <p className="text-sm text-gray-400">Payment per response</p>
+                </div>
+
                 <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F]">
                   <div className="flex gap-2 flex-wrap">
                     {locationx?.states && Array.isArray(locationx.states) ? (
@@ -359,6 +368,58 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
                       {task?.data?.campaign?.campaign_group}{" "}
                     </h4>
                     <p className="text-sm text-gray-400">Campaign</p>
+                  </div>
+                </div>
+
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F]">
+                  <div className="md:text-left">
+                    <h4 className="font-medium text-[#101828]">
+                      {/* @ts-ignore */}
+                      {task?.data?.campaign?.no_of_questions}{" "}
+                    </h4>
+                    <p className="text-sm text-gray-400">Number of questions</p>
+                  </div>
+                </div>
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F]">
+                  <div className="md:text-left">
+                    <h4 className="font-medium text-[#101828]">
+                      {/* @ts-ignore */}
+                      {task?.data?.campaign?.number_of_responses_received}{" "}
+                    </h4>
+                    <p className="text-sm text-gray-400">
+                      Number of response received
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F]">
+                  <div className="md:text-left">
+                    <h4 className="font-medium text-[#101828]">
+                      {/* @ts-ignore */}
+                      {task?.data?.campaign?.type}{" "}
+                    </h4>
+                    <p className="text-sm text-gray-400">Campaign type</p>
+                  </div>
+                </div>
+
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F]">
+                  <div className="md:text-left">
+                    <h4 className="font-medium text-[#101828]">
+                      {/* @ts-ignore */}
+                      {task?.data?.campaign?.allows_multiple_responses === 1
+                        ? "Yes"
+                        : "No"}{" "}
+                    </h4>
+                    <p className="text-sm text-gray-400">Multiple response</p>
+                  </div>
+                </div>
+
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F]">
+                  <div className="md:text-left">
+                    <h4 className="font-medium text-[#101828]">
+                      {/* @ts-ignore */} {USER_CURRENCY_SYMBOL}
+                      {task?.data?.campaign?.campaign_fee}{" "}
+                    </h4>
+                    <p className="text-sm text-gray-400">Campaign fee</p>
                   </div>
                 </div>
               </div>

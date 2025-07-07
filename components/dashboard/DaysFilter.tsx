@@ -10,7 +10,7 @@ const TimeFilter: React.FC<TimeFilterProps> = ({ selectedDays, onChange }) => {
     { label: "24 Hours", value: "24_hours" },
     { label: "7 Days", value: "7_days" },
     { label: "30 Days", value: "30_days" },
-    { label: "12 Months", value: "12_months" },
+    { label: "12 Months", value: "12_months" },  
   ];
 
   return (
