@@ -893,11 +893,11 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
                 <PopoverTrigger asChild>
                   <Button
                     className={cn(
-                      "w-min justify-start gap-3 rounded-full px-3 pr-1 text-center text-sm font-normal bg-[#ccc]"
+                      "w-min justify-start gap-3 rounded-full px-3 pr-1 text-center text-sm font-normal bg-[#fff] border borcder-[#ccc] text-[#000] hover:bg-[#fff] hover:text-[#000]"
                     )}
                   >
                     {date ? format(date, "PPP") : <span>Select date</span>}
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#ccc]">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F8F8]">
                       <Calendar size={20} color="#828282" className="m-0" />
                     </span>{" "}
                   </Button>
