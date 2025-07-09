@@ -177,11 +177,12 @@ const ProfileCard = ({ data, onStatusChange }: ProfileCardProps) => {
             )}
           </button>
         )}
-
+        {/*** 
         <button className="w-full px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition flex items-center justify-center gap-2">
           <MessageIcon />
           Message
         </button>
+        */}
       </div>
 
       {/* Activate Dialog */}
