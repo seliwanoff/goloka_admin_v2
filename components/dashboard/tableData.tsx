@@ -464,9 +464,14 @@ const DataTable: React.FC<{ data: any }> = ({ data }) => {
   const searchParams = useSearchParams();
   const userType =
     searchParams.get("userType") === "organization"
-      ? "organization"
-      : "contributor";
+      ? "Organization"
+      : "Contributor";
   console.log(userType, "userType");
+
+  const filteredData = data.filter((item: any) => item.user_type === userType);
+
+  console.log(filteredData);
+
   const router = useRouter();
 
   if (!data) {
