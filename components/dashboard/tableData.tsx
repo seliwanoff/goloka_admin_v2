@@ -604,9 +604,131 @@ const DataTable: React.FC<{ data: any; active: string }> = ({
   );
 };
 
+const DataTableStaff: React.FC<{ data: any }> = ({ data }) => {
+  const searchParams = useSearchParams();
+  const userType =
+    searchParams.get("userType") === "organization"
+      ? "Organization"
+      : "Contributor";
+
+  //const dataArray = Array.isArray(data) ? data : [];
+
+  // console.log(active);
+
+  const router = useRouter();
+
+  if (!data) {
+    return (
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Name</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Phone number</TableHead>
+            <TableHead>Date joined</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead></TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {Array(5)
+            .fill(null)
+            .map((_, index) => (
+              <TableRowSkeleton key={index} />
+            ))}
+        </TableBody>
+      </Table>
+    );
+  }
+
+  if (!data?.length) {
+    return (
+      <EmptyState message="No staff found. Try adjusting your filters or search terms." />
+    );
+  }
+
+  const reroute = (data: any) => {
+    router.push(`/dashboard/staffs/${data}?userType=staff`);
+  };
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Name</TableHead>
+          <TableHead>Email</TableHead>
+
+          <TableHead>Date joined</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead></TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {data.map((item: any, i: any) => (
+          <TableRow key={item.name + i}>
+            <TableCell
+              onClick={() => reroute(item?.id)}
+              className="text-main-100 hover:underline cursor-pointer"
+            >
+              {item.name}
+            </TableCell>
+            <TableCell>{item.email}</TableCell>
+
+            <TableCell>{item.created_at}</TableCell>
+            <TableCell>
+              <span
+                className={cn(
+                  "px-3 py-1 rounded-full text-sm",
+                  item.status === "Active"
+                    ? "bg-green-100 text-green-700"
+                    : item.status === "Deactivate"
+                    ? "bg-orange-100 text-orange-700"
+                    : "bg-red-100 text-red-700"
+                )}
+              >
+                {item.status}
+              </span>
+            </TableCell>
+            <TableCell>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    className="p-1 rounded-md hover:bg-gray-100"
+                    aria-label="More options"
+                    title="More options"
+                  >
+                    <MoreVertical size={18} className="rotate-90" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-40 p-0">
+                  <div className="flex flex-col text-sm">
+                    <button
+                      onClick={() => reroute(item?.id)}
+                      className="flex items-center gap-2 w-full px-4 py-2.5 hover:bg-gray-50 transition-colors text-left"
+                    >
+                      <Eye size="20" color="#000" /> View Profile
+                    </button>
+                    <button
+                      // onClick={}
+                      className="flex items-center gap-2 w-full px-4 py-2.5 hover:bg-gray-50 transition-colors text-left text-[#f01313]"
+                    >
+                      <Danger size="20" color="#f01313" /> Deactivate
+                    </button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+};
+
 const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
   recentCampaigns,
   recentUsers,
+  staffs,
   isTabHidden,
   onUserTabChange,
   activeUsersTab,
@@ -771,11 +893,11 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
                 <PopoverTrigger asChild>
                   <Button
                     className={cn(
-                      "w-min justify-start gap-3 rounded-full px-3 pr-1 text-center text-sm font-normal"
+                      "w-min justify-start gap-3 rounded-full px-3 pr-1 text-center text-sm font-normal bg-[#ccc]"
                     )}
                   >
                     {date ? format(date, "PPP") : <span>Select date</span>}
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F8F8]">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#ccc]">
                       <Calendar size={20} color="#828282" className="m-0" />
                     </span>{" "}
                   </Button>
@@ -802,48 +924,6 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
               <span>Filter</span>
             </div>
           </div>
-
-          <div>
-            <span className="font-medium">Total count</span>
-
-            {activeUserTab !== "organization" ? (
-              <h3>
-                {(count && count?.data?.total_contributors?.count) || 0}{" "}
-                Contributors
-              </h3>
-            ) : (
-              <h3>
-                {(count && count?.data?.total_organizations?.count) || 0}{" "}
-                Organizations
-              </h3>
-            )}
-          </div>
-
-          <div>
-            <Tabs
-              value={activeUserTab}
-              onValueChange={handleUserTabChange}
-              className="w-full md:w-max"
-            >
-              <TabsList
-                className={cn(
-                  "w-full justify-start rounded-full bg-[#F1F1F1] px-1 py-6 sm:w-auto md:justify-center"
-                )}
-              >
-                {userTabs.map((tab: any, index: number) => (
-                  <TabsTrigger
-                    value={tab?.value}
-                    key={index}
-                    className={cn(
-                      "flex-grow rounded-full py-2.5 text-sm font-normal data-[state=active]:bg-blue-700 data-[state=active]:text-white sm:flex-grow-0"
-                    )}
-                  >
-                    {tab.label}
-                  </TabsTrigger>
-                ))}{" "}
-              </TabsList>
-            </Tabs>
-          </div>
         </div>
       )}
 
@@ -857,8 +937,10 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
         />
       ) : activeTab === "campaigns" ? (
         <CampaignTable campaigns={transformedCampaigns} />
-      ) : (
+      ) : activeTab === "users" ? (
         <DataTable data={recentUsers} active={activeTab} />
+      ) : (
+        <DataTableStaff data={staffs} />
       )}
 
       {/* Pagination */}
@@ -898,5 +980,6 @@ interface TabbedDataDisplayProps {
   onUserTabChange?: (tab: string) => void;
   activeUsersTab: string;
   count?: any;
+  staffs?: any;
   recentReports?: any;
 }

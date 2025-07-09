@@ -109,6 +109,36 @@ export const getUsersStats = async (): Promise<ServerResponseOrNull<any>> => {
   }
 };
 
+export const getAllRoles = async (): Promise<ServerResponseOrNull<any>> => {
+  try {
+    return await fetchData<ServerResponse<any>>("/roles");
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+export const getRoleByStaff = async (
+  id: string
+): Promise<ServerResponseOrNull<any>> => {
+  try {
+    return await fetchData<ServerResponse<any>>(`/staffs/${id}`);
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+export const createRole = async (
+  payload: any
+): Promise<ServerResponseOrNull<any>> => {
+  try {
+    return await postData<ServerResponse<any>>(`/roles/create`, payload);
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
 export const getRecentCampaigns = async (params?: {
   per_page?: number;
   page?: number;
@@ -156,6 +186,36 @@ export const getUsers = async (params?: {
       : "";
 
     return await fetchData<ServerResponse<any>>(`users${queryString}`);
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export const getStaff = async (params?: {
+  user_type: string;
+  status?: string;
+  per_page?: number;
+  page?: number;
+  search?: string;
+}): Promise<ServerResponseOrNull<any>> => {
+  try {
+    const queryParams = new URLSearchParams();
+
+    if (params?.per_page)
+      queryParams.set("per_page", params.per_page.toString());
+    if (params?.page) queryParams.set("page", params.page.toString());
+    if (params?.user_type)
+      queryParams.set("user_type", params.user_type.toString());
+    if (params?.status) queryParams.set("status", params.status.toString());
+
+    if (params?.search) queryParams.set("search", params.search.toString());
+
+    const queryString = queryParams.toString()
+      ? `?${queryParams.toString()}`
+      : "";
+
+    return await fetchData<ServerResponse<any>>(`staffs${queryString}`);
   } catch (error) {
     console.error(error);
     return null;
