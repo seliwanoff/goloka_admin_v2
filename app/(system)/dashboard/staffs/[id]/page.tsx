@@ -18,7 +18,7 @@ import {
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import cover from "@/public/assets/cover.png";
@@ -31,6 +31,8 @@ const StaffProfile = () => {
   const [openDisable, setOpenDisable] = useState(false);
 
   const { id: staffId } = useParams();
+
+  const router = useRouter();
 
   const {
     data: user,
@@ -54,11 +56,13 @@ const StaffProfile = () => {
       await deleteMember(staffId);
       toast.success("Staff(s) removed");
       //@ts-ignore
-      queryClient.invalidateQueries(["user", staffId as string]);
+      //queryClient.invalidateQueries(["user", staffId as string]);
       // queryClient.invalidateQueries({ queryKey: ["user"] });
 
       //   getTeamByEachId();
       // getMember();
+
+      router.push("/dashboard/staffs");
     } catch (e: any) {
       toast.error(e?.response?.data?.message);
       // setShow(false);

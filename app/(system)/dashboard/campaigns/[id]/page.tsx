@@ -425,56 +425,50 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
                   </div>
                 </div>
               </div>
-              <div className="mt-8 flex items-center justify-between">
-                <div>
-                  <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F] basis-[300px]">
-                    {/* @ts-ignore */}
-                    <div className="flex items-center">
-                      <h4 className="font-medium text-[#101828]">
-                        {createDate}
-                      </h4>
-                      <div className="font-medium text-[#101828]">
-                        <Dot size={30} />
-                      </div>
-                      <span className="font-medium text-[#101828]">
-                        {createTime}
-                      </span>
-                    </div>
-                  </div>
-                  <span className="text-sm text-gray-400">Date Created</span>
-                </div>
+              <div>
                 <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F] basis-[300px]">
-                  <div className="flex items-center">
-                    <h4 className="font-medium text-[#101828]">{startDate}</h4>
-                    <div className="font-medium text-[#101828]">
-                      <Dot size={30} />
-                    </div>
-                    <span className="font-medium text-[#101828]">
-                      {startTime}
-                    </span>
-                  </div>
-                  <span className="text-sm text-gray-400">Start on</span>
-                </div>
-                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F] basis-[300px]">
-                  <div className="flex items-center">
-                    <h4 className="font-medium text-[#101828]">{endDate}</h4>
-                    <div className="font-medium text-[#101828]">
-                      <Dot size={30} />
-                    </div>
-                    <span className="font-medium text-[#101828]">
-                      {endTime}
-                    </span>
-                  </div>
-                  <span className="text-sm text-gray-400">End on</span>
-                </div>
-              </div>
-              <div className="mt-8 w-full">
-                <span className="text-sm text-gray-400">Description</span>
-                <p className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F] basis-[300px]">
                   {/* @ts-ignore */}
-                  {task?.data?.campaign?.description}
-                </p>
+                  <div className="flex items-center">
+                    <h4 className="font-medium text-[#101828]">{createDate}</h4>
+                    <div className="font-medium text-[#101828]">
+                      <Dot size={30} />
+                    </div>
+                    <span className="font-medium text-[#101828]">
+                      {createTime}
+                    </span>
+                  </div>
+                </div>
+                <span className="text-sm text-gray-400">Date Created</span>
               </div>
+              <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F] basis-[300px]">
+                <div className="flex items-center">
+                  <h4 className="font-medium text-[#101828]">{startDate}</h4>
+                  <div className="font-medium text-[#101828]">
+                    <Dot size={30} />
+                  </div>
+                  <span className="font-medium text-[#101828]">
+                    {startTime}
+                  </span>
+                </div>
+                <span className="text-sm text-gray-400">Start on</span>
+              </div>
+              <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F] basis-[300px]">
+                <div className="flex items-center">
+                  <h4 className="font-medium text-[#101828]">{endDate}</h4>
+                  <div className="font-medium text-[#101828]">
+                    <Dot size={30} />
+                  </div>
+                  <span className="font-medium text-[#101828]">{endTime}</span>
+                </div>
+                <span className="text-sm text-gray-400">End on</span>
+              </div>
+            </div>
+            <div className="mt-8 w-full">
+              <span className="text-sm text-gray-400">Description</span>
+              <p className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F] basis-[300px]">
+                {/* @ts-ignore */}
+                {task?.data?.campaign?.description}
+              </p>
             </div>
           </div>
 
