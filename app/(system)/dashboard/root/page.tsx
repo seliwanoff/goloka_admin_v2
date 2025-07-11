@@ -174,7 +174,10 @@ const Dashboard = () => {
     [searchParams]
   );
 
-  useEffect(() => {}, [selectedDays]);
+  useEffect(() => {
+    //@ts-ignore
+    setSelectedDays(searchParams?.get("time_filter") || undefined);
+  }, [searchParams]);
 
   const renderWidgets = () => {
     // Check if data is loading
