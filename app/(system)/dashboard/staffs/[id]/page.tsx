@@ -53,7 +53,9 @@ const StaffProfile = () => {
     try {
       await deleteMember(staffId);
       toast.success("Staff(s) removed");
-      queryClient.invalidateQueries({ queryKey: ["user", staffId] });
+      //@ts-ignore
+      queryClient.invalidateQueries(["user", staffId as string]);
+      // queryClient.invalidateQueries({ queryKey: ["user"] });
 
       //   getTeamByEachId();
       // getMember();
@@ -69,7 +71,8 @@ const StaffProfile = () => {
     try {
       await deactivateAMember(staffId);
       toast.success("Staff deactivated");
-      queryClient.invalidateQueries({ queryKey: ["user", staffId] });
+      //@ts-ignore
+      queryClient.invalidateQueries(["user", staffId as string]);
       //     getTeamByEachId();
     } catch (e: any) {
       toast.error(e?.response?.data?.message);
@@ -81,7 +84,8 @@ const StaffProfile = () => {
   const handleActivate = async () => {
     try {
       await activateAmember(staffId);
-      queryClient.invalidateQueries({ queryKey: ["user", staffId] });
+      //@ts-ignore
+      queryClient.invalidateQueries(["user", staffId as string]);
       toast.success("Staff activated");
       // getMember();
     } catch (e: any) {
@@ -211,7 +215,7 @@ const StaffProfile = () => {
                 )}
 
                 {/** @ts-ignore */}
-                {user && user.data.status === "inactive" && (
+                {user && user.data.status === "Deactivated" && (
                   <Button
                     variant="outline"
                     className="items-center gap-2 rounded-[50px] border-main-100 font-Satoshi font-medium text-main-100"
