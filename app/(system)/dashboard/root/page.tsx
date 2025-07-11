@@ -19,7 +19,8 @@ import TabbedDataDisplay from "@/components/dashboard/tableData";
 import { useUserStore } from "@/stores/currentUserStore";
 import { useCallback, useEffect, useState } from "react";
 import Calendar from "@/components/dashboard/calendar";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+
 import {
   getAdminReports,
   getDashboardChartStats,
@@ -30,12 +31,18 @@ import {
 } from "@/services/analytics";
 import { useQuery } from "@tanstack/react-query";
 import { DashboardWidget } from "@/components/lib/widgets/dashboard_card";
+import TimeFilter from "@/components/dashboard/DaysFilter";
 
 const Dashboard = () => {
   const searchParams = useSearchParams();
   const currentUser = useUserStore((state) => state.user);
-
+  const router = useRouter();
   // Initialize with fiat as default currencyType
+
+  const [selectedDays, setSelectedDays] = useState<number | string | null>(
+    null
+  );
+
   const [filters, setFilters] = useState<any>({
     page: parseInt(searchParams?.get("page") || "1"),
     pageSize: 15,
@@ -57,7 +64,6 @@ const Dashboard = () => {
     queryKey: ["dashboard-widgets", filters.time_filter, filters.year],
     queryFn: () =>
       getWidgetData({
-        time_filter: filters.time_filter,
         year: filters.year,
         start_date: filters.start_date,
         end_date: filters.end_date,
@@ -128,7 +134,7 @@ const Dashboard = () => {
     retry: 2,
   });
 
-  // console.log(donotStat, "donotStat");
+  //console.log(selectedDays, "donotStat");
   const [timeOfDay, setTimeOfDay] = useState<string>("day");
 
   useEffect(() => {
@@ -167,6 +173,8 @@ const Dashboard = () => {
     },
     [searchParams]
   );
+
+  useEffect(() => {}, [selectedDays]);
 
   const renderWidgets = () => {
     // Check if data is loading
@@ -251,6 +259,7 @@ const Dashboard = () => {
       </>
     );
   };
+
   return (
     <div>
       <div className="grid h-max grid-cols-5 gap-6 py-10">
@@ -274,7 +283,13 @@ const Dashboard = () => {
           </Button>
         </div>
 
-        <div className="col-span-5 flex justify-end">
+        <div className="col-span-6 flex justify-between">
+          <TimeFilter
+            selectedDays={selectedDays}
+            setSelectedDays={setSelectedDays}
+            //@ts-ignore
+            onChange={handleDateChange}
+          />
           <Calendar
             onDateChange={handleDateChange}
             initialFilter={filters.date || ""}

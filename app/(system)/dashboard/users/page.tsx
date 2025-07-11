@@ -60,6 +60,8 @@ const UserPage = () => {
     staleTime: 1000 * 60,
   });
 
+  // console.log(usersLoading);
+
   const {
     data: usersCount,
     error: usersErrorCount,
@@ -161,7 +163,7 @@ const UserPage = () => {
           isTabHidden={true}
           recentCampaigns={[]}
           isLoading={usersLoading}
-          recentUsers={users}
+          recentUsers={users?.data}
           onUserTabChange={handleUserTabChange}
           activeUsersTab={currentTab}
           count={usersCount}

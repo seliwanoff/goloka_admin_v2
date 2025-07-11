@@ -234,30 +234,32 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
           <div className=" items-center justify-center space-x-2 flex">
             {/* @ts-ignore */}
 
-            <Button
-              onClick={() => setIsRejectDialogOpen(true)}
-              className="h-auto gap-3 rounded-full px-4 py-2 text-sm text-[#FF4C4C]  bg-[#FFEDED] hover:text-[#ed1d1d]"
-            >
-              <X size="20" />
-              Reject
-            </Button>
-            <Button className="h-auto gap-3 rounded-full border border-main-100 bg-white px-3 py-2 text-sm text-main-100 ">
-              <span>
-                <Message size="20" color="#202fd7" />
-              </span>
-              Review
-            </Button>
-            {task?.data?.campaign?.status.toLowerCase() !== "approved" && (
-              <Button
-                onClick={() => setIsAcceptDialogOpen(true)}
-                // disabled={isContributeDisabled()}
-                className="h-auto gap-3 rounded-full bg-main-100 px-4 py-2 text-sm shadow-lg shadow-blue-50"
-              >
-                <span>
-                  <ClipboardText size="20" color="#fff" />
-                </span>
-                Accept Campaign
-              </Button>
+            {(task?.data?.campaign?.status === "pending" ||
+              task?.data?.campaign?.status === "review") && (
+              <>
+                <Button
+                  onClick={() => setIsRejectDialogOpen(true)}
+                  className="h-auto gap-3 rounded-full px-4 py-2 hover:bg-[#ffeded] text-sm text-[#FF4C4C] bg-[#FFEDED] hover:text-[#ed1d1d]"
+                >
+                  <X size="20" />
+                  Reject
+                </Button>
+                <Button className="h-auto gap-3 rounded-full border border-main-100 bg-white hover:bg-white px-3 py-2 text-sm text-main-100">
+                  <span>
+                    <Message size="20" color="#202fd7" />
+                  </span>
+                  Review
+                </Button>
+                <Button
+                  onClick={() => setIsAcceptDialogOpen(true)}
+                  className="h-auto gap-3 rounded-full bg-main-100 hover:bg-main-100 px-4 py-2 text-sm shadow-lg shadow-blue-50"
+                >
+                  <span>
+                    <ClipboardText size="20" color="#fff" />
+                  </span>
+                  Accept Campaign
+                </Button>
+              </>
             )}
           </div>
         </div>
@@ -309,7 +311,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
                 Campaign Details
               </h3>
               <div className="mt-6 flex flex-wrap gap-5 md:justify-between">
-                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F]">
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F] basis-[300px]">
                   <div className="flex items-center">
                     <h4 className="font-medium text-[#101828]">
                       {/* @ts-ignore */}
@@ -319,14 +321,23 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
                   <p className="text-sm text-gray-400">Responses</p>
                 </div>
 
-                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F]">
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F] basis-[300px]">
                   <h4 className="text-[#101828]">
                     {/* @ts-ignore */}
                     {task?.data?.campaign?.number_of_responses_received}
                   </h4>
                   <p className="text-sm text-gray-400">Expected response</p>
                 </div>
-                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F]">
+
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F] basis-[300px]">
+                  <h4 className="text-[#101828]">
+                    {/* @ts-ignore */}
+                    {task?.data?.campaign?.payment_rate_for_response}
+                  </h4>
+                  <p className="text-sm text-gray-400">Payment per response</p>
+                </div>
+
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F] basis-[300px]">
                   <div className="flex gap-2 flex-wrap">
                     {locationx?.states && Array.isArray(locationx.states) ? (
                       locationx.states.map((state: any, idx: any) => (
@@ -343,7 +354,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
                   </div>
                   <p className="text-sm text-gray-400">Locations</p>
                 </div>
-                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F]">
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F] basis-[300px]">
                   <div className="md:text-left">
                     <h4 className="font-medium text-[#101828]">
                       {USER_CURRENCY_SYMBOL} {/* @ts-ignore */}
@@ -352,7 +363,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
                     <p className="text-sm text-gray-400">Per response</p>
                   </div>
                 </div>
-                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F]">
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F] basis-[300px]">
                   <div className="md:text-left">
                     <h4 className="font-medium text-[#101828]">
                       {/* @ts-ignore */}
@@ -361,10 +372,62 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
                     <p className="text-sm text-gray-400">Campaign</p>
                   </div>
                 </div>
+
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F] basis-[300px]">
+                  <div className="md:text-left">
+                    <h4 className="font-medium text-[#101828]">
+                      {/* @ts-ignore */}
+                      {task?.data?.campaign?.no_of_questions}{" "}
+                    </h4>
+                    <p className="text-sm text-gray-400">Number of questions</p>
+                  </div>
+                </div>
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F] basis-[300px]">
+                  <div className="md:text-left">
+                    <h4 className="font-medium text-[#101828]">
+                      {/* @ts-ignore */}
+                      {task?.data?.campaign?.number_of_responses_received}{" "}
+                    </h4>
+                    <p className="text-sm text-gray-400">
+                      Number of response received
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F] basis-[300px]">
+                  <div className="md:text-left">
+                    <h4 className="font-medium text-[#101828]">
+                      {/* @ts-ignore */}
+                      {task?.data?.campaign?.type}{" "}
+                    </h4>
+                    <p className="text-sm text-gray-400">Campaign type</p>
+                  </div>
+                </div>
+
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F] basis-[300px]">
+                  <div className="md:text-left">
+                    <h4 className="font-medium text-[#101828]">
+                      {/* @ts-ignore */}
+                      {task?.data?.campaign?.allows_multiple_responses === 1
+                        ? "Yes"
+                        : "No"}{" "}
+                    </h4>
+                    <p className="text-sm text-gray-400">Multiple response</p>
+                  </div>
+                </div>
+
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F] basis-[300px]">
+                  <div className="md:text-left">
+                    <h4 className="font-medium text-[#101828]">
+                      {/* @ts-ignore */} {USER_CURRENCY_SYMBOL}
+                      {task?.data?.campaign?.campaign_fee}{" "}
+                    </h4>
+                    <p className="text-sm text-gray-400">Campaign fee</p>
+                  </div>
+                </div>
               </div>
               <div className="mt-8 flex items-center justify-between">
                 <div>
-                  <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F]">
+                  <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F] basis-[300px]">
                     {/* @ts-ignore */}
                     <div className="flex items-center">
                       <h4 className="font-medium text-[#101828]">
@@ -380,7 +443,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
                   </div>
                   <span className="text-sm text-gray-400">Date Created</span>
                 </div>
-                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F]">
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F] basis-[300px]">
                   <div className="flex items-center">
                     <h4 className="font-medium text-[#101828]">{startDate}</h4>
                     <div className="font-medium text-[#101828]">
@@ -392,7 +455,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
                   </div>
                   <span className="text-sm text-gray-400">Start on</span>
                 </div>
-                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F]">
+                <div className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F] basis-[300px]">
                   <div className="flex items-center">
                     <h4 className="font-medium text-[#101828]">{endDate}</h4>
                     <div className="font-medium text-[#101828]">
@@ -407,7 +470,7 @@ const TaskDetail: React.FC<PageProps> = ({}) => {
               </div>
               <div className="mt-8 w-full">
                 <span className="text-sm text-gray-400">Description</span>
-                <p className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F]">
+                <p className="mt-3 line-clamp-5 text-sm leading-6 text-[#4F4F4F] basis-[300px]">
                   {/* @ts-ignore */}
                   {task?.data?.campaign?.description}
                 </p>

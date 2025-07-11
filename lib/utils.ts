@@ -263,3 +263,33 @@ export const myReports = [
     date: "Tue 28th June, 2024",
   },
 ];
+export const supportTabs = [
+  {
+    label: "Super Admin",
+    value: "super_admin",
+  },
+  {
+    label: "Admin",
+    value: "admin",
+  },
+  {
+    label: "Manager",
+    value: "manager",
+  },
+
+  /***
+  {
+    label: "Help center",
+    value: "help",
+  },
+
+  // {
+  //   label: "Chat with Goloka",
+  //   value: "chat",
+  // },
+  {
+    label: "Report an issue",
+    value: "report",
+  },
+  */
+];
