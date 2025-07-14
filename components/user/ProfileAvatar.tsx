@@ -294,12 +294,7 @@ const ProfileSummary = ({ data }: { data: ProfileData }) => {
       />
       <h2 className=" font-semibold mb-6">Profile summary</h2>
       <div className="bg-gray-50 p-6 rounded-xl items-center flex justify-center">
-        {/* <div className="mb-2 text-center">
-          <div className="text-blue-600 text-2xl font-bold text-center">
-            ₦ {data?.amountEarned?.toLocaleString()}
-          </div>
-          <div className="text-blue-600 text-center">Amount earned</div>
-        </div> */}
+
 
         <div className="mb-2 text-center">
           <div className="text-blue-600 text-2xl font-bold">
@@ -312,11 +307,7 @@ const ProfileSummary = ({ data }: { data: ProfileData }) => {
           </div>
         </div>
       </div>
-      {/* <div className="flex  gap-4 items-center justify-between w-full ">
-        <StatItem label="Contribution" value={data?.contribution} />
-        <StatItem label="Present location" value={data?.location} />
-        <StatItem label="Reports" value={data?.reports} />
-      </div> */}
+     
 
       <div className="flex gap-4 items-center justify-between w-full">
         <StatItem

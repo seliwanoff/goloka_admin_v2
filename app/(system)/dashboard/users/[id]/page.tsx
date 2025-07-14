@@ -59,24 +59,10 @@ const Users = () => {
   const handleTabChange = (tab: string) => {
     setCurrentTab(tab);
 
-    // Update URL with new tab
-    // const params = new URLSearchParams(searchParams.toString());
-    // params.set("userType", tab);
-    // router.push(`/dashboard/users/${id}?${params.toString()}`, {
-    //   scroll: false,
-    // });
+
   };
 
-  // Sync state with URL params
-  // useEffect(() => {
-  //   const tabFromParams = searchParams.get("userType");
-  //   if (
-  //     tabFromParams &&
-  //     (tabFromParams === "contributions" || tabFromParams === "reports")
-  //   ) {
-  //     setCurrentTab(tabFromParams);
-  //   }
-  // }, [searchParams]);
+
 
   return (
     <div>

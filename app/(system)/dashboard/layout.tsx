@@ -131,7 +131,6 @@ const NavData: { icon: any; title: string; link: string }[] = [
     title: "Messages",
     link: "/dashboard/message",
   },
-  */
   {
     icon: Profile2User,
     title: "Users",
@@ -140,15 +139,14 @@ const NavData: { icon: any; title: string; link: string }[] = [
   {
     icon: SecurityUser,
     title: "Staffs",
-    link: "/dashboard/staffs",
+    link: "/dashboard/staff",
   },
-
+  /***
   {
     icon: Note,
     title: "Report",
     link: "/dashboard/report",
   },
-  /***
   {
     icon: Wallet3,
     title: "Finance",
