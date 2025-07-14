@@ -119,6 +119,13 @@ const NavData: { icon: any; title: string; link: string }[] = [
     link: "/dashboard/root",
   },
   { icon: Note, title: "Campaigns", link: "/dashboard/campaigns" },
+
+  {
+    icon: Wallet3,
+    title: "Withdrawal Requests",
+    link: "/dashboard/withdrawal-requests",
+  },
+  /***
   {
     icon: Message,
     title: "Messages",
@@ -134,7 +141,7 @@ const NavData: { icon: any; title: string; link: string }[] = [
     title: "Staffs",
     link: "/dashboard/staff",
   },
-
+  /***
   {
     icon: Note,
     title: "Report",
@@ -150,4 +157,5 @@ const NavData: { icon: any; title: string; link: string }[] = [
     title: "Settings",
     link: "/dashboard/settings",
   },
+  */
 ];

@@ -20,8 +20,8 @@ const fetchData = async <T>(url: string, options = {}): Promise<T> => {
 };
 const postData = async <T>(
   url: string,
-  data: any,
-  options = {},
+  data?: any,
+  options = {}
 ): Promise<T> => {
   const response = await axiosInstance.post<T>(url, data, options);
   return response.data;
@@ -30,7 +30,7 @@ const postData = async <T>(
 const updateData = async <T>(
   url: string,
   data: any,
-  options = {},
+  options = {}
 ): Promise<T> => {
   const response = await axiosInstance.patch<T>(url, data, options);
   return response.data;
@@ -43,7 +43,7 @@ const deleteData = async <T>(url: string, options = {}): Promise<T> => {
 
 export const useFetchQuery = <T>(
   queryKey: string[],
-  queryFn: QueryFunction<T>,
+  queryFn: QueryFunction<T>
 ): UseQueryResult<T> => {
   return useQuery({
     queryKey,
@@ -54,7 +54,7 @@ export const useFetchQuery = <T>(
 const fetchDataById = async <T>(
   resource: string,
   id: string,
-  options = {},
+  options = {}
 ): Promise<T> => {
   const url = `${resource}/${id}`;
   const response = await axiosInstance.get<T>(url, options);
@@ -65,7 +65,7 @@ const updateDataById = async <T>(
   id: string,
   resource?: string,
   data?: any,
-  options = {},
+  options = {}
 ): Promise<T> => {
   const url = `${resource}/${id}`;
   const response = await axiosInstance.put<T>(url, data, options);
@@ -75,7 +75,7 @@ const updateDataById = async <T>(
 const deleteDataById = async <T>(
   resource: string,
   id: string,
-  options = {},
+  options = {}
 ): Promise<T> => {
   const url = `${resource}/${id}`;
   const response = await axiosInstance.delete<T>(url, options);
@@ -92,7 +92,7 @@ async function getStreamData<T>(url: string) {
 
 const uploadQuestionFile = async (
   responseId: string,
-  formData: FormData,
+  formData: FormData
 ): Promise<any> => {
   const toastId: string | number = toast.loading("Uploading file... 0%");
 
@@ -106,7 +106,7 @@ const uploadQuestionFile = async (
       onUploadProgress: (progressEvent: AxiosProgressEvent) => {
         if (progressEvent.total) {
           const percentCompleted = Math.round(
-            (progressEvent.loaded * 100) / progressEvent.total,
+            (progressEvent.loaded * 100) / progressEvent.total
           );
           console.log(`File upload progress: ${percentCompleted}%`);
 
@@ -193,8 +193,7 @@ const postDataWithFormData = async <T>(
     // Dismiss loading toast and show error
     if (toastId) {
       toast.error(
-        error.response?.data?.message ||
-        "Upload failed. Please try again.",
+        error.response?.data?.message || "Upload failed. Please try again.",
         { id: toastId }
       );
     }

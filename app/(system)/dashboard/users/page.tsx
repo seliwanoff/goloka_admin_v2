@@ -60,6 +60,8 @@ const UserPage = () => {
     staleTime: 1000 * 60,
   });
 
+  // console.log(usersLoading);
+
   const {
     data: usersCount,
     error: usersErrorCount,
@@ -107,6 +109,8 @@ const UserPage = () => {
     const deletedUser = usersStats?.data?.deleted_accounts ?? 0;
     const total_user = usersStats?.data?.total_users ?? 0;
 
+    //console.log(activeUsers);
+
     return (
       <>
         <DashboardWidget
@@ -114,7 +118,7 @@ const UserPage = () => {
           bg="bg-[#079455] bg-opacity-[12%]"
           fg="text-[#079455]"
           icon={Profile2User}
-          value={activeUsers}
+          value={total_user}
           isLoading={statsLoading}
         />
 
@@ -123,7 +127,7 @@ const UserPage = () => {
           bg="bg-[#FEC53D] bg-opacity-[12%]"
           fg="text-[#FEC53D]"
           icon={ProfileTick}
-          value={deactivatedUser}
+          value={activeUsers}
           isLoading={statsLoading}
         />
 
@@ -132,7 +136,7 @@ const UserPage = () => {
           bg="bg-main-100 bg-opacity-[12%]"
           fg="text-main-100"
           icon={ProfileDelete}
-          value={deletedUser}
+          value={deactivatedUser}
           isLoading={statsLoading}
         />
 
@@ -161,7 +165,7 @@ const UserPage = () => {
           isTabHidden={true}
           recentCampaigns={[]}
           isLoading={usersLoading}
-          recentUsers={users}
+          recentUsers={users?.data}
           onUserTabChange={handleUserTabChange}
           activeUsersTab={currentTab}
           count={usersCount}

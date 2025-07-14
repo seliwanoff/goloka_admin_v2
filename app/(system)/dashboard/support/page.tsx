@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 "use client";
+import DesktopSupport from "@/components/support_comps/MobileSupport";
 import React from "react";
-// import MobileSupport from "@/components/support_comps/Mobile_support";
-// import DesktopSupport from "@/components/support_comps/DesktopSupport";
 
 type PageProps = {};
 
@@ -10,10 +9,11 @@ const SupportPage: React.FC<PageProps> = ({}) => {
   return (
     <>
       {/* DESKTOP */}
-      {/* <DesktopSupport />*/}
+      {<DesktopSupport />}
+      {/*** 
+    <MobileSupport /> 
 
-      {/* MOBILE */}
-      {/* <MobileSupport /> */}
+    */}
     </>
   );
 };

@@ -120,6 +120,7 @@ const ProfileCard = ({ data, onStatusChange }: ProfileCardProps) => {
           newStatus === "active" ? "activated" : "deactivated"
         }`
       );
+      window.location.reload();
     } catch (error) {
       toast.error(
         `Failed to ${newStatus === "active" ? "activate" : "deactivate"} user`
@@ -128,7 +129,7 @@ const ProfileCard = ({ data, onStatusChange }: ProfileCardProps) => {
     setLoading(false);
   };
 
-  console.log(data, "data");
+  //  console.log(data, "data");
 
   return (
     <div className="bg-white p-8 rounded-xl shadow-sm flex-1 flex-col w-[65%] items-center justify-between h-full">
@@ -151,7 +152,7 @@ const ProfileCard = ({ data, onStatusChange }: ProfileCardProps) => {
         </div>
       </div>
       <div className="w-full space-x-3 flex justify-between mt-auto pt-8">
-        {data.status === "active" ? (
+        {data.status === "Active" ? (
           <button
             className="w-full px-6 py-2 bg-[#f69845] text-white rounded-full hover:bg-[#E9B384]/90 transition"
             onClick={() => setOpenDeactivate(true)}
@@ -176,11 +177,12 @@ const ProfileCard = ({ data, onStatusChange }: ProfileCardProps) => {
             )}
           </button>
         )}
-
+        {/***
         <button className="w-full px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition flex items-center justify-center gap-2">
           <MessageIcon />
           Message
         </button>
+        */}
       </div>
 
       {/* Activate Dialog */}
@@ -411,55 +413,54 @@ export default function ProfilePage({
 
 const ProfileSkeleton = () => {
   return (
-
-      <div className="flex gap-4 max-w-7xl mx-auto">
-        {/* Profile Card Skeleton */}
-        <div className="bg-white p-8 rounded-xl shadow-sm flex-1 flex-col w-[65%] items-center justify-between h-full animate-pulse">
-          <div className="flex items-center justify-between gap-8 w-full">
-            {/* Avatar and Name Skeleton */}
-            <div className="flex flex-col items-center space-y-4 w-[50%]">
-              <div className="w-24 h-24 rounded-full bg-gray-200" />
-              <div className="h-8 w-40 bg-gray-200 rounded" />
-            </div>
-
-            {/* Profile Fields Skeleton */}
-            <div className="flex-1 space-y-8 w-[50%]">
-              <div className="space-y-4">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="flex justify-between">
-                    <div className="h-4 w-20 bg-gray-200 rounded" />
-                    <div className="h-4 w-32 bg-gray-200 rounded" />
-                  </div>
-                ))}
-              </div>
-            </div>
+    <div className="flex gap-4 max-w-7xl mx-auto">
+      {/* Profile Card Skeleton */}
+      <div className="bg-white p-8 rounded-xl shadow-sm flex-1 flex-col w-[65%] items-center justify-between h-full animate-pulse">
+        <div className="flex items-center justify-between gap-8 w-full">
+          {/* Avatar and Name Skeleton */}
+          <div className="flex flex-col items-center space-y-4 w-[50%]">
+            <div className="w-24 h-24 rounded-full bg-gray-200" />
+            <div className="h-8 w-40 bg-gray-200 rounded" />
           </div>
-          {/* Buttons Skeleton */}
-          <div className="w-full space-x-3 flex justify-between mt-auto pt-8">
-            <div className="w-full h-10 bg-gray-200 rounded-lg" />
-            <div className="w-full h-10 bg-gray-200 rounded-lg" />
+
+          {/* Profile Fields Skeleton */}
+          <div className="flex-1 space-y-8 w-[50%]">
+            <div className="space-y-4">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="flex justify-between">
+                  <div className="h-4 w-20 bg-gray-200 rounded" />
+                  <div className="h-4 w-32 bg-gray-200 rounded" />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-
-        {/* Profile Summary Skeleton */}
-        <div className="bg-white p-8 rounded-xl shadow-sm w-[35%] space-y-3 animate-pulse">
-          <div className="h-6 w-32 bg-gray-200 rounded mb-6" />
-          <div className="bg-gray-50 p-6 rounded-xl">
-            <div className="flex flex-col items-center">
-              <div className="h-8 w-32 bg-gray-200 rounded mb-2" />
-              <div className="h-4 w-24 bg-gray-200 rounded" />
-            </div>
-          </div>
-          <div className="flex gap-4 items-center justify-between w-full">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="flex flex-col items-start space-y-2">
-                <div className="h-4 w-16 bg-gray-200 rounded" />
-                <div className="h-3 w-12 bg-gray-200 rounded" />
-              </div>
-            ))}
-          </div>
+        {/* Buttons Skeleton */}
+        <div className="w-full space-x-3 flex justify-between mt-auto pt-8">
+          <div className="w-full h-10 bg-gray-200 rounded-lg" />
+          <div className="w-full h-10 bg-gray-200 rounded-lg" />
         </div>
       </div>
+
+      {/* Profile Summary Skeleton */}
+      <div className="bg-white p-8 rounded-xl shadow-sm w-[35%] space-y-3 animate-pulse">
+        <div className="h-6 w-32 bg-gray-200 rounded mb-6" />
+        <div className="bg-gray-50 p-6 rounded-xl">
+          <div className="flex flex-col items-center">
+            <div className="h-8 w-32 bg-gray-200 rounded mb-2" />
+            <div className="h-4 w-24 bg-gray-200 rounded" />
+          </div>
+        </div>
+        <div className="flex gap-4 items-center justify-between w-full">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex flex-col items-start space-y-2">
+              <div className="h-4 w-16 bg-gray-200 rounded" />
+              <div className="h-3 w-12 bg-gray-200 rounded" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
     // </div>
   );
 };

@@ -197,13 +197,13 @@ const Calendar: React.FC<CalendarProps> = ({
     <div className="relative" ref={calendarRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm hover:bg-gray-50"
+        className="flex items-center gap-2 rounded-lg border border-[#D0D5DD] bg-white px-3 py-2 text-sm hover:bg-gray-50"
       >
         <CalendarIcon className="h-4 w-4 text-gray-500" />
         <span className="text-gray-700">
           {selectedFilter === "custom" && fromDate && toDate
             ? `${fromDate.toLocaleDateString()} - ${toDate.toLocaleDateString()}`
-            : filters.find((f) => f.id === selectedFilter)?.label}
+            : filters.find((f) => f.id === selectedFilter)?.label || "Select"}
         </span>
         <ChevronDown className="h-4 w-4 text-gray-500" />
       </button>
@@ -249,6 +249,7 @@ const Calendar: React.FC<CalendarProps> = ({
                   </button>
                   <div className="flex gap-1">
                     <button
+                      type="button"
                       onClick={() =>
                         setCurrentMonth(
                           new Date(

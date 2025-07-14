@@ -19,7 +19,8 @@ import TabbedDataDisplay from "@/components/dashboard/tableData";
 import { useUserStore } from "@/stores/currentUserStore";
 import { useCallback, useEffect, useState } from "react";
 import Calendar from "@/components/dashboard/calendar";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+
 import {
   getAdminReports,
   getDashboardChartStats,
@@ -30,19 +31,30 @@ import {
 } from "@/services/analytics";
 import { useQuery } from "@tanstack/react-query";
 import { DashboardWidget } from "@/components/lib/widgets/dashboard_card";
+import TimeFilter from "@/components/dashboard/DaysFilter";
+import { se } from "date-fns/locale";
 
+// Define possible tab types (for type safety)
+type UserType = "organization" | "contributor";
+type ActiveTab = "organizations" | "contributors";
 const Dashboard = () => {
   const searchParams = useSearchParams();
   const currentUser = useUserStore((state) => state.user);
-
+  const router = useRouter();
   // Initialize with fiat as default currencyType
+
+  const [selectedDays, setSelectedDays] = useState<number | string | null>(
+    null
+  );
+
   const [filters, setFilters] = useState<any>({
     page: parseInt(searchParams?.get("page") || "1"),
-    pageSize: 15,
+    pageSize: 30,
     currencyType: searchParams?.get("currencyType") || "fiat",
+
     search: searchParams?.get("search") || undefined,
     date: searchParams?.get("date") || undefined,
-    time_filter: searchParams?.get("time_filter") || "7_days",
+    time_filter: searchParams?.get("time_filter") || undefined,
     start_date: searchParams?.get("start_date") || undefined,
     end_date: searchParams?.get("end_date") || undefined,
     year: searchParams?.get("year") || undefined,
@@ -108,16 +120,41 @@ const Dashboard = () => {
     retry: 2,
   });
 
+  // Get `userType` from URL (e.g., `?userType=organization`)
+  const urlUserType = searchParams.get("userType") as UserType | null;
+
+  // Set initial `activeTab` based on URL (default: "organizations")
+  const [activeTab, setActiveTab] = useState("");
+
+  useEffect(() => {
+    const user = searchParams.get("userType") || ("" as string);
+
+    if (user) {
+      setActiveTab(user);
+    }
+  }, [searchParams]);
+  // Update URL when `activeTab` changes
+
+  // console.log(activeTab);
+
+  console.log(filters.userType);
+
+  // Fetch data based on `activeTab`
   const {
     data: recentUsers,
     error: usersError,
     isLoading: isUsersLoading,
   } = useQuery({
-    queryKey: ["recent-users"],
-    queryFn: () => getRecentUsers({ per_page: 10, user_type: "contributor" }),
+    queryKey: ["recent-users", activeTab],
+    queryFn: () =>
+      getRecentUsers({
+        per_page: 20,
+        user_type:
+          activeTab === "organizations" ? "organization" : "contributor",
+      }),
     retry: 2,
   });
-
+  console.log(activeTab);
   const {
     data: adminReports,
     error: reportsError,
@@ -128,7 +165,7 @@ const Dashboard = () => {
     retry: 2,
   });
 
-  console.log(donotStat, "donotStat");
+  //console.log(selectedDays, "donotStat");
   const [timeOfDay, setTimeOfDay] = useState<string>("day");
 
   useEffect(() => {
@@ -167,6 +204,11 @@ const Dashboard = () => {
     },
     [searchParams]
   );
+
+  useEffect(() => {
+    //@ts-ignore
+    setSelectedDays(searchParams?.get("time_filter") || undefined);
+  }, [searchParams]);
 
   const renderWidgets = () => {
     // Check if data is loading
@@ -214,7 +256,8 @@ const Dashboard = () => {
           footer="vs last month"
           isAnalytics={true}
           increase={orgPercentIncrease > 0}
-          percentIncrease={Math.abs(orgPercentIncrease)}
+          //@ts-ignore
+          percentIncrease={Math.abs(orgPercentIncrease).toFixed(2)}
           isLoading={isLoading}
         />
 
@@ -228,7 +271,8 @@ const Dashboard = () => {
           footer="vs last month"
           isAnalytics={true}
           increase={contributorsPercentIncrease > 0}
-          percentIncrease={Math.abs(contributorsPercentIncrease)}
+          //@ts-ignore
+          percentIncrease={Math.abs(contributorsPercentIncrease).toFixed(2)}
           isLoading={isLoading}
         />
 
@@ -242,12 +286,14 @@ const Dashboard = () => {
           link={"/dashboard/campaigns"}
           isAnalytics={true}
           increase={campaignsPercentIncrease > 0}
-          percentIncrease={Math.abs(campaignsPercentIncrease)}
+          //@ts-ignore
+          percentIncrease={Math.abs(campaignsPercentIncrease).toFixed(2)}
           isLoading={isLoading}
         />
       </>
     );
   };
+
   return (
     <div>
       <div className="grid h-max grid-cols-5 gap-6 py-10">
@@ -270,14 +316,20 @@ const Dashboard = () => {
             Invite staff
           </Button>
         </div>
-        {/****
-        <div className="col-span-5 flex justify-end">
+
+        <div className="col-span-6 flex justify-between">
+          <TimeFilter
+            selectedDays={selectedDays}
+            setSelectedDays={setSelectedDays}
+            //@ts-ignore
+            onChange={handleDateChange}
+          />
           <Calendar
             onDateChange={handleDateChange}
             initialFilter={filters.date || ""}
           />
         </div>
-        */}
+
         {/* Stats section */}
         <div className="no-scrollbar col-span-5 mt-4 w-full overflow-x-auto">
           <div className="col-span-5 flex w-max gap-4 lg:grid lg:w-full lg:grid-cols-4 xl:w-full">
@@ -336,6 +388,7 @@ const Dashboard = () => {
       </div>
       <TabbedDataDisplay
         recentCampaigns={recentCampaigns?.data}
+        recentReports={adminReports?.data}
         isLoading={isCampaignsLoading}
         recentUsers={recentUsers?.data}
         activeUsersTab={""}

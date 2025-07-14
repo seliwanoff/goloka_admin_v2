@@ -74,17 +74,28 @@ const Page = () => {
   const currentPageData = pages[currentPage - 1] || [];
   const [activeStatus, setActiveStatus] = useState<string>("all");
 
+  const [search, setSearch] = useState("");
+
   const {
     data: Campaigns,
     error: campaignsError,
     isLoading: isCampaignsLoading,
   } = useQuery({
-    queryKey: ["recent-campaigns", currentPage, pageSize, activeStatus],
+    queryKey: [
+      "recent-campaigns",
+      currentPage,
+      pageSize,
+      activeStatus,
+      search,
+      date,
+    ],
     queryFn: () =>
       getAllCampaigns({
         per_page: pageSize,
         page: currentPage,
         status: activeStatus === "all" ? undefined : activeStatus.toLowerCase(),
+        search: search,
+        submittted_at: date,
       }),
     retry: 2,
   });
@@ -128,7 +139,7 @@ const Page = () => {
       setFilteredData(campaignGroupList);
     }
   }, [activeTab]);
-  console.log(Campaigns, "Campaigns?.data");
+  // console.log(Campaigns, "Campaigns?.data");
   const transformedCampaigns =
     Campaigns?.data?.map(
       (campaign: {
@@ -151,7 +162,7 @@ const Page = () => {
       })
     ) || [];
 
-  console.log(Campaigns, "Campaigns");
+  // console.log(Campaigns, "Campaigns");
   return (
     <section className="mt-5">
       {/* HEADING */}
@@ -172,6 +183,7 @@ const Page = () => {
                   placeholder="Search task, organization"
                   type="text"
                   className="w-full rounded-full bg-gray-50 pl-10"
+                  onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
 

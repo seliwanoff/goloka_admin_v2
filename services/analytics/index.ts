@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { queryClient } from "@/components/layout/tanstackProvider";
-import { fetchData, postData, ServerResponse } from "@/lib/api";
+import { deleteData, fetchData, postData, ServerResponse } from "@/lib/api";
 import { useContributorStore } from "@/stores/contributors";
 import { UseQueryResult } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
@@ -109,6 +109,36 @@ export const getUsersStats = async (): Promise<ServerResponseOrNull<any>> => {
   }
 };
 
+export const getAllRoles = async (): Promise<ServerResponseOrNull<any>> => {
+  try {
+    return await fetchData<ServerResponse<any>>("/roles");
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+export const getRoleByStaff = async (
+  id: string
+): Promise<ServerResponseOrNull<any>> => {
+  try {
+    return await fetchData<ServerResponse<any>>(`/staffs/${id}`);
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+export const createRole = async (
+  payload: any
+): Promise<ServerResponseOrNull<any>> => {
+  try {
+    return await postData<ServerResponse<any>>(`/roles/create`, payload);
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
 export const getRecentCampaigns = async (params?: {
   per_page?: number;
   page?: number;
@@ -162,6 +192,36 @@ export const getUsers = async (params?: {
   }
 };
 
+export const getStaff = async (params?: {
+  user_type: string;
+  status?: string;
+  per_page?: number;
+  page?: number;
+  search?: string;
+}): Promise<ServerResponseOrNull<any>> => {
+  try {
+    const queryParams = new URLSearchParams();
+
+    if (params?.per_page)
+      queryParams.set("per_page", params.per_page.toString());
+    if (params?.page) queryParams.set("page", params.page.toString());
+    if (params?.user_type)
+      queryParams.set("user_type", params.user_type.toString());
+    if (params?.status) queryParams.set("status", params.status.toString());
+
+    if (params?.search) queryParams.set("search", params.search.toString());
+
+    const queryString = queryParams.toString()
+      ? `?${queryParams.toString()}`
+      : "";
+
+    return await fetchData<ServerResponse<any>>(`staffs${queryString}`);
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
 export const getUsersCount = async (params?: {
   user_type: string;
   status?: string;
@@ -186,6 +246,17 @@ export const getUsersCount = async (params?: {
       : "";
 
     return await fetchData<ServerResponse<any>>(`transactions/analytics/get`);
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export const getWithdrawalRequestCount = async (): Promise<
+  ServerResponseOrNull<any>
+> => {
+  try {
+    return await fetchData<ServerResponse<any>>(`transactions/manual/stats`);
   } catch (error) {
     console.error(error);
     return null;
@@ -243,7 +314,38 @@ export const getAllCampaigns = async (params?: {
   page?: number;
   status?: string;
   search?: string;
-  submitted_at?: Date;
+  submittted_at?: Date;
+}): Promise<ServerResponseOrNull<any>> => {
+  //@ts-ignore
+  // console.log(params.submittted_at.toISOString() || undefined);
+  try {
+    const queryParams = new URLSearchParams();
+
+    if (params?.per_page)
+      queryParams.set("per_page", params.per_page.toString());
+    if (params?.page) queryParams.set("page", params.page.toString());
+    if (params?.status) queryParams.set("status", params.status);
+    if (params?.search) queryParams.set("search", params.search);
+    if (params?.submittted_at)
+      queryParams.set("submitted_at", params.submittted_at.toISOString());
+
+    const queryString = queryParams.toString()
+      ? `?${queryParams.toString()}`
+      : "";
+
+    return await fetchData<ServerResponse<any>>(`campaigns${queryString}`);
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export const getAllWithdrawalRequests = async (params?: {
+  per_page?: number;
+  page?: number;
+  status?: string;
+  search?: string;
+  submitted_at?: any;
 }): Promise<ServerResponseOrNull<any>> => {
   try {
     const queryParams = new URLSearchParams();
@@ -253,14 +355,15 @@ export const getAllCampaigns = async (params?: {
     if (params?.page) queryParams.set("page", params.page.toString());
     if (params?.status) queryParams.set("status", params.status);
     if (params?.search) queryParams.set("search", params.search);
-    if (params?.submitted_at)
-      queryParams.set("submitted_at", params.submitted_at.toISOString());
+    if (params?.submitted_at) queryParams.set("date", params.submitted_at);
 
     const queryString = queryParams.toString()
       ? `?${queryParams.toString()}`
       : "";
 
-    return await fetchData<ServerResponse<any>>(`campaigns${queryString}`);
+    return await fetchData<ServerResponse<any>>(
+      `transactions/manual${queryString}`
+    );
   } catch (error) {
     console.error(error);
     return null;
@@ -482,6 +585,91 @@ export const getUserById = async (
     },
     staleTime: 5 * 60 * 1000,
   });
+};
+
+export const getStaffById = async (
+  id: string
+): Promise<UseQueryResult<any>> => {
+  return await queryClient.fetchQuery({
+    queryKey: ["user by", id],
+    queryFn: async () => {
+      try {
+        const response = await fetchData<any>(`staffs/${id}`);
+        if (!response) {
+          throw new Error("No data received from server");
+        }
+
+        return response;
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          throw new Error(
+            error.response?.data?.message || "Failed to fetch user data"
+          );
+        }
+        throw new Error(
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred"
+        );
+      }
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const deleteMember = async (id: any): Promise<AxiosResponse<any>> => {
+  try {
+    return await deleteData(`/staffs/${id}/delete`);
+  } catch (error) {
+    console.error("Error fetching delete member:", error);
+    throw error;
+  }
+};
+
+export const inviteStaffMember = async (
+  data: any
+): Promise<UseQueryResult<ServerResponse<any>>> => {
+  return queryClient.fetchQuery({
+    queryKey: ["invite staff "],
+    queryFn: async () => {
+      return await postData<ServerResponse<any>>(`/staffs/create`, data);
+    },
+  });
+};
+
+export const assignPermissions = async (
+  id: any,
+  data: any
+): Promise<UseQueryResult<ServerResponse<any>>> => {
+  return queryClient.fetchQuery({
+    queryKey: ["invite staff "],
+    queryFn: async () => {
+      return await postData<ServerResponse<any>>(
+        `staffs/${id}/permissions/assign`,
+        data
+      );
+    },
+  });
+};
+
+export const deactivateAMember = async (
+  id: any
+): Promise<AxiosResponse<any>> => {
+  try {
+    return await postData(`/staffs/${id}/deactivate`);
+  } catch (error) {
+    console.error("Error fetching campaign questions:", error);
+    throw error;
+  }
+};
+
+export const activateAmember = async (id: any): Promise<AxiosResponse<any>> => {
+  try {
+    return await postData(`/staffs/${id}/activate`);
+  } catch (error) {
+    console.error("Error fetching campaign questions:", error);
+    throw error;
+  }
 };
 
 export const getUserReports = async (id: string, params: UserParams) => {

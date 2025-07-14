@@ -12,6 +12,16 @@ interface FilterState {
   setOpenFilter: (value: boolean) => void;
 }
 
+interface RoleState {
+  open: boolean;
+  setOpen: (value: boolean) => void;
+}
+interface PayoutState {
+  openFilter: boolean;
+  setOpenFilter: (value: boolean) => void;
+  id: string;
+  setId: (value: string) => void;
+}
 interface AddBeneState {
   show: boolean;
   setShow: (value: boolean) => void;
@@ -32,6 +42,17 @@ const useShowFilter = create<FilterState>((set) => ({
   setOpenFilter: (value) => set({ openFilter: value }),
 }));
 
+const useShowRole = create<RoleState>((set) => ({
+  open: false,
+  setOpen: (value) => set({ open: value }),
+}));
+
+const useShowPayoutModal = create<PayoutState>((set) => ({
+  id: "",
+  setId: (value: string) => set({ id: value }),
+  openFilter: false,
+  setOpenFilter: (value) => set({ openFilter: value }),
+}));
 const useInvoiceOverlay = create<StoreState>((set) => ({
   setId: (value: string) => set({ id: value }),
   open: false,
@@ -60,4 +81,6 @@ export {
   useWithdrawOverlay,
   useAddBeneficiaryOverlay,
   useTransferOverlay,
+  useShowPayoutModal,
+  useShowRole,
 };

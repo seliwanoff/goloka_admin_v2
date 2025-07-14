@@ -60,6 +60,7 @@ export const tokenExtractor = (): {
 };
 
 export function chunkArray<T>(array: T[], size: number) {
+  //console.log(array);
   let result = [];
   for (let i = 0; i < array?.length; i += size) {
     let chunk = array?.slice(i, i + size);
@@ -91,7 +92,6 @@ export const walletStatus = (status: string) => {
       return "bg-[#FF0000] border border-[#FF0000] bg-opacity-5 text-[#FF0000]";
   }
 };
-
 
 export const myReports = [
   {
@@ -263,5 +263,33 @@ export const myReports = [
     date: "Tue 28th June, 2024",
   },
 ];
+export const supportTabs = [
+  {
+    label: "Super Admin",
+    value: "super_admin",
+  },
+  {
+    label: "Admin",
+    value: "admin",
+  },
+  {
+    label: "Manager",
+    value: "manager",
+  },
 
+  /***
+  {
+    label: "Help center",
+    value: "help",
+  },
 
+  // {
+  //   label: "Chat with Goloka",
+  //   value: "chat",
+  // },
+  {
+    label: "Report an issue",
+    value: "report",
+  },
+  */
+];
