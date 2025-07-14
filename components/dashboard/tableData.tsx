@@ -756,6 +756,11 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
   const [activeTab, setActiveTab] = useState<any[]["id"]>(
     getActiveTabFromPath() as string
   );
+  useEffect(() => {
+    console.log(activeTab);
+    window.history.pushState({}, "", `?userType=${activeTab}`);
+  }, [activeTab]);
+  //console.log(activeTab);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeUserTab, setActiveUserTab] = useState<string>(() => {
     const userType = searchParams.get("userType");
@@ -776,6 +781,7 @@ const TabbedDataDisplay: React.FC<TabbedDataDisplayProps> = ({
     { id: "reports", label: "Recent Reports" },
   ];
   const handleUserTabChange = (value: string) => {
+    //  console.log(value);
     const params = new URLSearchParams(searchParams);
     params.set("userType", value);
 

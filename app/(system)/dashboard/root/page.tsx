@@ -32,7 +32,11 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { DashboardWidget } from "@/components/lib/widgets/dashboard_card";
 import TimeFilter from "@/components/dashboard/DaysFilter";
+import { se } from "date-fns/locale";
 
+// Define possible tab types (for type safety)
+type UserType = "organization" | "contributor";
+type ActiveTab = "organizations" | "contributors";
 const Dashboard = () => {
   const searchParams = useSearchParams();
   const currentUser = useUserStore((state) => state.user);
@@ -45,8 +49,9 @@ const Dashboard = () => {
 
   const [filters, setFilters] = useState<any>({
     page: parseInt(searchParams?.get("page") || "1"),
-    pageSize: 15,
+    pageSize: 30,
     currencyType: searchParams?.get("currencyType") || "fiat",
+
     search: searchParams?.get("search") || undefined,
     date: searchParams?.get("date") || undefined,
     time_filter: searchParams?.get("time_filter") || undefined,
@@ -64,6 +69,7 @@ const Dashboard = () => {
     queryKey: ["dashboard-widgets", filters.time_filter, filters.year],
     queryFn: () =>
       getWidgetData({
+        time_filter: filters.time_filter,
         year: filters.year,
         start_date: filters.start_date,
         end_date: filters.end_date,
@@ -114,16 +120,41 @@ const Dashboard = () => {
     retry: 2,
   });
 
+  // Get `userType` from URL (e.g., `?userType=organization`)
+  const urlUserType = searchParams.get("userType") as UserType | null;
+
+  // Set initial `activeTab` based on URL (default: "organizations")
+  const [activeTab, setActiveTab] = useState("");
+
+  useEffect(() => {
+    const user = searchParams.get("userType") || ("" as string);
+
+    if (user) {
+      setActiveTab(user);
+    }
+  }, [searchParams]);
+  // Update URL when `activeTab` changes
+
+  // console.log(activeTab);
+
+  console.log(filters.userType);
+
+  // Fetch data based on `activeTab`
   const {
     data: recentUsers,
     error: usersError,
     isLoading: isUsersLoading,
   } = useQuery({
-    queryKey: ["recent-users"],
-    queryFn: () => getRecentUsers({ per_page: 10, user_type: "contributor" }),
+    queryKey: ["recent-users", activeTab],
+    queryFn: () =>
+      getRecentUsers({
+        per_page: 20,
+        user_type:
+          activeTab === "organizations" ? "organization" : "contributor",
+      }),
     retry: 2,
   });
-
+  console.log(activeTab);
   const {
     data: adminReports,
     error: reportsError,
