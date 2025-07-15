@@ -133,13 +133,7 @@ const Dashboard = () => {
       setActiveTab(user);
     }
   }, [searchParams]);
-  // Update URL when `activeTab` changes
 
-  // console.log(activeTab);
-
-  console.log(filters.userType);
-
-  // Fetch data based on `activeTab`
   const {
     data: recentUsers,
     error: usersError,

@@ -148,6 +148,12 @@ const NavData: { icon: any; title: string; link: string }[] = [
     title: "Report",
     link: "/dashboard/report",
   },
+
+  {
+    icon: Wallet3,
+    title: "Finance",
+    link: "/dashboard/finance",
+  },
   /***
   {
     icon: Wallet3,
