@@ -69,6 +69,7 @@ const Dashboard = () => {
     queryKey: ["dashboard-widgets", filters.time_filter, filters.year],
     queryFn: () =>
       getWidgetData({
+        time_filter: filters.start_date ? null : filters.time_filter,
         year: filters.year,
         start_date: filters.start_date,
         end_date: filters.end_date,
