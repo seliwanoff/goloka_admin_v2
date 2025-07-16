@@ -107,15 +107,7 @@ const Finance = () => {
     error: withdrawalErrorCount,
     isLoading: withdrawalCountLoading,
   } = useQuery({
-    queryKey: [
-      "WITHDRAWAL_COUNT",
-      currentTab,
-      currentPage,
-      pageSize,
-      search,
-      openFilter,
-      search,
-    ],
+    queryKey: ["WITHDRAWAL_COUNT"],
     queryFn: () => getFinanceCount(),
     retry: 2,
     staleTime: 1000 * 60,
@@ -169,6 +161,7 @@ const Finance = () => {
     // setPageSize(size);
     //setCurrentPage(1); // Reset to first page when changing page size
   };
+  console.log(financeCount);
   const renderWidgets = () => {
     const total_organizations =
       financeCount?.data?.total_organizations?.count ?? 0;
@@ -178,7 +171,7 @@ const Finance = () => {
     const total_contributors =
       financeCount?.data?.total_contributors?.count ?? 0;
     const contributor_analytics =
-      financeCount?.data?.total_organizations?.percentage_increase ?? 0;
+      financeCount?.data?.total_contributors?.percentage_increase ?? 0;
     const transaction_count = financeCount?.data?.transaction_count ?? 0;
     const total_revenue = financeCount?.data?.total_revenue ?? 0;
 

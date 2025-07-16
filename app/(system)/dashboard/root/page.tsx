@@ -303,12 +303,14 @@ const Dashboard = () => {
               Here is the summary of what is presently happening on Goloka
             </p>
           </div>
+          {/***
           <Button className="h-auto rounded-full bg-main-100 px-8 py-3 text-white hover:bg-blue-700">
             <span>
               <ProfileAdd size="18" color="#fff" />{" "}
             </span>
             Invite staff
           </Button>
+          */}
         </div>
 
         <div className="col-span-6 flex justify-between">

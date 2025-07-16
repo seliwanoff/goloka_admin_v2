@@ -55,10 +55,7 @@ const DashboardWidget: React.FC<DashboardWidgetProps> = ({
 
   return (
     <div
-      className={cn(
-        "rounded-lg bg-white p-4 cursor-pointer",
-        props.containerBg
-      )}
+      className={cn("rounded-lg bg-white p-4 ", props.containerBg)}
       onClick={() => props.link && router.push(props.link)}
     >
       <div className="flex justify-between">

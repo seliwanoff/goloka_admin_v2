@@ -573,7 +573,7 @@ export const FinanceTable: React.FC<{
               <div className="text-ellipsis overflow-hidden">
                 {
                   //@ts-ignore
-                  withdrawal.type
+                  withdrawal.type.replaceAll("_", " ")
                 }
               </div>
             </TableCell>
