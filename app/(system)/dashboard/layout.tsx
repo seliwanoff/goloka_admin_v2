@@ -160,10 +160,10 @@ const NavData: { icon: any; title: string; link: string }[] = [
     title: "Finance",
     link: "/dashboard/finance",
   },
+  */
   {
     icon: Settings,
     title: "Settings",
     link: "/dashboard/settings",
   },
-  */
 ];
