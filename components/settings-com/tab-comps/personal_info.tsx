@@ -404,7 +404,7 @@ const PersonalInfo: React.FC<ComponentProps> = ({
                   control={control}
                   key={data?.name + index}
                   //@ts-ignore
-                  disabled={currentUser?.verification.status === "success"}
+                  disabled={false}
                 />
               );
             })}
