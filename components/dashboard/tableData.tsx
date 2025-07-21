@@ -290,6 +290,12 @@ interface Withdrawal {
   id: string;
   reference: string;
   meta: {
+    campaign_id: string;
+    sender: {
+      account_name: string;
+      campaign_id: string;
+      campaign_title: string;
+    };
     beneficiary: {
       bank_name: string;
       account_name: string;
@@ -458,6 +464,146 @@ export const WithdrawalTable: React.FC<{ withdrawals: Withdrawal[] }> = ({
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+};
+
+export const FinanceTable: React.FC<{
+  withdrawals: Withdrawal[];
+  tab: string;
+}> = ({ withdrawals, tab }) => {
+  const router = useRouter();
+  const currentPath = usePathname();
+
+  const { setId, setOpen } = useInvoiceOverlay();
+
+  const { setOpenFilter, setId: setPayoutId } = useShowPayoutModal();
+
+  const navigateToWithdrawal = (id: string) => {
+    let targetPath = "";
+    if (currentPath?.includes("/dashboard/withdrawals")) {
+      targetPath = `${currentPath}/${id}`;
+    } else {
+      targetPath = `/dashboard/withdrawals/${id}`;
+    }
+    router.push(targetPath);
+  };
+
+  const getStatusStyle = (status: Withdrawal["status"]): string => {
+    const styles = {
+      pending: "text-orange-500 bg-orange-50 border-orange-200",
+      successful: "text-green-500 bg-green-50 border-green-200",
+      failed: "text-red-500 bg-red-50 border-red-200",
+      processing: "text-blue-500 bg-blue-50 border-blue-200",
+    };
+    return styles[status];
+  };
+
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          {tab === "service_fee" && <TableHead>Account Name</TableHead>}
+          {tab === "payout" && <TableHead>Account Name</TableHead>}
+          {tab === "payout" && <TableHead>Bank Name</TableHead>}{" "}
+          {tab === "payout" && <TableHead>Account Number</TableHead>}
+          {tab === "deposit" && <TableHead>Reference</TableHead>}
+          <TableHead>Category</TableHead>
+          <TableHead>Amount</TableHead>
+          <TableHead>Timestamp</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead></TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {withdrawals?.map((withdrawal, index) => (
+          <TableRow
+            key={index}
+            onClick={() => {
+              setId && setId(withdrawal.reference);
+              setOpen(true);
+            }}
+          >
+            {/* Account Number with ellipsis */}
+            {tab === "service_fee" && (
+              <TableCell className="max-w-[120px]">
+                <div className="text-ellipsis overflow-hidden">
+                  {withdrawal.meta?.sender?.account_name ||
+                    withdrawal.meta.campaign_id}
+                </div>
+              </TableCell>
+            )}
+
+            {tab === "deposit" && (
+              <TableCell className="max-w-[120px]">
+                <div className="text-ellipsis overflow-hidden">
+                  {withdrawal.reference}
+                </div>
+              </TableCell>
+            )}
+
+            {tab === "payout" && (
+              <TableCell className="max-w-[120px]">
+                <div className="text-ellipsis overflow-hidden">
+                  {withdrawal.meta?.beneficiary?.account_name}
+                </div>
+              </TableCell>
+            )}
+            {tab === "payout" && (
+              <TableCell className="max-w-[120px]">
+                <div className="text-ellipsis overflow-hidden">
+                  {withdrawal.meta?.beneficiary?.bank_name}
+                </div>
+              </TableCell>
+            )}
+            {tab === "payout" && (
+              <TableCell className="max-w-[120px]">
+                <div className="text-ellipsis overflow-hidden">
+                  {withdrawal.meta?.beneficiary?.account_number}
+                </div>
+              </TableCell>
+            )}
+
+            {/* Account Name with ellipsis */}
+            <TableCell className="max-w-[150px]">
+              <div className="text-ellipsis overflow-hidden">
+                {
+                  //@ts-ignore
+                  withdrawal.type.replaceAll("_", " ")
+                }
+              </div>
+            </TableCell>
+
+            {/* Amount */}
+            <TableCell>
+              {Math.abs(withdrawal.amount).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </TableCell>
+
+            {/* Bank Name with ellipsis */}
+
+            {/* Timestamp */}
+            <TableCell>
+              {new Date(withdrawal.created_at).toLocaleString()}
+            </TableCell>
+
+            {/* Status */}
+
+            <TableCell>
+              <span
+                className={cn(
+                  "flex w-[84px] items-center justify-center rounded-full px-2 py-1.5 text-xs font-medium capitalize",
+                  getStatusStyle(withdrawal?.status)
+                )}
+              >
+                {withdrawal.status}
+              </span>
             </TableCell>
           </TableRow>
         ))}

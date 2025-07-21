@@ -293,3 +293,53 @@ export const supportTabs = [
   },
   */
 ];
+export const personalFirstName = [
+  {
+    name: "firstName",
+    label: "Full name",
+    type: "text",
+    required: true,
+    err_message: "Input your full name",
+    placeholder: "Input full name",
+  },
+];
+
+export const personalInfo = [
+  {
+    label: "Email address",
+    type: "email",
+    required: true,
+    err_message: "Input your email address",
+    name: "email",
+    placeholder: "Input email address",
+    disabled: true,
+  },
+  {
+    label: "Phone number",
+    type: "phone",
+    required: true,
+    err_message: "Input your phone number",
+    name: "phoneNo",
+    placeholder: "Input phone number",
+  },
+
+  /***
+  {
+    label: "Date of birth",
+    type: "date",
+    required: true,
+    err_message: "Pick your date of birth",
+    name: "dateOfBirth",
+    placeholder: "Pick date of birth",
+  },
+  {
+    label: "Gender",
+    type: "select",
+    required: true,
+    err_message: "Select your gender",
+    name: "gender",
+    placeholder: "Select your gender",
+  },
+
+  */
+];

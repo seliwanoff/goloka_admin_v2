@@ -69,7 +69,7 @@ const Dashboard = () => {
     queryKey: ["dashboard-widgets", filters.time_filter, filters.year],
     queryFn: () =>
       getWidgetData({
-        time_filter: filters.time_filter,
+        time_filter: filters.start_date ? null : filters.time_filter,
         year: filters.year,
         start_date: filters.start_date,
         end_date: filters.end_date,
@@ -133,13 +133,7 @@ const Dashboard = () => {
       setActiveTab(user);
     }
   }, [searchParams]);
-  // Update URL when `activeTab` changes
 
-  // console.log(activeTab);
-
-  console.log(filters.userType);
-
-  // Fetch data based on `activeTab`
   const {
     data: recentUsers,
     error: usersError,
@@ -309,12 +303,14 @@ const Dashboard = () => {
               Here is the summary of what is presently happening on Goloka
             </p>
           </div>
+          {/***
           <Button className="h-auto rounded-full bg-main-100 px-8 py-3 text-white hover:bg-blue-700">
             <span>
               <ProfileAdd size="18" color="#fff" />{" "}
             </span>
             Invite staff
           </Button>
+          */}
         </div>
 
         <div className="col-span-6 flex justify-between">

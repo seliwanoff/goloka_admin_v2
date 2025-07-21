@@ -51,7 +51,7 @@ const Staffs = () => {
     staleTime: 1000 * 60,
   });
 
-  console.log(open);
+  //  console.log(open);
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: ["ROLES"] });
   }, [open]);

@@ -25,7 +25,11 @@ interface DashboardWidgetProps {
   link?: string;
   footer?: string | React.ReactNode;
   containerBg?: string;
-  icon: React.ElementType;
+  icon?: React.ComponentType<{
+    size?: number;
+    color?: string;
+    strokeWidth?: number;
+  }>;
   value: string | number | null;
   title: string;
   percentIncrease?: number | null;
@@ -39,20 +43,20 @@ const DashboardWidget: React.FC<DashboardWidgetProps> = ({
   isLoading = false,
   percentIncrease,
   increase,
+  icon: Icon,
   ...props
 }) => {
+  const router = useRouter();
+
   // If loading, return skeleton
   if (isLoading) {
     return <WidgetSkeleton />;
   }
-  const router = useRouter();
+
   return (
     <div
-      className={cn(
-        "rounded-lg bg-white p-4 cursor-pointer",
-        props.containerBg
-      )}
-      onClick={() => router.push(props.link || "")}
+      className={cn("rounded-lg bg-white p-4 ", props.containerBg)}
+      onClick={() => props.link && router.push(props.link)}
     >
       <div className="flex justify-between">
         <div>
@@ -69,15 +73,17 @@ const DashboardWidget: React.FC<DashboardWidgetProps> = ({
           </h3>
         </div>
         <div>
-          <span
-            className={classMerge(
-              "flex items-center justify-center rounded-full p-3",
-              props.bg,
-              props.fg
-            )}
-          >
-            <props.icon size={26} color="currentColor" strokeWidth={1} />
-          </span>
+          {Icon && (
+            <span
+              className={classMerge(
+                "flex items-center justify-center rounded-full p-3",
+                props.bg,
+                props.fg
+              )}
+            >
+              <Icon size={26} color="currentColor" strokeWidth={1} />
+            </span>
+          )}
         </div>
       </div>
 

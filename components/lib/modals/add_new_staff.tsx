@@ -76,7 +76,7 @@ const AddNewStaff: React.FC<ContributorDetailsProps> = ({ data }) => {
 
       formData.append("name", data.name);
       formData.append("email", data.email);
-      formData.append("roles", data.group);
+      formData.append("role", data.group);
       formData.append("tel", data.phone);
 
       if (file) {

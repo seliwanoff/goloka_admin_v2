@@ -29,7 +29,7 @@ const TimeFilter: React.FC<TimeFilterProps> = ({
           }}
           className={`px-4 py-3 rounded-md transition-colors font-medium text-sm border-l border-[#D0D5DD] ${
             selectedDays === filter.value
-              ? "bg-[#F9F5FF] text-[#7F56D9] border-[#7F56D9]" // Selected state
+              ? "bg-main-100 text-white border-[#7F56D9]" // Selected state
               : "bg-white text-[#344054] hover:bg-gray-100" // Default state
           }`}
         >
