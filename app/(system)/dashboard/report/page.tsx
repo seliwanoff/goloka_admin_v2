@@ -39,7 +39,7 @@ import ReportCardGrid from "@/components/report/reportCard";
 import { useQuery } from "@tanstack/react-query";
 import { getAllResports, getAResportByID } from "@/services/report";
 import ChatWidget from "@/lib/widgets/response-chat-widget";
-import { useUserStore } from "@/stores/currentUserStore";
+//import { useUserStore } from "@/stores/currentUserStore";
 import { useRouter } from "next/navigation";
 
 const Report = () => {
@@ -47,7 +47,7 @@ const Report = () => {
   // const [reports, setReports] = useState<IReport[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(10);
-  const currentUser = useUserStore((state) => state.user);
+  // const currentUser = useUserStore((state) => state.user);
 
   const router = useRouter();
 
@@ -336,16 +336,17 @@ pagination={}
                       </Popover>
                     </SheetHeader>
 
-                    {/* CHAT WIDGET */}
+                    {/*
                     <div className="mt-24">
                       <ChatWidget
                         modelType="report"
                         status={""}
                         modelId={+selected?.id}
                         //@ts-ignore
-                        currentUserId={currentUser?.id}
+                        currentUserId={10}
                       />
                     </div>
+                    CHAT WIDGET */}
 
                     {/* CHAT MESSAGE INPUT */}
                     {/* <SheetFooter className="absolute bottom-0 left-0 w-full border-t md:flex-row md:justify-start md:p-4">
