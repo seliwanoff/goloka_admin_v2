@@ -330,7 +330,7 @@ pagination={}
                         <PopoverContent className="max-w-fit cursor-pointer rounded-md text-[#EB5757] shadow-lg hover:bg-slate-200">
                           <div className="item-center flex gap-3 text-[#EB5757]">
                             <OctagonAlert />
-                            <p className="text-[#EB5757]">Report user</p>
+                            <p className="text-[#EB5757]">Report users</p>
                           </div>
                         </PopoverContent>
                       </Popover>
