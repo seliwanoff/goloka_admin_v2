@@ -3,7 +3,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
-
 interface UserData {
   id: number;
   name: string;
@@ -63,8 +62,6 @@ export const useUserStore = create<UserStore>()(
   )
 );
 
-
-
 export interface IBeneficiary {
   id: number;
   bank_code: number;
@@ -97,6 +94,6 @@ export const useBeneficiaryStore = create<BeneficiaryState>()(
     {
       name: "beneficiary-storage",
       storage: createJSONStorage(() => sessionStorage),
-    },
-  ),
+    }
+  )
 );

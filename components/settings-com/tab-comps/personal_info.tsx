@@ -339,7 +339,7 @@ const PersonalInfo: React.FC<ComponentProps> = ({
           <div className="relative sm:inline-block">
             <Image
               key={imgUrls}
-              src={imgUrls}
+              src={imgUrls || Avatar}
               alt="avatar"
               width={100}
               height={100}
@@ -374,7 +374,7 @@ const PersonalInfo: React.FC<ComponentProps> = ({
                 control={control}
                 key={data?.name + index}
                 //@ts-ignore
-                disabled={currentUser?.verification.status === "success"}
+                disabled={false}
               />
             ))}
           </div>
