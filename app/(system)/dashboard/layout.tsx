@@ -131,6 +131,7 @@ const NavData: { icon: any; title: string; link: string }[] = [
     title: "Messages",
     link: "/dashboard/message",
   },
+  */
   {
     icon: Profile2User,
     title: "Users",
@@ -139,23 +140,30 @@ const NavData: { icon: any; title: string; link: string }[] = [
   {
     icon: SecurityUser,
     title: "Staffs",
-    link: "/dashboard/staff",
+    link: "/dashboard/staffs",
   },
-  /***
+
   {
     icon: Note,
     title: "Report",
     link: "/dashboard/report",
   },
+
   {
     icon: Wallet3,
     title: "Finance",
     link: "/dashboard/finance",
   },
+  /***
+  {
+    icon: Wallet3,
+    title: "Finance",
+    link: "/dashboard/finance",
+  },
+  */
   {
     icon: Settings,
     title: "Settings",
     link: "/dashboard/settings",
   },
-  */
 ];
