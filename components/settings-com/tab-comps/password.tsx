@@ -43,23 +43,25 @@ const ChangePassword: React.FC<any> = ({}) => {
   } = useForm({
     resolver: yupResolver(passwordSchema),
   });
-  console.log(currentUser, "currentUser");
+  // console.log(currentUser, "currentUser");
   const email = currentUser?.email;
   const onSubmit = async (data: any) => {
     setIsLoading(true);
+
+    //console.log(data);
     try {
       validatePasswords();
       setFormData(data);
       setFormValues(data);
-      const res = await passwordOTP({ email });
-      //@ts-ignore
-      if (res?.message) {
-        console.log(res, "response");
-        //@ts-ignore
-        toast.success(`${res.message} to ${email}`);
-        setOpen(true);
-        reset();
-      }
+      const res = await passwordOTP({
+        current_password: data.oldPassword,
+        new_password: data.password,
+        new_password_confirmation: data.password_confirmation,
+      });
+
+      toast.success(`Password changed successfully`);
+      setOpen(true);
+      reset();
     } catch (error) {
       console.error(error);
       //@ts-ignore

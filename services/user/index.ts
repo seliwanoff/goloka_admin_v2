@@ -9,7 +9,7 @@ export const passwordOTP = async (
   return queryClient.fetchQuery({
     queryKey: ["PASSWORD OTP"],
     queryFn: async () => {
-      return await postData<ServerResponse<any>>("/password/otp/send", data);
+      return await postData<ServerResponse<any>>("password/update", data);
     },
   });
 };
