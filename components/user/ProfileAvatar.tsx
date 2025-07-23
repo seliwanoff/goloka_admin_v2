@@ -166,7 +166,7 @@ const ProfileCard = ({ data, onStatusChange }: ProfileCardProps) => {
           </button>
         ) : (
           <button
-            className="w-full px-6 py-2 bg-[#bbefd09a] text-[#27AE60] rounded-full hover:bg-[#27AE60]/90 transition"
+            className="w-full px-6 py-2 bg-[#bbefd09a] text-[#27AE60] rounded-full hover:bg-[#27AE60]/90 transition hover:text-white"
             onClick={() => setOpenActivate(true)}
             disabled={loading}
           >
@@ -216,7 +216,7 @@ const ProfileCard = ({ data, onStatusChange }: ProfileCardProps) => {
               Cancel
             </Button>
             <Button
-              className="flex-1 text-base py-3 font-normal rounded-full bg-[#27AE60] hover:bg-[#27AE60]/90"
+              className="flex-1 text-base py-3 font-normal rounded-full bg-[#27AE60] hover:bg-[#27AE60]/90 hover:text-white"
               onClick={() => {
                 handleStatusChange("activate");
                 setOpenActivate(false);
@@ -294,8 +294,6 @@ const ProfileSummary = ({ data }: { data: ProfileData }) => {
       />
       <h2 className=" font-semibold mb-6">Profile summary</h2>
       <div className="bg-gray-50 p-6 rounded-xl items-center flex justify-center">
-
-
         <div className="mb-2 text-center">
           <div className="text-blue-600 text-2xl font-bold">
             ₦ {data?.amount?.toLocaleString()}
@@ -307,7 +305,6 @@ const ProfileSummary = ({ data }: { data: ProfileData }) => {
           </div>
         </div>
       </div>
-     
 
       <div className="flex gap-4 items-center justify-between w-full">
         <StatItem
@@ -348,7 +345,7 @@ interface ProfilePageProps {
   refetch: RefetchType;
 }
 type RefetchType = () => Promise<QueryObserverResult>;
-export default function ProfilePage({
+export default function rofilePage({
   user,
   isLoading,
   refetch,
