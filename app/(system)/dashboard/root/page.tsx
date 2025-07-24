@@ -47,6 +47,8 @@ const Dashboard = () => {
     null
   );
 
+  // console.log(currentUser);
+
   const [filters, setFilters] = useState<any>({
     page: parseInt(searchParams?.get("page") || "1"),
     pageSize: 30,

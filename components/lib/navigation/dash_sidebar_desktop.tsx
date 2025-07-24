@@ -43,7 +43,12 @@ import { useRemoteUserStore } from "@/stores/remoteUser";
 import { userLogout } from "@/services/auth";
 
 type ComponentProps = {
-  navMenuList: { icon: any; title: string; link: string }[];
+  navMenuList: {
+    icon: any;
+    title: string;
+    link: string;
+    is_permission?: boolean;
+  }[];
 };
 
 const DashSideBarDesktop: React.FC<ComponentProps> = ({ navMenuList }) => {
@@ -79,17 +84,21 @@ const DashSideBarDesktop: React.FC<ComponentProps> = ({ navMenuList }) => {
             href={nav_item.link}
             key={nav_item.title}
             className={cn(
-              "transit flex w-full flex-row items-center justify-start gap-3 rounded-full px-4 py-2",
+              "transit group w-full flex-row  flex items-center justify-start gap-3 rounded-full px-4 py-2",
               pathname.includes(nav_item.link)
                 ? "bg-main-100 text-white"
-                : "bg-white font-medium text-gray-500 ring-gray-100 hover:bg-gradient-to-br hover:from-gray-50/20 hover:via-gray-100/80 hover:to-gray-50/20 hover:text-gray-800 hover:ring-1"
+                : "bg-white font-medium text-gray-500 ring-gray-100 hover:bg-gradient-to-br hover:from-gray-50/20 hover:via-gray-100/80 hover:to-gray-50/20 hover:text-gray-800 hover:ring-1",
+              !nav_item?.is_permission &&
+                "pointer-events-none cursor-not-allowed text-gray-300"
             )}
           >
             <nav_item.icon size={20} color="currentColor" strokeWidth={1.5} />
             <p
               className={cn(
                 "",
-                pathname.includes(nav_item.link) && "text-white"
+                pathname.includes(nav_item.link) && "text-white",
+                !nav_item?.is_permission &&
+                  "pointer-events-none cursor-not-allowed text-gray-300"
               )}
             >
               {nav_item.title}

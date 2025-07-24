@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 // ~ ======= icon imports  -->
 import {
@@ -28,6 +28,7 @@ import {
 import DashSideBarDesktop from "@/components/lib/navigation/dash_sidebar_desktop";
 import DashTopNav from "@/components/lib/navigation/dash_topnav";
 import { tokenExtractor } from "@/lib/utils";
+import { useUserStore } from "@/stores/currentUserStore";
 // import { useUserStore } from "@/stores/use-user-store";
 // import { StepperProvider } from "@/context/TaskStepperContext.tsx";
 // import { useUserStore } from "@/stores/currentUserStore";
@@ -43,17 +44,93 @@ type LayoutProps = {
 
 const SystemLayout: React.FC<LayoutProps> = ({ children }) => {
   const router = useRouter();
+  const currentUser = useUserStore((state) => state.user);
 
-  //  const {
-  //    data: currentUser,
-  //    isLoading,
-  //    error,
-  //    refetch,
-  //  } = useQuery({
-  //    queryKey: ["Get current remote user"],
-  //    queryFn: getCurrentUser,
-  //    retry: 1, // Only retry once before considering it a failure
-  //  });
+  const hasPermission = useCallback(
+    (requiredPermission: string) => {
+      return (
+        //@ts-ignore
+        currentUser?.permissions?.includes("all") ||
+        //@ts-ignore
+        currentUser?.permissions?.includes(requiredPermission)
+      );
+    },
+    //@ts-ignore
+    [currentUser]
+  );
+
+  const NavData: {
+    icon: any;
+    title: string;
+    link: string;
+    is_permission?: boolean;
+  }[] = [
+    {
+      icon: LayoutGrid,
+      title: "Dashboard",
+      link: "/dashboard/root",
+      is_permission: true,
+    },
+    {
+      icon: Note,
+      title: "Campaigns",
+      link: "/dashboard/campaigns",
+      is_permission: hasPermission("manage_campaigns"),
+    },
+
+    {
+      icon: Wallet3,
+      title: "Withdrawal Requests",
+      link: "/dashboard/withdrawal-requests",
+      is_permission: hasPermission("manage_campaigns"),
+    },
+    /***
+  {
+    icon: Message,
+    title: "Messages",
+    link: "/dashboard/message",
+  },
+  */
+    {
+      icon: Profile2User,
+      title: "Users",
+      link: "/dashboard/users",
+      is_permission: hasPermission("manage_users"),
+    },
+    {
+      icon: SecurityUser,
+      title: "Staffs",
+      link: "/dashboard/staffs",
+      is_permission: hasPermission("manage_staffs"),
+    },
+
+    {
+      icon: Note,
+      title: "Report",
+      link: "/dashboard/report",
+      is_permission: hasPermission("manage_reports"),
+    },
+
+    {
+      icon: Wallet3,
+      title: "Finance",
+      link: "/dashboard/finance",
+      is_permission: hasPermission("manage_finance"),
+    },
+    /***
+  {
+    icon: Wallet3,
+    title: "Finance",
+    link: "/dashboard/finance",
+  },
+  */
+    {
+      icon: Settings,
+      title: "Settings",
+      link: "/dashboard/settings",
+      is_permission: hasPermission("access_control"),
+    },
+  ];
 
   useEffect(() => {
     const checkAuth = () => {
@@ -112,58 +189,3 @@ export default SystemLayout;
 // ~ =============================================>
 // ~ ======= Navigation data -->
 // ~ =============================================>
-const NavData: { icon: any; title: string; link: string }[] = [
-  {
-    icon: LayoutGrid,
-    title: "Dashboard",
-    link: "/dashboard/root",
-  },
-  { icon: Note, title: "Campaigns", link: "/dashboard/campaigns" },
-
-  {
-    icon: Wallet3,
-    title: "Withdrawal Requests",
-    link: "/dashboard/withdrawal-requests",
-  },
-  /***
-  {
-    icon: Message,
-    title: "Messages",
-    link: "/dashboard/message",
-  },
-  */
-  {
-    icon: Profile2User,
-    title: "Users",
-    link: "/dashboard/users",
-  },
-  {
-    icon: SecurityUser,
-    title: "Staffs",
-    link: "/dashboard/staffs",
-  },
-
-  {
-    icon: Note,
-    title: "Report",
-    link: "/dashboard/report",
-  },
-
-  {
-    icon: Wallet3,
-    title: "Finance",
-    link: "/dashboard/finance",
-  },
-  /***
-  {
-    icon: Wallet3,
-    title: "Finance",
-    link: "/dashboard/finance",
-  },
-  */
-  {
-    icon: Settings,
-    title: "Settings",
-    link: "/dashboard/settings",
-  },
-];
