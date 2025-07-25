@@ -101,7 +101,7 @@ const SystemLayout: React.FC<LayoutProps> = ({ children }) => {
       icon: SecurityUser,
       title: "Staffs",
       link: "/dashboard/staffs",
-      is_permission: hasPermission("manage_staffs"),
+      is_permission: hasPermission("access_control"),
     },
 
     {
@@ -128,7 +128,7 @@ const SystemLayout: React.FC<LayoutProps> = ({ children }) => {
       icon: Settings,
       title: "Settings",
       link: "/dashboard/settings",
-      is_permission: hasPermission("access_control"),
+      is_permission: true,
     },
   ];
 
