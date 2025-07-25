@@ -20,7 +20,7 @@ const Users = () => {
   const [currentTab, setCurrentTab] = useState("contributions");
 
   const userType =
-    searchParams.get("userType") === "organization"
+    searchParams.get("userType") === "Organization"
       ? "organization"
       : "contributor";
 
@@ -43,7 +43,7 @@ const Users = () => {
     queryFn: () => getUserReports(id as string, { user_type: userType }),
     retry: 2,
     staleTime: 1000 * 60,
-    enabled: currentTab === "reports", // Only fetch when reports tab is active
+    enabled: currentTab === "reports",
   });
 
   // Fetch user contributions
@@ -58,11 +58,7 @@ const Users = () => {
   // Handle tab change
   const handleTabChange = (tab: string) => {
     setCurrentTab(tab);
-
-
   };
-
-
 
   return (
     <div>
