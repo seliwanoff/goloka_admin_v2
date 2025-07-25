@@ -43,9 +43,7 @@ const Dashboard = () => {
   const router = useRouter();
   // Initialize with fiat as default currencyType
 
-  const [selectedDays, setSelectedDays] = useState<number | string | null>(
-    null
-  );
+  const [selectedDays, setSelectedDays] = useState(null);
 
   // console.log(currentUser);
 

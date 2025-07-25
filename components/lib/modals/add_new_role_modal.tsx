@@ -37,7 +37,7 @@ const CreateRoleModal: React.FC<ComponentProps> = ({
   const [name, setName] = useState("");
 
   const [isLoadings, setIsloading] = useState(false);
-  console.log(roles);
+  // console.log(roles);
 
   const allUniquePermissions = [
     ...new Set(roles?.flatMap((role: any) => role.permissions)),
@@ -45,11 +45,10 @@ const CreateRoleModal: React.FC<ComponentProps> = ({
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
 
   const togglePermission = (permission: string) => {
-    setSelectedPermissions(
-      (prev) =>
-        prev.includes(permission)
-          ? prev.filter((p) => p !== permission) // Remove if already selected
-          : [...prev, permission] // Add if not selected
+    setSelectedPermissions((prev) =>
+      prev.includes(permission)
+        ? prev.filter((p) => p !== permission)
+        : [...prev, permission]
     );
   };
 
@@ -58,8 +57,8 @@ const CreateRoleModal: React.FC<ComponentProps> = ({
 
     try {
       const payload = {
-        name: name,
-        permission: selectedPermissions,
+        name,
+        permissions: selectedPermissions,
       };
       setIsloading(true);
 
@@ -122,7 +121,7 @@ const CreateRoleModal: React.FC<ComponentProps> = ({
 
                   <Label htmlFor="role">
                     <span className="mb-2 inline-block text-base font-extralight text-[#4F4F4F]">
-                      Role title
+                      ermission
                     </span>
 
                     <ul className="space-y-2 flex items-center flex-wrap gap-2 ">
